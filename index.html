@@ -6,15 +6,12 @@
 <title>食光小馆</title>
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { margin: 0; height: 100%; overflow: hidden; background: radial-gradient(circle at 50% 42%, #4b8794 0%, #2a515b 45%, #14272d 100%);
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #8fc97a;
     font-family: "Helvetica Neue", Arial, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
     user-select: none; -webkit-user-select: none; }
   canvas { position: fixed; inset: 0; display: block; width: 100vw; height: 100vh; touch-action: none; }
   #ov { pointer-events: none; }
-  #vig { position: fixed; inset: 0; pointer-events: none; background: radial-gradient(ellipse at center, transparent 58%, rgba(0,0,0,.38) 100%); }
-  #combo { color: #d9480f; font-size: 15px; display: none; }
-  #buffs { color: #1d3557; font-size: 14px; display: none; }
-  #sndBtn { background: #6d597a; box-shadow: 0 4px 0 #453a4f, 0 6px 10px rgba(0,0,0,.3); padding: 8px 12px; }
+  #vig { position: fixed; inset: 0; pointer-events: none; background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,.3) 100%); }
   .hud { position: fixed; pointer-events: none; }
   #topLeft { top: 12px; left: 12px; display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
   #lvRow { display: flex; align-items: center; }
@@ -34,27 +31,33 @@
   .pill { background: #fff; border-radius: 20px; padding: 6px 14px; font-weight: 800; font-size: 17px; color: #2a6b3a;
     box-shadow: 0 2px 6px rgba(0,0,0,.3); }
   #rating { color: #a05a00; font-size: 14px; }
+  #stock { color: #2d6a4f; font-size: 14px; }
+  #stock.low { background: #ffe3e3; color: #c1121f; }
+  #combo { color: #d9480f; font-size: 15px; display: none; }
+  #buffs { color: #1d3557; font-size: 14px; display: none; }
   #btns { right: 12px; bottom: 16px; display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
   .btn { pointer-events: auto; border: none; border-radius: 16px; padding: 10px 14px; font-size: 15px; font-weight: 800;
     color: #fff; background: #ff7a45; box-shadow: 0 4px 0 #b84d22, 0 6px 10px rgba(0,0,0,.3); cursor: pointer; position: relative; }
   #langBtn { background: #3a969e; box-shadow: 0 4px 0 #245f65, 0 6px 10px rgba(0,0,0,.3); font-size: 13px; padding: 8px 12px; }
-  .btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #b84d22; }
+  #sndBtn { background: #6d597a; box-shadow: 0 4px 0 #453a4f, 0 6px 10px rgba(0,0,0,.3); padding: 8px 12px; }
+  .btn:active { transform: translateY(2px); }
   .btn .dot { position: absolute; top: -6px; right: -6px; width: 18px; height: 18px; border-radius: 50%; background: #e5383b;
     border: 2px solid #fff; display: none; }
   #hint { left: 50%; bottom: 18px; transform: translateX(-50%); background: rgba(0,0,0,.6); color: #fff; padding: 8px 14px;
     border-radius: 14px; font-size: 13px; width: max-content; max-width: 62vw; text-align: center; transition: opacity .6s; line-height: 1.5; }
   @media (max-width: 640px) { #hint { bottom: 184px; max-width: 92vw; font-size: 12px; } #mission { width: 170px; } }
   #toast { left: 50%; top: 150px; transform: translateX(-50%); background: #ffc93c; color: #5a3600; font-weight: 800;
-    padding: 10px 18px; border-radius: 16px; opacity: 0; transition: opacity .4s; box-shadow: 0 3px 8px rgba(0,0,0,.3); width: max-content; max-width: 90vw; text-align: center; }
+    padding: 10px 18px; border-radius: 16px; opacity: 0; transition: opacity .3s; box-shadow: 0 3px 8px rgba(0,0,0,.3); width: max-content; max-width: 90vw; text-align: center; }
   #rush { left: 50%; top: 200px; transform: translateX(-50%); background: #e5383b; color: #fff; font-weight: 800;
     padding: 6px 16px; border-radius: 14px; display: none; width: max-content; max-width: 90vw; text-align: center; box-shadow: 0 3px 8px rgba(0,0,0,.3); }
   #panel { position: fixed; inset: 0; background: rgba(0,0,0,.5); display: none; align-items: center; justify-content: center; }
   #panel.open { display: flex; }
-  #card { background: #fff7ea; width: min(430px, 92vw); max-height: 84vh; border-radius: 20px; padding: 14px;
+  #card { background: #fff7ea; width: min(440px, 92vw); max-height: 86vh; border-radius: 20px; padding: 14px;
     display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,.4); }
   #card h2 { margin: 2px 4px 10px; font-size: 20px; color: #5a3600; display: flex; justify-content: space-between; align-items: center; }
   #close { border: none; background: #e5383b; color: #fff; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; font-weight: 800; cursor: pointer; }
   #list { overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+  .sec { font-weight: 800; color: #a05a00; font-size: 14px; margin: 6px 4px 0; }
   .row { display: flex; align-items: center; gap: 10px; background: #fff; border-radius: 14px; padding: 8px 10px; border: 2px solid #f0dcc0; }
   .row .ic { font-size: 28px; width: 38px; text-align: center; }
   .row .tx { flex: 1; min-width: 0; }
@@ -77,6 +80,7 @@
 </div>
 <div id="topRight" class="hud">
   <div id="money" class="pill">💰 0</div>
+  <div id="stock" class="pill">🥬 0</div>
   <div id="rating" class="pill">⭐ 3.0</div>
   <div id="combo" class="pill"></div>
   <div id="buffs" class="pill"></div>
@@ -102,100 +106,127 @@ const EMO = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'
 // ================= 多语言 =================
 const LANGS = { zh: '中文', en: 'English', vi: 'Tiếng Việt' };
 const TXT = {
-  zh: { title: '食光小馆', upgrade: '升级', hint1: '拖动屏幕 / WASD 移动', hint2: '出餐台取菜 → 送到客人桌 → 收脏盘子送去水槽 → 走过钞票收钱',
-    rush: '🔥 用餐高峰！收入 ×1.5', panel: '🏮 小馆升级', reset: '重置存档', resetAsk: '确定要重置存档、从头开始吗？', board: '今日菜单',
-    m_serve: '服务 {n} 位客人', m_earn: '赚取 💰{n}', m_wash: '清洗 {n} 个盘子', m_happy: '让 {n} 位客人满意 😍', m_vip: '接待 {n} 位 VIP 👑',
+  zh: { title: '食光小馆', upgrade: '经营', hint1: '拖动屏幕 / WASD 移动', hint2: '取菜 → 上菜 → 收盘洗碗 → 亲自走到钞票旁收钱。做菜要消耗食材，记得去左下角冰箱进货',
+    rush: '🔥 用餐高峰！收入 ×1.5', panel: '🏮 经营管理', reset: '重置存档', resetAsk: '确定要重置存档、从头开始吗？', board: '今日菜单',
+    m_serve: '服务 {n} 位客人', m_earn: '收取 💰{n}', m_wash: '清洗 {n} 个盘子', m_happy: '让 {n} 位客人满意 😍', m_vip: '接待 {n} 位 VIP 👑',
     done: '📋 任务完成！奖励 💰{n}', reward: '奖励 💰{n}', levelUp: '⭐ 升到 {l} 级！奖励 💰{n}', angry: '😡 等太久了', tip: '😍 小费+30%',
-    gone: '客人走了…', newTable: '新桌子！', addTable: '＋ 新桌子', rating: '口碑', unlock: '解锁 {e} {n}（单价 {p}）',
-    barOpen: '开设饮品吧，售卖 {e} {n}（单价 {p}）', barNew: '新饮品 {e} {n}（单价 {p}）', barFull: '饮品已全部解锁', max: '已满级',
-    waiter: ['雇佣服务员', '自动上菜、收盘子'], cook: ['雇佣厨师', '同时做更多的菜'], menu: ['新菜品', '解锁更贵的菜'], bar: ['饮品吧', ''],
-    cap: ['托盘容量', '你一次能多端一份'], speed: ['移动速度', '所有人走得更快'], cookSpd: ['烹饪速度', '做菜时间缩短'], pat: ['舒适座椅', '客人耐心 +15%'],
-    tipUp: ['菜品定价', '每单收入 +20%'], ad: ['宣传推广', '客人来得更频繁'],
-    ramen: '拉面', dumpling: '饺子', curry: '咖喱饭', sushi: '寿司', hotpot: '火锅', tea: '奶茶', juice: '果汁', coffee: '咖啡' },
-  en: { title: 'Mealtime Bistro', upgrade: 'Upgrades', hint1: 'Drag the screen / WASD to move', hint2: 'Grab food at the counter → serve the table → take dirty plates to the sink → walk over cash to collect',
-    rush: '🔥 Rush hour! Income ×1.5', panel: '🏮 Bistro Upgrades', reset: 'Reset save', resetAsk: 'Reset your save and start over?', board: 'MENU',
-    m_serve: 'Serve {n} guests', m_earn: 'Earn 💰{n}', m_wash: 'Wash {n} plates', m_happy: 'Delight {n} guests 😍', m_vip: 'Serve {n} VIP 👑',
+    gone: '客人走了…', rating: '口碑', max: '已满级', qLeave: '😤 不排了', pu_skate: '🛼 加速！', pu_clock: '⏰ 耐心暂停', pu_fire: '🔥 极速烹饪',
+    mouse: '🐭 有老鼠！快走过去赶走它', mouseOk: '赶走了！', mouseBad: '😱 老鼠吓到客人了', tier: '🎉 店面焕新：{n}', t1: '暖阳风', t2: '夜色风', t3: '鎏金风', critic: '📝 美食家好评！',
+    unlockItem: '🎉 新品上市：{e} {n}，专属厨师已到岗', newTables: '🪑 新增 2 张餐桌', zoneOpen: '🎊 新用餐区开放：{n}', z0: '木质大堂', z1: '红丝绒卡座', z2: '花园雅座',
+    secChef: '👨‍🍳 厨师技能', secStaff: '🤵 员工与服务', secBiz: '🏙️ 商业街产业', chefOf: '{n} 厨师', chefDs: '做得更快，售价 +15%',
+    needLv: '🔒 {l} 级', bizDs: '每秒 💰{n}，存满 💰{c}，需亲自去收', bizLocked: '{l} 级后可购买', bizNew: '🏗️ {n} 开业了！走过去收取收入', bizAvail: '🏗️ 可以买下 {n} 了', forSale: '待售',
+    offline: '🌙 离开期间产业攒了 💰{n}，去收取吧', full: '满', perk: '进货成本 -30%',
+    noStock: '🥬 食材用完了！去左下角冰箱进货', fridge: '食材 {n}/{c}', restock: '站在这里进货 💰{n}', stockFull: '仓库已满', credit: '🥬 没钱了？供应商先赊你 5 份食材',
+    waiter: ['雇佣服务员', '自动上菜、收盘子（不代收钱）'], eff: ['员工效率', '服务员走得更快、收拾更快'], svc: ['服务速度', '你走得更快'], cap: ['托盘容量', '你一次能多端一份'],
+    buyer: ['雇佣采购员', '食材不足时自动进货'], store: ['扩大仓库', '食材存放上限 +40'],
+    pat: ['舒适座椅', '客人耐心 +15%'], ad: ['宣传推广', '客人来得更频繁'], takeout: ['外卖窗口', '骑手来取餐，收入 ×1.8'],
+    ramen: '拉面', dumpling: '饺子', curry: '咖喱饭', sushi: '寿司', hotpot: '火锅', burger: '汉堡', pizza: '披萨', tea: '奶茶', juice: '果汁', coffee: '咖啡',
+    market: '超市', teashop: '奶茶店', hotel: '酒店', park: '游乐场' },
+  en: { title: 'Mealtime Bistro', upgrade: 'Manage', hint1: 'Drag the screen / WASD to move', hint2: 'Grab food → serve → wash plates → walk to the cash yourself to collect it. Cooking uses ingredients — restock at the fridge in the bottom-left corner',
+    rush: '🔥 Rush hour! Income ×1.5', panel: '🏮 Management', reset: 'Reset save', resetAsk: 'Reset your save and start over?', board: 'MENU',
+    m_serve: 'Serve {n} guests', m_earn: 'Collect 💰{n}', m_wash: 'Wash {n} plates', m_happy: 'Delight {n} guests 😍', m_vip: 'Serve {n} VIP 👑',
     done: '📋 Quest complete! Reward 💰{n}', reward: 'Reward 💰{n}', levelUp: '⭐ Level {l}! Reward 💰{n}', angry: '😡 Too slow!', tip: '😍 Tip +30%',
-    gone: 'Guest left…', newTable: 'New table!', addTable: '＋ New table', rating: 'Rating', unlock: 'Unlock {e} {n} (price {p})',
-    barOpen: 'Open a drink bar selling {e} {n} (price {p})', barNew: 'New drink {e} {n} (price {p})', barFull: 'All drinks unlocked', max: 'MAX',
-    waiter: ['Hire Waiter', 'Serves food and clears plates'], cook: ['Hire Chef', 'Cook more dishes at once'], menu: ['New Dish', 'Unlock pricier dishes'], bar: ['Drink Bar', ''],
-    cap: ['Tray Size', 'Carry one more item'], speed: ['Move Speed', 'Everyone walks faster'], cookSpd: ['Cooking Speed', 'Shorter cooking time'], pat: ['Comfy Seats', 'Guest patience +15%'],
-    tipUp: ['Pricing', 'Income per order +20%'], ad: ['Advertising', 'Guests arrive more often'],
-    ramen: 'Ramen', dumpling: 'Dumplings', curry: 'Curry Rice', sushi: 'Sushi', hotpot: 'Hot Pot', tea: 'Bubble Tea', juice: 'Juice', coffee: 'Coffee' },
-  vi: { title: 'Quán Ăn Nhỏ', upgrade: 'Nâng cấp', hint1: 'Kéo màn hình / WASD để di chuyển', hint2: 'Lấy món ở quầy → mang đến bàn khách → mang đĩa bẩn ra bồn rửa → đi qua tiền để thu',
-    rush: '🔥 Giờ cao điểm! Thu nhập ×1.5', panel: '🏮 Nâng cấp quán', reset: 'Xóa dữ liệu lưu', resetAsk: 'Bạn có chắc muốn xóa dữ liệu và chơi lại từ đầu?', board: 'THỰC ĐƠN',
-    m_serve: 'Phục vụ {n} khách', m_earn: 'Kiếm 💰{n}', m_wash: 'Rửa {n} cái đĩa', m_happy: 'Làm hài lòng {n} khách 😍', m_vip: 'Đón {n} khách VIP 👑',
+    gone: 'Guest left…', rating: 'Rating', max: 'MAX', qLeave: '😤 Queue too long', pu_skate: '🛼 Speed boost!', pu_clock: '⏰ Patience frozen', pu_fire: '🔥 Turbo cooking',
+    mouse: '🐭 A mouse! Walk into it to chase it away', mouseOk: 'Shooed!', mouseBad: '😱 The mouse scared the guests', tier: '🎉 New look: {n}', t1: 'Sunset', t2: 'Midnight', t3: 'Royal Gold', critic: '📝 The critic loved it!',
+    unlockItem: '🎉 New on the menu: {e} {n} — its chef has arrived', newTables: '🪑 2 new tables', zoneOpen: '🎊 New dining area: {n}', z0: 'Wooden Hall', z1: 'Velvet Booths', z2: 'Garden Terrace',
+    secChef: '👨‍🍳 Chef Skills', secStaff: '🤵 Staff & Service', secBiz: '🏙️ Street Businesses', chefOf: '{n} Chef', chefDs: 'Cooks faster, price +15%',
+    needLv: '🔒 Lv.{l}', bizDs: '💰{n}/sec, holds 💰{c}, collect in person', bizLocked: 'Available at level {l}', bizNew: '🏗️ {n} is open! Walk over to collect', bizAvail: '🏗️ You can now buy the {n}', forSale: 'For sale',
+    offline: '🌙 Your businesses earned 💰{n} while you were away — go collect', full: 'FULL', perk: 'ingredients cost -30%',
+    noStock: '🥬 Out of ingredients! Restock at the fridge, bottom-left', fridge: 'Ingredients {n}/{c}', restock: 'Stand here to restock 💰{n}', stockFull: 'Storage full', credit: '🥬 Broke? The supplier fronts you 5 ingredients',
+    waiter: ['Hire Waiter', 'Serves and clears plates (never collects cash)'], eff: ['Staff Efficiency', 'Waiters walk and clean faster'], svc: ['Service Speed', 'You walk faster'], cap: ['Tray Size', 'Carry one more item'],
+    buyer: ['Hire Buyer', 'Restocks automatically when low'], store: ['Bigger Storage', 'Ingredient capacity +40'],
+    pat: ['Comfy Seats', 'Guest patience +15%'], ad: ['Advertising', 'Guests arrive more often'], takeout: ['Takeout Window', 'Riders pick up orders, income ×1.8'],
+    ramen: 'Ramen', dumpling: 'Dumplings', curry: 'Curry Rice', sushi: 'Sushi', hotpot: 'Hot Pot', burger: 'Burger', pizza: 'Pizza', tea: 'Bubble Tea', juice: 'Juice', coffee: 'Coffee',
+    market: 'Supermarket', teashop: 'Tea Shop', hotel: 'Hotel', park: 'Amusement Park' },
+  vi: { title: 'Quán Ăn Nhỏ', upgrade: 'Quản lý', hint1: 'Kéo màn hình / WASD để di chuyển', hint2: 'Lấy món → phục vụ → rửa đĩa → tự đi đến chỗ tiền để thu. Nấu ăn tốn nguyên liệu — hãy nhập hàng ở tủ lạnh góc dưới bên trái',
+    rush: '🔥 Giờ cao điểm! Thu nhập ×1.5', panel: '🏮 Quản lý quán', reset: 'Xóa dữ liệu lưu', resetAsk: 'Bạn có chắc muốn xóa dữ liệu và chơi lại từ đầu?', board: 'THỰC ĐƠN',
+    m_serve: 'Phục vụ {n} khách', m_earn: 'Thu 💰{n}', m_wash: 'Rửa {n} cái đĩa', m_happy: 'Làm hài lòng {n} khách 😍', m_vip: 'Đón {n} khách VIP 👑',
     done: '📋 Hoàn thành nhiệm vụ! Thưởng 💰{n}', reward: 'Thưởng 💰{n}', levelUp: '⭐ Lên cấp {l}! Thưởng 💰{n}', angry: '😡 Chờ lâu quá', tip: '😍 Tip +30%',
-    gone: 'Khách đã bỏ đi…', newTable: 'Bàn mới!', addTable: '＋ Bàn mới', rating: 'Uy tín', unlock: 'Mở khóa {e} {n} (giá {p})',
-    barOpen: 'Mở quầy đồ uống, bán {e} {n} (giá {p})', barNew: 'Đồ uống mới {e} {n} (giá {p})', barFull: 'Đã mở hết đồ uống', max: 'Tối đa',
-    waiter: ['Thuê phục vụ', 'Tự động mang món, dọn đĩa'], cook: ['Thuê đầu bếp', 'Nấu nhiều món cùng lúc'], menu: ['Món mới', 'Mở khóa món đắt hơn'], bar: ['Quầy đồ uống', ''],
-    cap: ['Sức chứa khay', 'Bạn bưng thêm được một món'], speed: ['Tốc độ di chuyển', 'Mọi người đi nhanh hơn'], cookSpd: ['Tốc độ nấu', 'Rút ngắn thời gian nấu'], pat: ['Ghế êm ái', 'Khách kiên nhẫn hơn 15%'],
-    tipUp: ['Giá món ăn', 'Thu nhập mỗi đơn +20%'], ad: ['Quảng cáo', 'Khách đến thường xuyên hơn'],
-    ramen: 'Mì ramen', dumpling: 'Sủi cảo', curry: 'Cơm cà ri', sushi: 'Sushi', hotpot: 'Lẩu', tea: 'Trà sữa', juice: 'Nước ép', coffee: 'Cà phê' },
+    gone: 'Khách đã bỏ đi…', rating: 'Uy tín', max: 'Tối đa', qLeave: '😤 Xếp hàng lâu quá', pu_skate: '🛼 Tăng tốc!', pu_clock: '⏰ Khách chờ thêm', pu_fire: '🔥 Nấu siêu tốc',
+    mouse: '🐭 Có chuột! Chạy tới đuổi nó đi', mouseOk: 'Đã đuổi!', mouseBad: '😱 Chuột làm khách sợ', tier: '🎉 Quán có diện mạo mới: {n}', t1: 'Hoàng hôn', t2: 'Đêm xanh', t3: 'Hoàng kim', critic: '📝 Nhà phê bình khen ngợi!',
+    unlockItem: '🎉 Món mới: {e} {n} — đầu bếp riêng đã đến', newTables: '🪑 Thêm 2 bàn mới', zoneOpen: '🎊 Mở khu ăn mới: {n}', z0: 'Sảnh gỗ', z1: 'Ghế nhung đỏ', z2: 'Sân vườn',
+    secChef: '👨‍🍳 Tay nghề đầu bếp', secStaff: '🤵 Nhân viên & phục vụ', secBiz: '🏙️ Cửa hàng trên phố', chefOf: 'Đầu bếp {n}', chefDs: 'Nấu nhanh hơn, giá +15%',
+    needLv: '🔒 Cấp {l}', bizDs: '💰{n}/giây, chứa 💰{c}, phải tự đến thu', bizLocked: 'Mua được từ cấp {l}', bizNew: '🏗️ {n} đã khai trương! Hãy đến thu tiền', bizAvail: '🏗️ Bạn đã có thể mua {n}', forSale: 'Đang bán',
+    offline: '🌙 Khi bạn vắng mặt, các cửa hàng kiếm được 💰{n} — hãy đi thu', full: 'ĐẦY', perk: 'giá nguyên liệu -30%',
+    noStock: '🥬 Hết nguyên liệu! Hãy nhập hàng ở tủ lạnh góc dưới bên trái', fridge: 'Nguyên liệu {n}/{c}', restock: 'Đứng đây để nhập hàng 💰{n}', stockFull: 'Kho đã đầy', credit: '🥬 Hết tiền? Nhà cung cấp cho nợ 5 phần nguyên liệu',
+    waiter: ['Thuê phục vụ', 'Mang món, dọn đĩa (không thu tiền)'], eff: ['Hiệu suất nhân viên', 'Phục vụ đi và dọn nhanh hơn'], svc: ['Tốc độ phục vụ', 'Bạn đi nhanh hơn'], cap: ['Sức chứa khay', 'Bạn bưng thêm được một món'],
+    buyer: ['Thuê người mua hàng', 'Tự động nhập hàng khi sắp hết'], store: ['Mở rộng kho', 'Sức chứa nguyên liệu +40'],
+    pat: ['Ghế êm ái', 'Khách kiên nhẫn hơn 15%'], ad: ['Quảng cáo', 'Khách đến thường xuyên hơn'], takeout: ['Quầy mang về', 'Shipper đến lấy món, thu nhập ×1.8'],
+    ramen: 'Mì ramen', dumpling: 'Sủi cảo', curry: 'Cơm cà ri', sushi: 'Sushi', hotpot: 'Lẩu', burger: 'Burger', pizza: 'Pizza', tea: 'Trà sữa', juice: 'Nước ép', coffee: 'Cà phê',
+    market: 'Siêu thị', teashop: 'Quán trà sữa', hotel: 'Khách sạn', park: 'Công viên giải trí' },
 };
-Object.assign(TXT.zh, { qLeave: '😤 不排了', pu_skate: '🛼 加速！', pu_clock: '⏰ 耐心暂停', pu_fire: '🔥 极速烹饪', mouse: '🐭 有老鼠！快走过去赶走它', mouseOk: '赶走了！',
-  mouseBad: '😱 老鼠吓到客人了', offline: '🌙 离线收入 💰{n}', tier: '🎉 店面焕新：{n}', t1: '暖阳风', t2: '夜色风', t3: '鎏金风', critic: '📝 美食家好评！',
-  takeout: ['外卖窗口', '骑手来取餐，收入 ×1.8'] });
-Object.assign(TXT.en, { qLeave: '😤 Queue too long', pu_skate: '🛼 Speed boost!', pu_clock: '⏰ Patience frozen', pu_fire: '🔥 Turbo cooking', mouse: '🐭 A mouse! Walk into it to chase it away', mouseOk: 'Shooed!',
-  mouseBad: '😱 The mouse scared the guests', offline: '🌙 Offline earnings 💰{n}', tier: '🎉 New look: {n}', t1: 'Sunset', t2: 'Midnight', t3: 'Royal Gold', critic: '📝 The critic loved it!',
-  takeout: ['Takeout Window', 'Riders pick up orders, income ×1.8'] });
-Object.assign(TXT.vi, { qLeave: '😤 Xếp hàng lâu quá', pu_skate: '🛼 Tăng tốc!', pu_clock: '⏰ Khách chờ thêm', pu_fire: '🔥 Nấu siêu tốc', mouse: '🐭 Có chuột! Chạy tới đuổi nó đi', mouseOk: 'Đã đuổi!',
-  mouseBad: '😱 Chuột làm khách sợ', offline: '🌙 Thu nhập ngoại tuyến 💰{n}', tier: '🎉 Quán có diện mạo mới: {n}', t1: 'Hoàng hôn', t2: 'Đêm xanh', t3: 'Hoàng kim', critic: '📝 Nhà phê bình khen ngợi!',
-  takeout: ['Quầy mang về', 'Shipper đến lấy món, thu nhập ×1.8'] });
-let lang = 'zh';
-try { lang = localStorage.getItem('shiguang-lang') || ''; } catch (e) { lang = ''; }
+let lang = '';
+try { lang = localStorage.getItem('shiguang-lang') || ''; } catch (e) {}
 if (!TXT[lang]) { const n = (navigator.language || 'zh').toLowerCase(); lang = n.startsWith('vi') ? 'vi' : n.startsWith('zh') ? 'zh' : 'en'; }
 function T(key, v) { let s = TXT[lang][key]; if (v) for (const k in v) s = s.replace('{' + k + '}', v[k]); return s; }
 
 // ================= 配置 =================
-const W = 10, H = 9, DOOR = { x: 10, y: 4.3 };
-const DISHES = [
-  { e: '🍜', p: 10, t: 3.0, m: 'ramen' },
-  { e: '🥟', p: 18, t: 3.5, m: 'dumpling' },
-  { e: '🍛', p: 30, t: 4.0, m: 'curry' },
-  { e: '🍣', p: 50, t: 4.5, m: 'sushi' },
-  { e: '🍲', p: 85, t: 5.5, m: 'hotpot' },
+const W = 20, H = 12, DOOR = { x: 20, y: 5.25 };
+const ITEMS = [   // 每升一级解锁一项，每项有一位专属厨师
+  { m: 'ramen',    e: '🍜', p: 10, t: 3.0 },
+  { m: 'tea',      e: '🧋', p: 14, t: 2.5, drink: 1 },
+  { m: 'dumpling', e: '🥟', p: 18, t: 3.4 },
+  { m: 'burger',   e: '🍔', p: 24, t: 3.6 },
+  { m: 'juice',    e: '🍹', p: 28, t: 2.8, drink: 1 },
+  { m: 'curry',    e: '🍛', p: 34, t: 4.0 },
+  { m: 'pizza',    e: '🍕', p: 42, t: 4.2 },
+  { m: 'coffee',   e: '☕', p: 48, t: 3.0, drink: 1 },
+  { m: 'sushi',    e: '🍣', p: 58, t: 4.5 },
+  { m: 'hotpot',   e: '🍲', p: 85, t: 5.5 },
 ];
-const DRINKS = [
-  { e: '🧋', p: 14, t: 2.5, m: 'tea' },
-  { e: '🍹', p: 26, t: 2.8, m: 'juice' },
-  { e: '☕', p: 42, t: 3.2, m: 'coffee' },
-];
-const SPOTS = [[5,5.2],[2.2,5.2],[5,3.0],[7.8,3.0],[2.2,3.0],[7.8,5.4],[5,7.5],[2.2,7.5],[7.8,7.7]];
-const TABLE_COST = [0,100,300,800,2000,5000,12000,30000,70000];
+const SPOTS = [];   // 三个用餐区，每区 6 桌
+for (let z = 0; z < 3; z++) for (let k = 0; k < 6; k++) SPOTS.push([[0.8, 7.38, 13.96][z] + 1.32 + (k % 2) * 2.64, [3.9, 6.6, 9.3][Math.floor(k / 2)]]);
 const UP = {
-  waiter:  { ic: '🤵', cost: [150,600,2000,6000,15000] },
-  cook:    { ic: '👨‍🍳', cost: [250,1000,3500] },
-  menu:    { ic: '📖', cost: [120,500,1800,6000] },
-  bar:     { ic: '🧋', cost: [400,1500,5000] },
+  waiter:  { ic: '🤵', cost: [150, 500, 1500, 4000, 10000, 25000] },
+  eff:     { ic: '⚡', cost: [120, 300, 750, 1800, 4500] },
+  svc:     { ic: '👟', cost: [80, 200, 500, 1200, 3000] },
+  cap:     { ic: '🍽️', cost: [90, 300, 900, 2700] },
+  store:   { ic: '📦', cost: [200, 600, 1800] },
+  buyer:   { ic: '🧑‍🌾', cost: [800] },
+  pat:     { ic: '🛋️', cost: [70, 180, 450, 1100, 2800] },
+  ad:      { ic: '📣', cost: [100, 300, 900, 2500, 7000] },
   takeout: { ic: '🛵', cost: [600] },
-  cap:     { ic: '🍽️', cost: [90,300,900,2700] },
-  speed:   { ic: '👟', cost: [80,200,500,1200,3000] },
-  cookSpd: { ic: '🔥', cost: [100,250,600,1500,4000] },
-  pat:     { ic: '🛋️', cost: [70,180,450,1100,2800] },
-  tip:     { ic: '💵', cost: [60,110,200,350,630,1100,2000,3600,6500,12000] },
-  ad:      { ic: '📣', cost: [100,300,900,2500,7000] },
 };
-const EAT = 4.5, SAVE_KEY = 'shiguang-xiaoguan-v2';
-const KIT = { slots: new Array(5).fill(null), slotX: i => 1.0 + i * 0.85 };
-const BAR = { slots: new Array(3).fill(null), slotX: i => 7.5 + i * 0.6, cur: null, t: 0, total: 1 };
-const SINK = { x: 5.9 };
+const BIZ = [   // 商业街产业
+  { k: 'market',  e: '🛒', lv: 3,  cost: 1500,  inc: 4,  x0: -10.5, x1: -2.6,  y0: 5.5 },
+  { k: 'teashop', e: '🧋', lv: 5,  cost: 5000,  inc: 10, x0: 24.2,  x1: 29.2,  y0: 6.6 },
+  { k: 'hotel',   e: '🏨', lv: 8,  cost: 18000, inc: 30, x0: 33.5,  x1: 40.5,  y0: 5.5 },
+  { k: 'park',    e: '🎡', lv: 11, cost: 60000, inc: 90, x0: -25,   x1: -12.5, y0: 2 },
+];
+const BY = 11.6, PADY = 12.35, BIZMAX = 5, BATCH = 20;
+BIZ.forEach(b => { b.px = (b.x0 + b.x1) / 2; });
+const EAT = 4.5, SAVE_KEY = 'shiguang-xiaoguan-v3', SINK = { x: 18.6 }, FRIDGE = { x: 1.25, y: 10.9 };
 
 // ================= 存档 =================
 function fresh() {
-  return { money: 30, level: 1, xp: 0, tables: 1, rating: 3, missionN: 0, mission: null,
-    up: { waiter:0, cook:0, menu:0, bar:0, takeout:0, cap:0, speed:0, cookSpd:0, pat:0, tip:0, ad:0 } };
+  const s = { money: 30, level: 1, xp: 0, rating: 3, missionN: 0, mission: null, last: 0, stock: 20,
+    up: { waiter: 0, eff: 0, svc: 0, cap: 0, store: 0, buyer: 0, pat: 0, ad: 0, takeout: 0 }, skill: {}, biz: {} };
+  ITEMS.forEach(i => s.skill[i.m] = 0); BIZ.forEach(b => s.biz[b.k] = { lv: 0, cash: 0 }); return s;
 }
 let S = fresh();
-try { const d = JSON.parse(localStorage.getItem(SAVE_KEY)); if (d && d.up) S = Object.assign(fresh(), d, { up: Object.assign(fresh().up, d.up) }); } catch (e) {}
+try {
+  const d = JSON.parse(localStorage.getItem(SAVE_KEY));
+  if (d && d.up) { const f = fresh(); S = Object.assign(f, d, { up: Object.assign(f.up, d.up), skill: Object.assign(f.skill, d.skill), biz: Object.assign(f.biz, d.biz) }); }
+} catch (e) {}
 const save = () => { try { S.last = Date.now(); localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) {} };
 
 // ================= 数值 =================
-const walkSpeed = () => 2.6 * (1 + 0.14 * S.up.speed);
-const cookTime = d => d.t * Math.pow(0.86, S.up.cookSpd);
-const patience = () => 32 * (1 + 0.15 * S.up.pat);
+const unlocked = () => Math.min(S.level, ITEMS.length);
+const tableCount = () => Math.min(S.level * 2, SPOTS.length);
+const playerSpeed = () => 3.3 * (1 + 0.14 * S.up.svc);
+const waiterSpeed = () => 2.6 * (1 + 0.18 * S.up.eff);
+const cookTime = it => it.t * Math.pow(0.88, S.skill[it.m]);
+const price = it => it.p * (1 + 0.15 * S.skill[it.m]);
+const skillCost = it => Math.round(it.p * 8 * Math.pow(2.2, S.skill[it.m]) / 10) * 10;
+const patience = () => 36 * (1 + 0.15 * S.up.pat);
 const capacity = () => 2 + S.up.cap;
-const xpNeed = () => 6 + S.level * 6;
+const stockCap = () => 60 + 40 * S.up.store;
+const unitCost = () => { let a = 0; const n = unlocked(); for (let i = 0; i < n; i++) a += ITEMS[i].p; return Math.max(1, Math.round(a / n * 0.25 * (S.biz.market.lv > 0 ? 0.7 : 1))); };
+const xpNeed = () => Math.round(8 * Math.pow(S.level, 1.5));
+const bizRate = b => b.inc * S.biz[b.k].lv * (0.8 + S.rating * 0.08);
+const bizCap = b => b.inc * S.biz[b.k].lv * 240;
+const bizCost = b => { const l = S.biz[b.k].lv; return l ? Math.round(b.cost * 0.6 * Math.pow(2, l) / 100) * 100 : b.cost; };
+const ownedBiz = () => BIZ.filter(b => S.biz[b.k].lv > 0).length;
 const pick = a => a[Math.floor(Math.random() * a.length)];
 function fmt(n) {
   if (n >= 1e6) return (n / 1e6).toFixed(2).replace(/\.?0+$/, '') + 'M';
@@ -205,46 +236,42 @@ function fmt(n) {
 
 // ================= Three.js 基础 =================
 const glc = document.getElementById('gl'), ov = document.getElementById('ov'), octx = ov.getContext('2d');
-const renderer = new THREE.WebGLRenderer({ canvas: glc, antialias: true, alpha: true });
+const renderer = new THREE.WebGLRenderer({ canvas: glc, antialias: true });
 renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-const scene = new THREE.Scene();
-const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 100);
-const CT = new THREE.Vector3(5.3, 0.4, 4.9);
-cam.position.copy(CT).add(new THREE.Vector3(12, 12.5, 12)); cam.lookAt(CT);
+const scene = new THREE.Scene(); scene.background = new THREE.Color('#8fc97a');
+const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 120);
+const CT = new THREE.Vector3(10, 0.4, 5);
+cam.position.copy(CT).add(new THREE.Vector3(14, 14.6, 14)); cam.lookAt(CT);
 scene.add(new THREE.HemisphereLight(0xffffff, 0xc9b79a, 1.7));
 const sun = new THREE.DirectionalLight(0xfff1d6, 2.3);
-sun.position.copy(CT).add(new THREE.Vector3(3.5, 13, 8)); sun.target.position.copy(CT);
 sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
-Object.assign(sun.shadow.camera, { left: -11, right: 11, top: 11, bottom: -11, near: 1, far: 40 });
-sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.03; sun.shadow.radius = 4;
+Object.assign(sun.shadow.camera, { left: -24, right: 24, top: 24, bottom: -24, near: 1, far: 60 });
+sun.shadow.bias = -0.0005; sun.shadow.normalBias = 0.04; sun.shadow.radius = 3;
 scene.add(sun, sun.target);
 const dyn = new THREE.Group(); scene.add(dyn);
-
+function placeCam() {
+  cam.position.set(CT.x + 14, 15, CT.z + 14); cam.updateMatrixWorld();
+  sun.position.set(CT.x + 4, 16, CT.z + 9); sun.target.position.copy(CT);
+}
 let cw = 1, ch = 1, dpr = 1, ppu = 45, K = 1;
 const _v = new THREE.Vector3();
 function fit() {
   cw = innerWidth; ch = innerHeight; dpr = Math.min(devicePixelRatio || 1, 2);
   renderer.setPixelRatio(dpr); renderer.setSize(cw, ch, false);
   ov.width = cw * dpr; ov.height = ch * dpr;
-  const a = cw / ch;
-  Object.assign(cam, { left: -a, right: a, top: 1, bottom: -1 }); cam.updateProjectionMatrix(); cam.updateMatrixWorld();
-  let m = 0;
-  for (const p of [[-0.4,0,-0.4],[-0.4,3.1,-0.4],[W+0.3,0,-0.4],[W+0.2,3.1,-0.4],[-0.4,0,H+0.3],[-0.4,3.1,H+0.2],[W+0.3,0,H+0.3],[W+1.3,0,3.4],[W+1.3,1.9,7.6],[W+1.2,3.0,H+1.2]]) {
-    _v.set(p[0], p[1], p[2]).project(cam); m = Math.max(m, Math.abs(_v.x), Math.abs(_v.y));
-  }
-  const hh = m * 1.01;
+  const a = cw / ch, hh = Math.max(7.6, 5.8 / a);
   Object.assign(cam, { left: -hh * a, right: hh * a, top: hh, bottom: -hh }); cam.updateProjectionMatrix();
   ppu = ch / (2 * hh); K = Math.max(0.75, Math.min(1.7, ppu / 42));
 }
-addEventListener('resize', fit); fit();
+addEventListener('resize', fit); fit(); placeCam();
 function proj(x, y, z = 0) { _v.set(x, z, y).project(cam); return [(_v.x + 1) / 2 * cw, (1 - _v.y) / 2 * ch]; }
 
 // ---- 几何/材质缓存 ----
 const GC = new Map(), MC = new Map();
 function G(key, make) { let g = GC.get(key); if (!g) GC.set(key, g = make()); return g; }
-const sph = r => G('s' + r, () => new THREE.SphereGeometry(r, 20, 14));
-const cyl = (rt, rb, h, seg = 24) => G('c' + [rt, rb, h, seg], () => new THREE.CylinderGeometry(rt, rb, h, seg));
-const cap = (r, l) => G('k' + [r, l], () => new THREE.CapsuleGeometry(r, l, 6, 14));
+const sph = r => G('s' + r, () => new THREE.SphereGeometry(r, 18, 12));
+const cyl = (rt, rb, h, seg = 20) => G('c' + [rt, rb, h, seg], () => new THREE.CylinderGeometry(rt, rb, h, seg));
+const cap = (r, l) => G('k' + [r, l], () => new THREE.CapsuleGeometry(r, l, 5, 12));
 const rb = (w, h, d, r = 0.04) => G('b' + [w, h, d, r], () => {
   const b = Math.min(r, h / 2 - 0.001, w / 2 - 0.001, d / 2 - 0.001), hw = w / 2 - b, hd = d / 2 - b, c = Math.min(b, hw, hd) * 0.9;
   const s = new THREE.Shape();
@@ -252,7 +279,7 @@ const rb = (w, h, d, r = 0.04) => G('b' + [w, h, d, r], () => {
   s.lineTo(hw, hd - c); s.quadraticCurveTo(hw, hd, hw - c, hd);
   s.lineTo(-hw + c, hd); s.quadraticCurveTo(-hw, hd, -hw, hd - c);
   s.lineTo(-hw, -hd + c); s.quadraticCurveTo(-hw, -hd, -hw + c, -hd);
-  const g = new THREE.ExtrudeGeometry(s, { depth: h - 2 * b, bevelEnabled: true, bevelThickness: b, bevelSize: b, bevelSegments: 3, curveSegments: 5 });
+  const g = new THREE.ExtrudeGeometry(s, { depth: h - 2 * b, bevelEnabled: true, bevelThickness: b, bevelSize: b, bevelSegments: 2, curveSegments: 4 });
   g.translate(0, 0, -(h - 2 * b) / 2); g.rotateX(Math.PI / 2); return g;
 });
 function M(c, o) {
@@ -264,7 +291,18 @@ function mk(geo, c, x, y, z, parent, o) {
   const m = new THREE.Mesh(geo, M(c, o)); m.position.set(x, y, z);
   m.castShadow = true; m.receiveShadow = true; parent.add(m); return m;
 }
+function flat(w, d, c, x, y, z, parent) {
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), M(c, { roughness: 0.95 })); m.rotation.x = -Math.PI / 2; m.position.set(x, y, z);
+  m.receiveShadow = true; (parent || scene).add(m); return m;
+}
 const rm = m => { if (m && m.parent) m.parent.remove(m); };
+const ETEX = new Map();
+function emojiSprite(e, size, depth) {
+  let t = ETEX.get(e);
+  if (!t) { const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d'); x.font = '96px ' + EMO; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(e, 64, 70);
+    t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; ETEX.set(e, t); }
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, transparent: true, depthTest: !!depth })); sp.scale.set(size, size, 1); return sp;
+}
 
 // ================= 模型 =================
 function makeItem(kind) {
@@ -278,10 +316,18 @@ function makeItem(kind) {
   } else if (kind === 'dumpling') {
     mk(cyl(0.2, 0.2, 0.1), '#d9b36c', 0, 0.05, 0, g); mk(cyl(0.17, 0.17, 0.02), '#f1e3bd', 0, 0.1, 0, g);
     for (const [x, z] of [[-0.07, -0.04], [0.07, -0.04], [0, 0.07]]) { const d = mk(sph(0.065), '#fffaf0', x, 0.135, z, g); d.scale.set(1.15, 0.75, 0.8); }
+  } else if (kind === 'burger') {
+    plate(); mk(cyl(0.14, 0.13, 0.05), '#d9903d', 0, 0.06, 0, g); mk(cyl(0.155, 0.155, 0.025), '#52b788', 0, 0.098, 0, g);
+    mk(cyl(0.145, 0.145, 0.045), '#6b3f1d', 0, 0.13, 0, g); mk(rb(0.3, 0.015, 0.3, 0.005), '#ffd166', 0, 0.16, 0, g);
+    mk(sph(0.145), '#e0a04a', 0, 0.165, 0, g).scale.y = 0.6;
   } else if (kind === 'curry') {
     plate(); mk(sph(0.11), '#fffdf5', -0.06, 0.04, 0, g).scale.y = 0.65;
     mk(sph(0.12), '#a8621d', 0.06, 0.035, 0, g).scale.set(1, 0.4, 1.2);
     mk(sph(0.03), '#f77f00', 0.08, 0.075, 0.04, g); mk(sph(0.03), '#f77f00', 0.05, 0.075, -0.06, g); mk(sph(0.028), '#606c38', 0.1, 0.07, -0.02, g);
+  } else if (kind === 'pizza') {
+    mk(cyl(0.22, 0.22, 0.02), '#8a5a35', 0, 0.01, 0, g); mk(cyl(0.2, 0.2, 0.03), '#e0a04a', 0, 0.035, 0, g); mk(cyl(0.17, 0.17, 0.035), '#ffd166', 0, 0.04, 0, g);
+    for (let i = 0; i < 5; i++) mk(cyl(0.035, 0.035, 0.012), '#c1121f', Math.cos(i * 1.26) * 0.1, 0.062, Math.sin(i * 1.26) * 0.1, g);
+    mk(sph(0.02), '#40916c', 0, 0.065, 0, g);
   } else if (kind === 'sushi') {
     mk(rb(0.4, 0.035, 0.22, 0.012), '#2b2b2b', 0, 0.018, 0, g, { roughness: 0.4 });
     ['#ff7b3a', '#e63946', '#ffd166'].forEach((c, i) => {
@@ -291,11 +337,10 @@ function makeItem(kind) {
     mk(cyl(0.2, 0.16, 0.15), '#4a4e57', 0, 0.075, 0, g, { roughness: 0.35, metalness: 0.5 });
     mk(cyl(0.18, 0.18, 0.02), '#d62828', 0, 0.145, 0, g, { roughness: 0.3 });
     mk(rb(0.1, 0.04, 0.06, 0.015), '#4a4e57', 0.23, 0.12, 0, g); mk(rb(0.1, 0.04, 0.06, 0.015), '#4a4e57', -0.23, 0.12, 0, g);
-    mk(sph(0.035), '#fffaf0', 0.06, 0.16, 0.05, g); mk(sph(0.035), '#f4a261', -0.07, 0.16, 0.02, g); mk(sph(0.03), '#52b788', 0.0, 0.16, -0.08, g); mk(sph(0.03), '#fffaf0', -0.03, 0.16, 0.09, g);
+    mk(sph(0.035), '#fffaf0', 0.06, 0.16, 0.05, g); mk(sph(0.035), '#f4a261', -0.07, 0.16, 0.02, g); mk(sph(0.03), '#52b788', 0.0, 0.16, -0.08, g);
   } else if (kind === 'tea') {
     mk(cyl(0.085, 0.065, 0.24), '#d6a574', 0, 0.12, 0, g, { roughness: 0.3 }); mk(cyl(0.09, 0.09, 0.025), '#ffffff', 0, 0.25, 0, g);
     mk(cyl(0.012, 0.012, 0.2, 8), '#e5383b', 0.02, 0.33, 0, g).rotation.z = -0.15;
-    for (let i = 0; i < 4; i++) mk(sph(0.02), '#3b2a1a', Math.cos(i * 1.6) * 0.05, 0.03, Math.sin(i * 1.6) * 0.05, g);
   } else if (kind === 'juice') {
     mk(cyl(0.09, 0.06, 0.24), '#ff9f1c', 0, 0.12, 0, g, { roughness: 0.25 }); mk(cyl(0.085, 0.085, 0.01), '#ffd166', 0, 0.245, 0, g);
     mk(cyl(0.06, 0.06, 0.012), '#f4d35e', 0.08, 0.26, 0, g).rotation.z = 1.3;
@@ -322,19 +367,18 @@ function makePerson(L) {
   u.legs = [-1, 1].map(s => {
     const p = new THREE.Group(); p.position.set(s * 0.1, 0.37, 0); g.add(p);
     mk(cap(0.085, 0.2), L.pants || '#3b4a5a', 0, -0.17, 0, p);
-    mk(rb(0.16, 0.09, 0.24, 0.04), L.shoe || '#ffffff', 0, -0.325, 0.035, p); return p;
+    mk(rb(0.16, 0.09, 0.24, 0.04), '#ffffff', 0, -0.325, 0.035, p); return p;
   });
   mk(cap(0.21, 0.22), L.shirt, 0, 0.63, 0, g);
-  if (L.apron) { mk(rb(0.3, 0.34, 0.06, 0.025), '#ffffff', 0, 0.56, 0.18, g); mk(rb(0.12, 0.05, 0.05, 0.02), '#e5383b', 0, 0.86, 0.2, g); }
-  if (L.chef) for (const y of [0.72, 0.6]) { mk(sph(0.025), '#333', -0.06, y, 0.2, g); mk(sph(0.025), '#333', 0.06, y, 0.2, g); }
+  if (L.apron) { mk(rb(0.3, 0.34, 0.06, 0.025), L.apronC || '#ffffff', 0, 0.56, 0.18, g); mk(rb(0.12, 0.05, 0.05, 0.02), '#e5383b', 0, 0.86, 0.2, g); }
   u.arms = [-1, 1].map(s => {
     const p = new THREE.Group(); p.position.set(s * 0.265, 0.82, 0); p.rotation.z = s * 0.18; g.add(p);
     mk(cap(0.065, 0.2), L.shirt, 0, -0.13, 0, p); mk(sph(0.075), L.skin, 0, -0.3, 0, p); return p;
   });
   const h = u.head = new THREE.Group(); h.position.y = 1.2; g.add(h);
   mk(sph(0.27), L.skin, 0, 0, 0, h);
-  const hair = new THREE.Mesh(G('hair', () => new THREE.SphereGeometry(0.29, 22, 12, 0, Math.PI * 2, 0, 1.72)), M(L.hair));
-  hair.rotation.x = -0.42; hair.castShadow = true; h.add(hair);
+  const hairG = G('hair', () => new THREE.SphereGeometry(0.29, 20, 10, 0, Math.PI * 2, 0, 1.72));
+  const hair = new THREE.Mesh(hairG, M(L.hair)); hair.rotation.x = -0.42; hair.castShadow = true; h.add(hair);
   if (L.style === 'bun') mk(sph(0.12), L.hair, 0, 0.29, -0.08, h);
   if (L.style === 'long') mk(cap(0.2, 0.26), L.hair, 0, -0.13, -0.13, h);
   if (L.style === 'pony') { mk(sph(0.1), L.hair, 0, 0.08, -0.32, h); mk(cap(0.06, 0.2), L.hair, 0, -0.1, -0.36, h); }
@@ -343,10 +387,11 @@ function makePerson(L) {
     mk(sph(0.045), '#ff9aa2', s * 0.17, -0.08, 0.2, h).scale.z = 0.3;
   }
   if (L.chef) { mk(cyl(0.19, 0.17, 0.16), '#ffffff', 0, 0.3, -0.02, h); mk(sph(0.23), '#ffffff', 0, 0.44, -0.02, h).scale.y = 0.6; }
+  if (L.visor) { mk(cyl(0.275, 0.275, 0.07, 20), L.apronC, 0, 0.14, 0, h); mk(rb(0.3, 0.03, 0.18, 0.012), L.apronC, 0, 0.12, 0.28, h); }
   if (L.vip) { mk(cyl(0.15, 0.12, 0.1, 6), '#ffc93c', 0, 0.3, 0, h, { metalness: 0.7, roughness: 0.25 }); mk(sph(0.04), '#e5383b', 0, 0.33, 0.13, h, { roughness: 0.2 }); }
-  if (L.helmet) { const hm = new THREE.Mesh(G('hair', () => 0), M('#ffd166', { roughness: 0.35 })); hm.scale.setScalar(1.09); hm.rotation.x = -0.25; hm.castShadow = true; h.add(hm); mk(rb(0.3, 0.04, 0.16, 0.015), '#22333b', 0, 0.1, 0.25, h); }
-  if (L.beret) { const b = mk(sph(0.22), '#9d0208', 0.05, 0.26, -0.02, h); b.scale.y = 0.38; b.rotation.z = -0.2; mk(sph(0.03), '#9d0208', 0.05, 0.35, -0.02, h); }
-  if (L.band) mk(cyl(0.262, 0.262, 0.07, 24), '#e5383b', 0, 0.13, 0, h);
+  if (L.helmet) { const hm = new THREE.Mesh(hairG, M('#ffd166', { roughness: 0.35 })); hm.scale.setScalar(1.09); hm.rotation.x = -0.25; hm.castShadow = true; h.add(hm); mk(rb(0.3, 0.04, 0.16, 0.015), '#22333b', 0, 0.1, 0.25, h); }
+  if (L.beret) { const b = mk(sph(0.22), '#9d0208', 0.05, 0.26, -0.02, h); b.scale.y = 0.38; b.rotation.z = -0.2; }
+  if (L.band) mk(cyl(0.262, 0.262, 0.07, 20), '#e5383b', 0, 0.13, 0, h);
   if (L.player) {
     u.marker = new THREE.Mesh(G('cone', () => new THREE.ConeGeometry(0.13, 0.22, 4)), M('#ffc93c', { emissive: '#a86b00' }));
     u.marker.rotation.x = Math.PI; g.add(u.marker);
@@ -355,147 +400,214 @@ function makePerson(L) {
   return g;
 }
 
-let floorDraw = null;
-function buildStatic() {
-  const s = scene;
-  // 街道
-  mk(rb(W + 2.6, 0.2, H + 2.6, 0.06), '#aab6c0', W / 2 + 0.9, -0.14, H / 2 + 0.9, s).castShadow = false;
-  // 地板
-  mk(rb(W + 0.4, 0.3, H + 0.4, 0.04), '#c9a77c', W / 2 - 0.1, -0.15, H / 2 - 0.1, s);
-  const tc = document.createElement('canvas'); tc.width = tc.height = 128; const t2 = tc.getContext('2d');
-  t2.fillStyle = '#f7e9cc'; t2.fillRect(0, 0, 128, 128); t2.fillStyle = '#eed9b0'; t2.fillRect(0, 0, 64, 64); t2.fillRect(64, 64, 64, 64);
-  t2.strokeStyle = 'rgba(160,120,70,.25)'; t2.lineWidth = 2; t2.strokeRect(0, 0, 64, 64); t2.strokeRect(64, 64, 64, 64); t2.strokeRect(64, 0, 64, 64); t2.strokeRect(0, 64, 64, 64);
-  const tex = new THREE.CanvasTexture(tc); tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(W / 2, H / 2); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
-  floorDraw = (a, b) => { t2.fillStyle = a; t2.fillRect(0, 0, 128, 128); t2.fillStyle = b; t2.fillRect(0, 0, 64, 64); t2.fillRect(64, 64, 64, 64);
-    t2.strokeStyle = 'rgba(120,90,50,.22)'; t2.lineWidth = 2; for (const [x, y] of [[0, 0], [64, 0], [0, 64], [64, 64]]) t2.strokeRect(x, y, 64, 64); tex.needsUpdate = true; };
-  const fl = new THREE.Mesh(new THREE.PlaneGeometry(W, H), new THREE.MeshStandardMaterial({ map: tex, roughness: 0.6 }));
-  fl.rotation.x = -Math.PI / 2; fl.position.set(W / 2, 0.005, H / 2); fl.receiveShadow = true; s.add(fl);
-  mk(rb(1.0, 0.04, 1.5, 0.015), '#c8553d', W - 0.55, 0.02, DOOR.y, s); mk(rb(0.7, 0.045, 1.2, 0.015), '#e07a5f', W - 0.55, 0.022, DOOR.y, s);
-  // 墙
-  mk(rb(0.25, 2.9, H + 0.3, 0.03), '#3a969e', -0.125, 1.45, H / 2 - 0.15, s); mk(rb(W + 0.05, 2.9, 0.25, 0.03), '#43a6ae', W / 2, 1.45, -0.125, s);
-  mk(rb(0.3, 0.5, H + 0.32, 0.03), '#2a6f76', -0.11, 0.25, H / 2 - 0.15, s); mk(rb(W + 0.07, 0.5, 0.3, 0.03), '#2a6f76', W / 2, 0.25, -0.11, s);
-  mk(rb(0.34, 0.12, H + 0.36, 0.03), '#fbf3e1', -0.11, 2.92, H / 2 - 0.15, s); mk(rb(W + 0.1, 0.12, 0.34, 0.03), '#fbf3e1', W / 2, 2.92, -0.11, s);
-  for (const y of [2.6, 5.4]) {  // 窗
-    mk(rb(0.1, 1.3, 1.9, 0.03), '#ffffff', 0.02, 1.65, y, s);
-    mk(rb(0.12, 1.1, 1.7, 0.02), '#bfe9f5', 0.03, 1.65, y, s, { emissive: '#7fc8dd', emissiveIntensity: 0.5, roughness: 0.1 });
-    mk(rb(0.14, 1.1, 0.06, 0.01), '#ffffff', 0.03, 1.65, y, s); mk(rb(0.14, 0.06, 1.7, 0.01), '#ffffff', 0.03, 1.65, y, s);
-    mk(rb(0.3, 0.07, 2.0, 0.02), '#fbf3e1', 0.12, 0.98, y, s);
-  }
-  for (const [x, y, onLeft] of [[0.35, 0, 0], [5.9, 0, 0], [0, 7.9, 1], [0, 4.0, 1], [9.5, 0, 0]]) { // 灯笼
-    const l = new THREE.Group(); l.position.set(onLeft ? 0.3 : x, 2.35, onLeft ? y : 0.3); s.add(l);
-    mk(sph(0.2), '#e5383b', 0, 0, 0, l, { emissive: '#b0191c', emissiveIntensity: 0.6 }).scale.y = 0.85;
-    mk(cyl(0.09, 0.09, 0.05), '#ffc93c', 0, 0.17, 0, l); mk(cyl(0.09, 0.09, 0.05), '#ffc93c', 0, -0.17, 0, l);
-    mk(cyl(0.012, 0.012, 0.3, 6), '#5a3600', 0, 0.33, 0, l); mk(cyl(0.02, 0.02, 0.16, 6), '#ffc93c', 0, -0.27, 0, l);
-  }
-  // 出餐台 + 置物架
-  mk(rb(4.6, 0.72, 0.56, 0.05), '#c07f4f', 2.8, 0.36, 0.78, s); mk(rb(4.72, 0.08, 0.68, 0.03), '#fbf3e1', 2.8, 0.76, 0.78, s);
-  mk(rb(4.6, 0.1, 0.02, 0.008), '#8f5a35', 2.8, 0.5, 1.065, s);
-  for (let i = 0; i < 5; i++) mk(cyl(0.2, 0.2, 0.015), '#e8dcc4', KIT.slotX(i), 0.805, 0.82, s);
-  mk(rb(4.2, 0.07, 0.32, 0.02), '#8f5a35', 2.8, 1.95, 0.18, s);
-  ['#e63946', '#ffd166', '#52b788', '#f4a261', '#8ecae6', '#ffd166', '#e63946', '#b07cd8'].forEach((c, i) => {
-    mk(cyl(0.09, 0.09, 0.22), c, 1.0 + i * 0.5, 2.1, 0.18, s, { roughness: 0.3 }); mk(cyl(0.07, 0.07, 0.05), '#fbf3e1', 1.0 + i * 0.5, 2.23, 0.18, s);
-  });
-  // 水槽
-  mk(rb(1.0, 0.72, 0.56, 0.05), '#aebbc4', SINK.x, 0.36, 0.78, s, { metalness: 0.4, roughness: 0.4 });
-  mk(rb(1.06, 0.08, 0.66, 0.03), '#dfe7ec', SINK.x, 0.76, 0.78, s, { metalness: 0.5, roughness: 0.3 });
-  mk(rb(0.72, 0.03, 0.4, 0.01), '#5fb3d9', SINK.x, 0.805, 0.8, s, { roughness: 0.1 });
-  mk(cyl(0.03, 0.03, 0.3, 10), '#8d99a6', SINK.x, 0.95, 0.56, s, { metalness: 0.8, roughness: 0.2 });
-  mk(cyl(0.025, 0.025, 0.2, 10), '#8d99a6', SINK.x, 1.09, 0.65, s, { metalness: 0.8, roughness: 0.2 }).rotation.x = Math.PI / 2;
-  // 植物
-  for (const [x, y] of [[0.55, 8.4], [9.45, 8.4]]) {
-    mk(cyl(0.26, 0.2, 0.42), '#e07a5f', x, 0.21, y, s);
-    mk(sph(0.3), '#52b788', x, 0.72, y, s); mk(sph(0.22), '#40916c', x + 0.16, 0.95, y - 0.05, s); mk(sph(0.2), '#74c69d', x - 0.14, 0.98, y + 0.08, s);
-  }
+function hedge(x, z, lx, lz, parent) {
+  mk(rb(lx, 0.2, lz, 0.04), '#a86f42', x, 0.1, z, parent); mk(rb(Math.max(0.1, lx - 0.06), 0.18, Math.max(0.1, lz - 0.06), 0.07), '#52b788', x, 0.27, z, parent);
+  const n = Math.max(1, Math.round(Math.max(lx, lz) / 0.9));
+  for (let i = 0; i < n; i++) { const f = (i + 0.5) / n - 0.5; mk(sph(0.14), i % 2 ? '#40916c' : '#74c69d', x + (lx > lz ? f * lx : 0), 0.36, z + (lz > lx ? f * lz : 0), parent); }
 }
-// 饮品吧（解锁后显示）
-const barG = new THREE.Group(); scene.add(barG);
-(() => {
-  mk(rb(2.0, 0.72, 0.56, 0.05), '#7b5ea7', 8.1, 0.36, 0.78, barG); mk(rb(2.08, 0.08, 0.68, 0.03), '#fbf3e1', 8.1, 0.76, 0.78, barG);
-  mk(rb(1.5, 0.75, 0.3, 0.06), '#e85d75', 8.1, 1.17, 0.6, barG, { roughness: 0.35 });
-  mk(rb(1.3, 0.2, 0.04, 0.015), '#ffd6de', 8.1, 1.35, 0.76, barG);
-  for (let i = 0; i < 3; i++) { mk(cyl(0.035, 0.035, 0.12, 10), '#dfe7ec', BAR.slotX(i), 1.02, 0.8, barG, { metalness: 0.7, roughness: 0.25 }); mk(cyl(0.11, 0.11, 0.012), '#e8dcc4', BAR.slotX(i), 0.805, 0.86, barG); }
-})();
-// 菜单板
+function tree(x, z, s = 1) {
+  mk(cyl(0.12 * s, 0.16 * s, 1.1 * s, 8), '#8a5a35', x, 0.55 * s, z, scene);
+  mk(sph(0.7), '#52b788', x, 1.5 * s, z, scene).scale.setScalar(s); mk(sph(0.5), '#40916c', x + 0.35 * s, 1.95 * s, z - 0.1, scene).scale.setScalar(s); mk(sph(0.45), '#74c69d', x - 0.3 * s, 2.0 * s, z + 0.15, scene).scale.setScalar(s);
+}
+
+// ---- 餐厅 ----
+const wallMats = ['#3a969e', '#43a6ae', '#2a6f76'].map(c => new THREE.MeshStandardMaterial({ color: c, roughness: 0.8 }));
+const wall = (g, mi, x, y, z) => { const m = new THREE.Mesh(g, wallMats[mi]); m.position.set(x, y, z); m.castShadow = m.receiveShadow = true; scene.add(m); };
+let floorDraw = null;
+const standG = new THREE.Group(), standHedge = new THREE.Group(), crates = []; scene.add(standG, standHedge);
+const STAND = { x: W - 0.3, y: 2.2, cash: 0, seat: null, stack: null };
+STAND.seat = { x: W - 0.3, y: 2.2, side: 1, table: STAND, state: 'free', claimed: null, takeout: true };
 const menuCv = document.createElement('canvas'); menuCv.width = 320; menuCv.height = 200;
 const menuTex = new THREE.CanvasTexture(menuCv); menuTex.colorSpace = THREE.SRGBColorSpace;
-(() => {
-  mk(rb(0.1, 1.2, 1.9, 0.03), '#e9c46a', 0.03, 1.7, 7.9, scene);
-  const b = new THREE.Mesh(new THREE.PlaneGeometry(1.75, 1.05), new THREE.MeshStandardMaterial({ map: menuTex, roughness: 0.9 }));
-  b.rotation.y = Math.PI / 2; b.position.set(0.085, 1.7, 7.9); scene.add(b);
-})();
+const signCv = document.createElement('canvas'); signCv.width = 512; signCv.height = 128;
+const signTex = new THREE.CanvasTexture(signCv); signTex.colorSpace = THREE.SRGBColorSpace;
 function drawMenu() {
   const c = menuCv.getContext('2d'); c.fillStyle = '#33261a'; c.fillRect(0, 0, 320, 200);
   c.fillStyle = '#ffe8b0'; c.font = '800 34px "Helvetica Neue",Arial,"PingFang SC",sans-serif'; c.textAlign = 'center'; c.fillText(T('board'), 160, 46);
-  c.font = '44px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
-  const items = DISHES.slice(0, S.up.menu + 1).concat(DRINKS.slice(0, S.up.bar));
-  items.forEach((d, i) => c.fillText(d.e, 46 + (i % 5) * 57, 108 + Math.floor(i / 5) * 62));
+  c.font = '44px ' + EMO;
+  ITEMS.slice(0, unlocked()).forEach((d, i) => c.fillText(d.e, 46 + (i % 5) * 57, 108 + Math.floor(i / 5) * 62));
   menuTex.needsUpdate = true;
 }
-// 购买桌位的地垫
-const pad = mk(rb(2.5, 0.03, 1.3, 0.012), '#3fb950', 0, 0.02, 0, scene, { transparent: true, opacity: 0.45 }); pad.castShadow = false;
-pad.material = pad.material.clone();
-buildStatic();
-
-// ---- 装饰、门头、外卖窗口 ----
-const STAND = { x: 9.7, y: 2.2, cash: 0, seat: null, stack: null };
-STAND.seat = { x: 9.7, y: 2.2, side: 1, table: STAND, state: 'free', claimed: null, takeout: true };
-const signCv = document.createElement('canvas'); signCv.width = 512; signCv.height = 128;
-const signTex = new THREE.CanvasTexture(signCv); signTex.colorSpace = THREE.SRGBColorSpace;
 function drawSign() {
   const c = signCv.getContext('2d'); c.fillStyle = '#c8553d'; c.fillRect(0, 0, 512, 128); c.strokeStyle = '#ffe8b0'; c.lineWidth = 6; c.strokeRect(8, 8, 496, 112);
   c.fillStyle = '#fff3d6'; c.font = '800 62px "Helvetica Neue",Arial,"PingFang SC",sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(T('title'), 256, 68, 460);
   signTex.needsUpdate = true;
 }
-const standG = new THREE.Group(), standHedge = new THREE.Group(); scene.add(standG, standHedge);
-(() => {
+(function buildRestaurant() {
   const s = scene;
-  for (const y of [3.4, 5.2]) mk(cyl(0.08, 0.1, 2.3, 12), '#8a5a35', 10.08, 1.15, y, s);
-  mk(rb(0.16, 0.56, 2.2, 0.04), '#c8553d', 10.08, 2.4, 4.3, s);
-  const sg = new THREE.Mesh(new THREE.PlaneGeometry(2.0, 0.46), new THREE.MeshStandardMaterial({ map: signTex, roughness: 0.8 }));
-  sg.rotation.y = Math.PI / 2; sg.position.set(10.165, 2.4, 4.3); s.add(sg);
-  const hedge = (x, z, lx, lz, parent) => {
-    parent = parent || s; mk(rb(lx, 0.2, lz, 0.04), '#a86f42', x, 0.1, z, parent); mk(rb(lx - 0.06, 0.18, lz - 0.06, 0.07), '#52b788', x, 0.27, z, parent);
-    const n = Math.max(1, Math.round(Math.max(lx, lz) / 0.8));
-    for (let i = 0; i < n; i++) { const f = (i + 0.5) / n - 0.5; mk(sph(0.14), i % 2 ? '#40916c' : '#74c69d', x + (lx > lz ? f * lx : 0), 0.36, z + (lz > lx ? f * lz : 0), parent); }
-  };
-  hedge(4.95, H + 0.14, 10.5, 0.28); hedge(W + 0.14, 7.2, 0.28, 3.6); hedge(W + 0.14, 0.65, 0.28, 1.7); hedge(W + 0.14, 3.0, 0.28, 0.4);
-  hedge(W + 0.14, 2.2, 0.28, 1.1, standHedge);
-  for (const [x, z] of [[W + 0.9, H + 0.9], [-0.1, H + 0.9]]) {
-    mk(cyl(0.05, 0.07, 2.6, 10), '#3b4a5a', x, 1.3, z, s); mk(sph(0.17), '#fff3b0', x, 2.7, z, s, { emissive: '#ffd60a', emissiveIntensity: 1 }); mk(cyl(0.2, 0.12, 0.08), '#3b4a5a', x, 2.86, z, s);
+  mk(rb(W + 0.4, 0.3, H + 0.4, 0.04), '#c9a77c', W / 2 - 0.1, -0.15, H / 2 - 0.1, s);
+  const tc = document.createElement('canvas'); tc.width = tc.height = 128; const t2 = tc.getContext('2d');
+  const tex = new THREE.CanvasTexture(tc); tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(W / 2, H / 2); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
+  floorDraw = (a, b) => { t2.fillStyle = a; t2.fillRect(0, 0, 128, 128); t2.fillStyle = b; t2.fillRect(0, 0, 64, 64); t2.fillRect(64, 64, 64, 64);
+    t2.strokeStyle = 'rgba(120,90,50,.22)'; t2.lineWidth = 2; for (const [x, y] of [[0, 0], [64, 0], [0, 64], [64, 64]]) t2.strokeRect(x, y, 64, 64); tex.needsUpdate = true; };
+  floorDraw('#f7e9cc', '#eed9b0');
+  const fl = new THREE.Mesh(new THREE.PlaneGeometry(W, H), new THREE.MeshStandardMaterial({ map: tex, roughness: 0.6 }));
+  fl.rotation.x = -Math.PI / 2; fl.position.set(W / 2, 0.005, H / 2); fl.receiveShadow = true; s.add(fl);
+  // 三个用餐区的地面
+  [['#d8a878', 0.45], ['#8c2f39', 0.3], ['#95d5b2', 0.5]].forEach(([c, o], z) => {
+    const x0 = [0.8, 7.38, 13.96][z]; const m = mk(rb(5.5, 0.012, 7.2, 0.006), c, x0 + 2.64, 0.012, 6.6, s, { transparent: true, opacity: o }); m.castShadow = false;
+  });
+  mk(rb(1.0, 0.04, 1.5, 0.015), '#c8553d', W - 0.55, 0.02, DOOR.y, s); mk(rb(0.7, 0.045, 1.2, 0.015), '#e07a5f', W - 0.55, 0.022, DOOR.y, s);
+  // 墙
+  wall(rb(0.25, 2.9, H + 0.3, 0.03), 0, -0.125, 1.45, H / 2 - 0.15); wall(rb(W + 0.05, 2.9, 0.25, 0.03), 1, W / 2, 1.45, -0.125);
+  wall(rb(0.3, 0.5, H + 0.32, 0.03), 2, -0.11, 0.25, H / 2 - 0.15); wall(rb(W + 0.07, 0.5, 0.3, 0.03), 2, W / 2, 0.25, -0.11);
+  mk(rb(0.34, 0.12, H + 0.36, 0.03), '#fbf3e1', -0.11, 2.92, H / 2 - 0.15, s); mk(rb(W + 0.1, 0.12, 0.34, 0.03), '#fbf3e1', W / 2, 2.92, -0.11, s);
+  for (const y of [3.0, 5.6]) {
+    mk(rb(0.1, 1.3, 1.9, 0.03), '#ffffff', 0.02, 1.65, y, s);
+    mk(rb(0.12, 1.1, 1.7, 0.02), '#bfe9f5', 0.03, 1.65, y, s, { emissive: '#7fc8dd', emissiveIntensity: 0.5, roughness: 0.1 });
+    mk(rb(0.14, 1.1, 0.06, 0.01), '#ffffff', 0.03, 1.65, y, s); mk(rb(0.14, 0.06, 1.7, 0.01), '#ffffff', 0.03, 1.65, y, s);
+    mk(rb(0.3, 0.07, 2.0, 0.02), '#fbf3e1', 0.12, 0.98, y, s);
   }
-  // 挂钟 & 挂画
-  mk(cyl(0.3, 0.3, 0.05, 28), '#8a5a35', 6.75, 2.05, 0.03, s).rotation.x = Math.PI / 2; mk(cyl(0.25, 0.25, 0.06, 28), '#fffaf0', 6.75, 2.05, 0.035, s).rotation.x = Math.PI / 2;
-  mk(rb(0.03, 0.17, 0.02, 0.005), '#333333', 6.75, 2.12, 0.075, s); mk(rb(0.13, 0.03, 0.02, 0.005), '#333333', 6.8, 2.05, 0.075, s);
-  mk(rb(0.95, 0.62, 0.05, 0.02), '#e9c46a', 8.25, 2.25, 0.03, s); mk(rb(0.83, 0.5, 0.06, 0.01), '#8ecae6', 8.25, 2.25, 0.035, s); mk(rb(0.83, 0.18, 0.07, 0.01), '#74c69d', 8.25, 2.09, 0.035, s);
-  mk(cyl(0.08, 0.08, 0.075, 16), '#ffd166', 8.45, 2.36, 0.035, s).rotation.x = Math.PI / 2;
+  for (const y of [1.6, 4.3, 6.9, 9.6]) {
+    const l = new THREE.Group(); l.position.set(0.3, 2.4, y); s.add(l);
+    mk(sph(0.2), '#e5383b', 0, 0, 0, l, { emissive: '#b0191c', emissiveIntensity: 0.6 }).scale.y = 0.85;
+    mk(cyl(0.09, 0.09, 0.05), '#ffc93c', 0, 0.17, 0, l); mk(cyl(0.09, 0.09, 0.05), '#ffc93c', 0, -0.17, 0, l); mk(cyl(0.02, 0.02, 0.16, 6), '#ffc93c', 0, -0.27, 0, l);
+  }
+  mk(rb(0.1, 1.2, 1.9, 0.03), '#e9c46a', 0.03, 1.7, 8.2, s);
+  const b = new THREE.Mesh(new THREE.PlaneGeometry(1.75, 1.05), new THREE.MeshStandardMaterial({ map: menuTex, roughness: 0.9 }));
+  b.rotation.y = Math.PI / 2; b.position.set(0.085, 1.7, 8.2); s.add(b);
+  // 冰箱 + 食材筐（进货点）
+  mk(rb(0.62, 1.9, 0.95, 0.06), '#dfe7ec', 0.4, 0.95, 10.75, s, { metalness: 0.3, roughness: 0.35 }); mk(rb(0.04, 0.03, 0.9, 0.01), '#8d99a6', 0.72, 1.25, 10.75, s);
+  for (const y of [0.8, 1.55]) mk(rb(0.05, 0.4, 0.06, 0.02), '#8d99a6', 0.74, y, 11.1, s, { metalness: 0.7, roughness: 0.3 });
+  mk(rb(0.6, 0.6, 0.06, 0.02), '#fffaf0', 0.4, 2.3, 11.55, s); const fs = emojiSprite('🥬', 0.5, true); fs.position.set(0.5, 2.3, 11.4); s.add(fs);
+  [['#e63946', 0.42, 11.55], ['#52b788', 1.02, 11.55], ['#f4a261', 0.72, 11.55]].forEach(([c, x, z], i) => {
+    const g = new THREE.Group(); g.position.set(x, i === 2 ? 0.33 : 0, z); s.add(g); crates.push(g);
+    mk(rb(0.52, 0.3, 0.4, 0.03), '#a86f42', 0, 0.15, 0, g); for (let k = 0; k < 4; k++) mk(sph(0.1), c, -0.14 + (k % 2) * 0.28, 0.33, -0.08 + Math.floor(k / 2) * 0.16, g);
+  });
+  const fp = mk(cyl(0.6, 0.6, 0.02, 28), '#b7e4c7', FRIDGE.x, 0.016, FRIDGE.y, s, { emissive: '#52b788', emissiveIntensity: 0.5, transparent: true, opacity: 0.8 }); fp.castShadow = false;
+  // 出餐长台 + 水槽
+  mk(rb(17.3, 0.72, 0.56, 0.05), '#c07f4f', 9.05, 0.36, 0.78, s); mk(rb(17.42, 0.08, 0.68, 0.03), '#fbf3e1', 9.05, 0.76, 0.78, s);
+  mk(rb(17.3, 0.1, 0.02, 0.008), '#8f5a35', 9.05, 0.5, 1.065, s);
+  mk(rb(1.0, 0.72, 0.56, 0.05), '#aebbc4', SINK.x, 0.36, 0.78, s, { metalness: 0.4, roughness: 0.4 });
+  mk(rb(1.06, 0.08, 0.66, 0.03), '#dfe7ec', SINK.x, 0.76, 0.78, s, { metalness: 0.5, roughness: 0.3 });
+  mk(rb(0.72, 0.03, 0.4, 0.01), '#5fb3d9', SINK.x, 0.805, 0.8, s, { roughness: 0.1 });
+  mk(cyl(0.03, 0.03, 0.3, 10), '#8d99a6', SINK.x, 0.95, 0.56, s, { metalness: 0.8, roughness: 0.2 });
+  mk(cyl(0.025, 0.025, 0.2, 10), '#8d99a6', SINK.x, 1.09, 0.65, s, { metalness: 0.8, roughness: 0.2 }).rotation.x = Math.PI / 2;
+  mk(cyl(0.3, 0.3, 0.05, 24), '#8a5a35', SINK.x, 2.1, 0.03, s).rotation.x = Math.PI / 2; mk(cyl(0.25, 0.25, 0.06, 24), '#fffaf0', SINK.x, 2.1, 0.035, s).rotation.x = Math.PI / 2;
+  mk(rb(0.03, 0.17, 0.02, 0.005), '#333333', SINK.x, 2.17, 0.075, s); mk(rb(0.13, 0.03, 0.02, 0.005), '#333333', SINK.x + 0.05, 2.1, 0.075, s);
+  for (const [x, y] of [[6.75, 11.45], [13.3, 11.45]]) {
+    mk(cyl(0.26, 0.2, 0.42), '#e07a5f', x, 0.21, y, s); mk(sph(0.3), '#52b788', x, 0.72, y, s); mk(sph(0.22), '#40916c', x + 0.16, 0.95, y - 0.05, s); mk(sph(0.2), '#74c69d', x - 0.14, 0.98, y + 0.08, s);
+  }
+  // 绿篱（南侧两个出口，东侧正门）
+  hedge(2.8, H + 0.14, 6.4, 0.28, s); hedge(10.05, H + 0.14, 5.1, 0.28, s); hedge(17.14, H + 0.14, 6.28, 0.28, s);
+  hedge(W + 0.14, 0.8, 0.28, 1.7, s); hedge(W + 0.14, 3.55, 0.28, 1.6, s); hedge(W + 0.14, 9.2, 0.28, 6.1, s);
+  hedge(W + 0.14, 2.2, 0.28, 1.1, standHedge);
+  // 门头
+  for (const y of [DOOR.y - 0.9, DOOR.y + 0.9]) mk(cyl(0.08, 0.1, 2.3, 12), '#8a5a35', W + 0.08, 1.15, y, s);
+  mk(rb(0.16, 0.56, 2.2, 0.04), '#c8553d', W + 0.08, 2.4, DOOR.y, s);
+  const sg = new THREE.Mesh(new THREE.PlaneGeometry(2.0, 0.46), new THREE.MeshStandardMaterial({ map: signTex, roughness: 0.8 }));
+  sg.rotation.y = Math.PI / 2; sg.position.set(W + 0.165, 2.4, DOOR.y); s.add(sg);
   // 外卖窗口
-  mk(rb(0.5, 0.78, 1.05, 0.05), '#f4a261', 9.7, 0.39, 2.2, standG); mk(rb(0.58, 0.07, 1.13, 0.03), '#fffaf0', 9.7, 0.81, 2.2, standG);
-  for (const z of [1.7, 2.7]) mk(cyl(0.03, 0.03, 1.2, 8), '#8a5a35', 9.92, 1.4, z, standG);
-  for (let i = 0; i < 5; i++) mk(rb(0.6, 0.05, 0.23, 0.015), i % 2 ? '#fffaf0' : '#e5383b', 9.85, 2.02, 1.74 + i * 0.23, standG);
-  STAND.stack = new THREE.Group(); STAND.stack.position.set(9.7, 0.85, 2.55); STAND.stack.visible = false; standG.add(STAND.stack);
+  mk(rb(0.5, 0.78, 1.05, 0.05), '#f4a261', STAND.x, 0.39, 2.2, standG); mk(rb(0.58, 0.07, 1.13, 0.03), '#fffaf0', STAND.x, 0.81, 2.2, standG);
+  for (const z of [1.7, 2.7]) mk(cyl(0.03, 0.03, 1.2, 8), '#8a5a35', STAND.x + 0.22, 1.4, z, standG);
+  for (let i = 0; i < 5; i++) mk(rb(0.6, 0.05, 0.23, 0.015), i % 2 ? '#fffaf0' : '#e5383b', STAND.x + 0.15, 2.02, 1.74 + i * 0.23, standG);
+  STAND.stack = new THREE.Group(); STAND.stack.position.set(STAND.x, 0.85, 2.55); STAND.stack.visible = false; standG.add(STAND.stack);
   for (let k = 0; k < 3; k++) { mk(rb(0.24, 0.045, 0.13, 0.012), '#58b368', 0, 0.022 + k * 0.047, 0, STAND.stack); mk(rb(0.06, 0.047, 0.135, 0.01), '#f1faee', 0, 0.022 + k * 0.047, 0, STAND.stack); }
 })();
-// 店面风格（随等级解锁）
 const TIERS = [
   { lv: 1,  w: ['#3a969e', '#43a6ae', '#2a6f76'], f: ['#f7e9cc', '#eed9b0'] },
   { lv: 4,  w: ['#d9825b', '#e39a70', '#a85a3a'], f: ['#f6e3c5', '#e2bf94'] },
   { lv: 8,  w: ['#44568a', '#5268a3', '#2a3761'], f: ['#f4f4f7', '#d3d9e6'] },
   { lv: 12, w: ['#8c2f39', '#a23b47', '#5e1a24'], f: ['#fbeec2', '#e6c574'] },
 ];
-const wallMats = [M('#3a969e'), M('#43a6ae'), M('#2a6f76')]; let tier = -1;
+let tier = -1;
 function applyTier(announce) {
   let t = 0; TIERS.forEach((x, i) => { if (S.level >= x.lv) t = i; });
   if (t === tier) return; tier = t;
   wallMats.forEach((m, i) => m.color.set(TIERS[t].w[i])); floorDraw(TIERS[t].f[0], TIERS[t].f[1]);
   if (announce && t > 0) toast(T('tier', { n: T('t' + t) }));
 }
-// emoji 贴图精灵
-const ETEX = new Map();
-function emojiSprite(e, size) {
-  let t = ETEX.get(e);
-  if (!t) { const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d'); x.font = '96px ' + EMO; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(e, 64, 70);
-    t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; ETEX.set(e, t); }
-  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, transparent: true, depthTest: false })); sp.scale.set(size, size, 1); return sp;
+
+// ---- 商业街 ----
+const anim = [];
+const fountain = new THREE.Group(); scene.add(fountain);
+(function buildDistrict() {
+  const s = scene;
+  flat(400, 400, '#8fc97a', 0, -0.02, 0);
+  flat(76, 1.3, '#d9d4c7', 7.5, -0.012, 12.25); flat(76, 3.4, '#59636e', 7.5, -0.008, 14.6); flat(76, 1.4, '#d9d4c7', 7.5, -0.012, 17.0);
+  flat(0.9, 21, '#d9d4c7', 20.75, -0.012, 1.4); flat(2.6, 21, '#59636e', 22.5, -0.009, 1.4); flat(0.4, 21, '#d9d4c7', 24.0, -0.012, 1.4);
+  for (let x = -29; x < 45; x += 2.4) flat(1.2, 0.14, '#f1e9c9', x, -0.004, 14.6);
+  for (let z = -8; z < 12; z += 2.4) flat(0.14, 1.2, '#f1e9c9', 22.5, -0.004, z);
+  for (let x = -28; x <= 44; x += 8) {
+    mk(cyl(0.05, 0.07, 2.6, 8), '#3b4a5a', x, 1.3, 17.45, s); mk(sph(0.17), '#fff3b0', x, 2.7, 17.45, s, { emissive: '#ffd60a', emissiveIntensity: 1 }); mk(cyl(0.2, 0.12, 0.08), '#3b4a5a', x, 2.86, 17.45, s);
+  }
+  for (let x = -26; x <= 44; x += 5.5) tree(x + (Math.abs(x) % 3) * 0.3, 19.2 + (Math.abs(x) % 2), 1 + (Math.abs(x) % 3) * 0.12);
+  for (const [x, z] of [[-1.5, 3], [-1.6, 8.5], [30.8, 8], [31.5, 3.5], [42.5, 9], [-27, 6], [26, 3], [28.5, 1], [-6, 2], [-9, 3.4]]) tree(x, z, 1.1);
+  // 喷泉广场（产业 ≥2 后出现）
+  flat(7, 3.2, '#e9e2d0', 10, -0.006, 20.2, fountain);
+  mk(cyl(1.5, 1.6, 0.4, 28), '#cfd8dc', 10, 0.2, 20.2, fountain); mk(cyl(1.3, 1.3, 0.06, 28), '#5fb3d9', 10, 0.4, 20.2, fountain, { roughness: 0.1 });
+  mk(cyl(0.16, 0.22, 1.2, 12), '#cfd8dc', 10, 0.9, 20.2, fountain); mk(cyl(0.6, 0.3, 0.14, 20), '#cfd8dc', 10, 1.45, 20.2, fountain); mk(sph(0.2), '#8ecae6', 10, 1.7, 20.2, fountain, { roughness: 0.1 });
+  for (const x of [7.2, 12.8]) { mk(rb(1.3, 0.1, 0.45, 0.03), '#a86f42', x, 0.42, 21.3, fountain); mk(rb(1.3, 0.4, 0.08, 0.03), '#a86f42', x, 0.68, 21.5, fountain); }
+
+  for (const b of BIZ) {
+    const w = b.x1 - b.x0, d = BY - b.y0, cx = b.px, cz = (b.y0 + BY) / 2;
+    // 待售地块
+    const lot = b.lot = new THREE.Group(); s.add(lot);
+    flat(w, d, '#c9c2b0', cx, -0.005, cz, lot);
+    for (const [x, z] of [[b.x0, BY], [b.x1, BY], [b.x0, b.y0], [b.x1, b.y0]]) mk(cyl(0.06, 0.06, 0.9, 6), '#e9c46a', x, 0.45, z, lot);
+    mk(rb(w, 0.06, 0.06, 0.02), '#e9c46a', cx, 0.8, BY, lot); mk(rb(0.06, 0.06, d, 0.02), '#e9c46a', b.x1, 0.8, cz, lot);
+    mk(cyl(0.06, 0.06, 1.6, 6), '#8a5a35', cx, 0.8, BY - 1.2, lot); mk(rb(1.5, 1.1, 0.1, 0.04), '#fffaf0', cx, 1.9, BY - 1.2, lot);
+    const ls = emojiSprite(b.e, 0.9, true); ls.position.set(cx, 1.9, BY - 1.1); lot.add(ls);
+    // 建筑
+    const g = b.g = new THREE.Group(); s.add(g);
+    const awning = (y, c1, c2, n) => { for (let i = 0; i < n; i++) mk(rb(w / n, 0.08, 0.9, 0.02), i % 2 ? c1 : c2, b.x0 + (i + 0.5) * w / n, y, BY + 0.35, g).rotation.x = 0.25; };
+    if (b.k === 'market') {
+      mk(rb(w, 2.8, d, 0.06), '#f1faee', cx, 1.4, cz, g); mk(rb(w + 0.3, 0.25, d + 0.3, 0.06), '#e63946', cx, 2.9, cz, g);
+      awning(2.25, '#e63946', '#ffffff', 9);
+      mk(rb(5.0, 1.4, 0.08, 0.02), '#bfe9f5', cx - 1.0, 1.1, BY + 0.02, g, { emissive: '#7fc8dd', emissiveIntensity: 0.4, roughness: 0.1 });
+      mk(rb(1.3, 1.9, 0.08, 0.02), '#457b9d', cx + 2.8, 0.95, BY + 0.03, g); mk(rb(0.08, 1.4, 4.2, 0.02), '#bfe9f5', b.x1 + 0.02, 1.2, cz, g, { emissive: '#7fc8dd', emissiveIntensity: 0.4, roughness: 0.1 });
+      ['#e63946', '#ffd166', '#52b788'].forEach((c, i) => { mk(rb(0.7, 0.4, 0.5, 0.04), '#a86f42', b.x0 + 0.8 + i * 0.85, 0.2, BY + 0.45, g); for (let k = 0; k < 3; k++) mk(sph(0.13), c, b.x0 + 0.6 + i * 0.85 + k * 0.2, 0.47, BY + 0.45, g); });
+      const sp = emojiSprite('🛒', 1.5, true); sp.position.set(cx, 3.8, cz + 2); g.add(sp);
+    } else if (b.k === 'teashop') {
+      mk(rb(w, 2.6, d, 0.08), '#ffd6de', cx, 1.3, cz, g); mk(rb(w + 0.3, 0.25, d + 0.3, 0.06), '#e85d75', cx, 2.7, cz, g);
+      awning(2.05, '#e85d75', '#ffffff', 6);
+      mk(rb(3.0, 1.0, 0.1, 0.03), '#5c3a21', cx - 0.4, 1.45, BY + 0.02, g); mk(rb(3.3, 0.1, 0.5, 0.03), '#fffaf0', cx - 0.4, 0.92, BY + 0.2, g);
+      mk(rb(0.9, 1.8, 0.08, 0.02), '#b56576', cx + 1.9, 0.9, BY + 0.03, g);
+      mk(cyl(0.75, 0.55, 1.5, 20), '#d6a574', cx, 3.6, cz, g, { roughness: 0.3 }); mk(cyl(0.8, 0.8, 0.14, 20), '#ffffff', cx, 4.42, cz, g);
+      mk(cyl(0.08, 0.08, 1.3, 8), '#e5383b', cx + 0.2, 5.0, cz, g).rotation.z = -0.15;
+      for (let i = 0; i < 5; i++) mk(sph(0.13), '#3b2a1a', cx + Math.cos(i * 1.3) * 0.45, 3.0, cz + 0.5, g);
+    } else if (b.k === 'hotel') {
+      mk(rb(w, 6.5, d, 0.08), '#4a6fa5', cx, 3.25, cz, g); mk(rb(w + 0.3, 0.3, d + 0.3, 0.06), '#22333b', cx, 6.6, cz, g);
+      const c = document.createElement('canvas'); c.width = c.height = 256; const x = c.getContext('2d'); x.fillStyle = '#4a6fa5'; x.fillRect(0, 0, 256, 256);
+      for (let r = 0; r < 4; r++) for (let col = 0; col < 4; col++) { x.fillStyle = (r * 3 + col * 5) % 4 ? '#ffe9a8' : '#cfe8ff'; x.fillRect(22 + col * 58, 16 + r * 50, 38, 32); x.fillStyle = '#22333b'; x.fillRect(22 + col * 58, 50 + r * 50, 38, 4); }
+      const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.6 });
+      const f = new THREE.Mesh(new THREE.PlaneGeometry(w - 0.4, 4.6), mat); f.position.set(cx, 4.0, BY + 0.01); g.add(f);
+      const e = new THREE.Mesh(new THREE.PlaneGeometry(d - 0.4, 4.6), mat); e.rotation.y = Math.PI / 2; e.position.set(b.x1 + 0.01, 4.0, cz); g.add(e);
+      mk(rb(3.0, 0.2, 1.3, 0.05), '#c1121f', cx, 1.75, BY + 0.6, g); for (const dx of [-1.3, 1.3]) mk(cyl(0.07, 0.07, 1.7, 8), '#e9c46a', cx + dx, 0.85, BY + 1.1, g);
+      mk(rb(1.8, 1.5, 0.08, 0.02), '#bfe9f5', cx, 0.78, BY + 0.03, g, { emissive: '#ffe9a8', emissiveIntensity: 0.5, roughness: 0.1 });
+      const sp = emojiSprite('🏨', 1.6, true); sp.position.set(cx, 7.6, cz); g.add(sp);
+    } else {
+      flat(w, d, '#cdeac0', cx, -0.004, cz, g);
+      for (let x = b.x0; x <= b.x1 + 0.01; x += 1.25) if (Math.abs(x - cx) > 1.3) mk(cyl(0.05, 0.05, 0.8, 6), '#ffffff', x, 0.4, BY, g);
+      mk(rb(w / 2 - 1.2, 0.06, 0.06, 0.02), '#e85d75', b.x0 + (w / 2 - 1.2) / 2, 0.7, BY, g); mk(rb(w / 2 - 1.2, 0.06, 0.06, 0.02), '#e85d75', b.x1 - (w / 2 - 1.2) / 2, 0.7, BY, g);
+      for (const dx of [-1.2, 1.2]) mk(cyl(0.1, 0.1, 2.6, 8), '#ffd166', cx + dx, 1.3, BY, g);
+      ['#e63946', '#f4a261', '#ffd166', '#52b788', '#5b8def'].forEach((c, i) => mk(rb(2.6, 0.12, 0.14, 0.03), c, cx, 2.9 - i * 0.12, BY, g));
+      // 摩天轮
+      const wx = b.x0 + 4.2, wz = 5.4, wh = new THREE.Group(); wh.position.set(wx, 3.7, wz); g.add(wh);
+      const ring = new THREE.Mesh(G('ferris', () => new THREE.TorusGeometry(2.7, 0.07, 8, 40)), M('#e63946')); ring.castShadow = true; wh.add(ring);
+      for (let i = 0; i < 4; i++) mk(rb(5.4, 0.06, 0.06, 0.02), '#f1faee', 0, 0, 0, wh).rotation.z = i * Math.PI / 4;
+      const cabs = []; ['#e63946', '#ffd166', '#52b788', '#5b8def', '#b07cd8', '#f4a261', '#3fb7b0', '#e85d75'].forEach((c, i) => cabs.push(mk(rb(0.55, 0.5, 0.45, 0.1), c, Math.cos(i * Math.PI / 4) * 2.7, Math.sin(i * Math.PI / 4) * 2.7, 0, wh)));
+      mk(cyl(0.08, 0.1, 4.0, 8), '#8d99ae', wx - 0.95, 1.85, wz + 0.25, g).rotation.z = -0.26; mk(cyl(0.08, 0.1, 4.0, 8), '#8d99ae', wx + 0.95, 1.85, wz + 0.25, g).rotation.z = 0.26; mk(sph(0.22), '#ffd166', wx, 3.7, wz + 0.1, g);
+      anim.push(t => { wh.rotation.z = t * 0.25; cabs.forEach(c => c.rotation.z = -wh.rotation.z); });
+      // 旋转木马
+      const kx = b.x1 - 3.3, kz = 7.6; mk(cyl(1.7, 1.8, 0.2, 24), '#ffd6de', kx, 0.1, kz, g);
+      const spin = new THREE.Group(); spin.position.set(kx, 0, kz); g.add(spin);
+      mk(cyl(0.14, 0.14, 2.5, 10), '#ffd166', 0, 1.35, 0, spin);
+      const roof = new THREE.Mesh(G('roof', () => new THREE.ConeGeometry(2.0, 1.0, 12)), M('#e85d75')); roof.position.y = 3.05; roof.castShadow = true; spin.add(roof); mk(sph(0.14), '#ffd166', 0, 3.6, 0, spin);
+      ['#ffffff', '#ffd166', '#8ecae6', '#ffffff', '#f4acb7', '#b7e4c7'].forEach((c, i) => { const a = i * Math.PI / 3; mk(cyl(0.03, 0.03, 2.3, 6), '#e9c46a', Math.cos(a) * 1.2, 1.35, Math.sin(a) * 1.2, spin); const h = mk(cap(0.14, 0.3), c, Math.cos(a) * 1.2, 0.9 + (i % 2) * 0.25, Math.sin(a) * 1.2, spin); h.rotation.z = Math.PI / 2; h.rotation.y = -a; });
+      anim.push(t => { spin.rotation.y = t * 0.7; });
+      mk(rb(1.4, 1.6, 1.2, 0.06), '#8ecae6', cx + 2.6, 0.8, BY - 1.0, g); mk(rb(1.7, 0.2, 1.5, 0.05), '#e63946', cx + 2.6, 1.7, BY - 1.0, g);
+      [['#e63946', 0], ['#ffd166', 0.3], ['#5b8def', -0.25]].forEach(([c, dx]) => { mk(sph(0.2), c, cx - 3 + dx, 2.3 + Math.abs(dx), BY - 0.6, g); });
+      mk(cyl(0.015, 0.015, 1.6, 4), '#555555', cx - 3, 1.4, BY - 0.6, g);
+    }
+    b.stack = new THREE.Group(); b.stack.position.set(b.px, 0, PADY); s.add(b.stack);
+    mk(cyl(0.55, 0.55, 0.03, 24), '#fff3b0', 0, 0.015, 0, b.stack, { emissive: '#ffd60a', emissiveIntensity: 0.6 }).castShadow = false;
+    for (let k = 0; k < 4; k++) { mk(rb(0.3, 0.06, 0.17, 0.015), '#58b368', 0, 0.06 + k * 0.062, 0, b.stack); mk(rb(0.08, 0.062, 0.175, 0.012), '#f1faee', 0, 0.06 + k * 0.062, 0, b.stack); }
+  }
+})();
+function syncDistrict() {
+  for (const b of BIZ) { const o = S.biz[b.k].lv > 0; b.g.visible = o; b.lot.visible = !o; }
+  fountain.visible = ownedBiz() >= 2;
 }
 // 热气粒子
 const steam = [];
@@ -559,63 +671,105 @@ addEventListener('pointerdown', audioInit, true); addEventListener('keydown', au
 document.addEventListener('visibilitychange', () => { if (AU.ctx) document.hidden ? AU.ctx.suspend() : AU.ctx.resume(); });
 
 // ================= 运行时状态 =================
-let tables = [], customers = [], orders = [], workers = [], cooks = [], floats = [];
-let spawnT = 1.5, time = 0, rushT = 0, nextRush = 80, padT = 0, hudDirty = true;
-const player = { isPlayer: true, x: 6.8, y: 2.0, dir: 0, face: 0, stack: [], moving: false, cd: 0, target: null,
+let tables = [], customers = [], orders = [], workers = [], floats = [], ST = [], peds = [], OBS = [];
+let spawnT = 1.5, time = 0, rushT = 0, nextRush = 80, hudDirty = true, combo = 0, coins = [], fridgeT = 0, stockWarned = false, buyerT = 0;
+const comboMul = () => 1 + Math.min(combo, 20) * 0.05;
+const player = { isPlayer: true, x: 9, y: 2.4, dir: 0, face: 0, stack: [], moving: false, cd: 0, target: null,
   look: { shirt: '#ff7a45', hair: '#3b2a1a', skin: '#f6c9a0', pants: '#2f3e46', style: 'short', apron: true, player: true } };
 
-function addTable(i) {
-  const [x, y] = SPOTS[i], g = new THREE.Group(); g.position.set(x, 0, y); dyn.add(g);
-  const rug = mk(cyl(1, 1, 0.012, 40), ['#e8c9a1', '#cfe3df', '#f1c6c0'][i % 3], 0, 0.008, 0, g); rug.scale.set(1.5, 1, 0.9); rug.castShadow = false;
-  const rug2 = mk(cyl(1, 1, 0.014, 40), '#fff8ec', 0, 0.009, 0, g, { transparent: true, opacity: 0.45 }); rug2.scale.set(1.3, 1, 0.72); rug2.castShadow = false;
-  mk(cyl(0.035, 0.05, 0.11, 10), '#8ecae6', 0, 0.78, 0, g, { roughness: 0.3 }); mk(cyl(0.008, 0.008, 0.12, 5), '#40916c', 0, 0.88, 0, g); mk(sph(0.05), ['#ff8fa3', '#ffd166', '#e85d75'][i % 3], 0, 0.95, 0, g);
-  mk(cyl(0.3, 0.34, 0.05), '#8a5a35', 0, 0.025, 0, g); mk(cyl(0.07, 0.07, 0.62, 12), '#8a5a35', 0, 0.33, 0, g);
-  mk(rb(0.92, 0.07, 0.82, 0.02), '#a86f42', 0, 0.63, 0, g); mk(rb(1.04, 0.07, 0.94, 0.03), '#fffaf0', 0, 0.69, 0, g);
-  mk(rb(1.05, 0.02, 0.3, 0.008), '#3fb7b0', 0, 0.725, 0, g);
-  const t = { x, y, cash: 0, seats: [], g, stacks: [], pop: 0 };
-  for (const z of [-0.3, 0.3]) {
-    const sg = new THREE.Group(); sg.position.set(0, 0.74, z); sg.visible = false; g.add(sg);
+function rebuildObs() {
+  const R = 0.3, o = [], box = (x0, x1, y0, y1) => o.push({ x: (x0 + x1) / 2, y: (y0 + y1) / 2, hx: (x1 - x0) / 2 + R, hy: (y1 - y0) / 2 + R });
+  box(-0.6, 0.05, -3, H + 0.28); box(-0.6, W + 0.28, -4, 1.2);
+  box(-0.4, 6.0, H, H + 0.28); box(7.5, 12.6, H, H + 0.28); box(14.0, W + 0.28, H, H + 0.28);
+  box(W, W + 0.28, -3, 4.35); box(W, W + 0.28, 6.15, H + 0.28);
+  box(0.05, 0.6, 10.4, H);
+  if (S.up.takeout > 0) box(W - 0.6, W + 0.28, 1.65, 2.75);
+  for (const b of BIZ) box(b.x0, b.x1, -4, BY);
+  for (const t of tables) o.push({ x: t.x, y: t.y, hx: 1.32, hy: 0.68 });
+  OBS = o;
+}
+const slotX = o => o.st.x + (o.slot ? 0.32 : -0.32);
+function addStation(i) {
+  const it = ITEMS[i], x = 1.3 + i * 1.7, g = new THREE.Group(); dyn.add(g);
+  for (const dx of [-0.32, 0.32]) mk(cyl(0.2, 0.2, 0.015), '#e8dcc4', x + dx, 0.805, 0.82, g);
+  mk(rb(0.86, 0.86, 0.08, 0.04), it.drink ? '#7b5ea7' : '#8f5a35', x, 2.15, 0.05, g); mk(rb(0.72, 0.72, 0.09, 0.03), '#fffaf0', x, 2.15, 0.06, g);
+  const sp = emojiSprite(it.e, 0.56, true); sp.position.set(x, 2.15, 0.2); g.add(sp);
+  if (it.drink) { mk(rb(0.6, 0.55, 0.26, 0.05), '#e85d75', x, 1.08, 0.58, g, { roughness: 0.35 }); mk(cyl(0.03, 0.03, 0.1, 8), '#dfe7ec', x, 0.95, 0.74, g, { metalness: 0.7, roughness: 0.25 }); }
+  const look = Object.assign(randLook(), it.drink ? { shirt: '#f4f1de', pants: '#4a5759', apron: true, apronC: '#7b5ea7', visor: true, style: 'short' } : { shirt: '#ffffff', pants: '#4a5759', chef: true, style: 'short' });
+  const chef = { x, y: 0.24, dir: 0, face: 0, stack: [], look, order: null, t: 0 }; chef.mesh = makePerson(look); dyn.add(chef.mesh);
+  ST.push({ i, item: it, x, slots: [null, null], cur: null, t: 0, total: 1, chef, starved: false });
+}
+function addTable(i, pop) {
+  const [x, y] = SPOTS[i], z = Math.floor(i / 6), g = new THREE.Group(); g.position.set(x, 0, y); dyn.add(g);
+  const t = { x, y, cash: 0, seats: [], g, stacks: [], pop: pop ? 0 : 1 };
+  if (z === 0) {         // 木质大堂
+    mk(cyl(0.3, 0.34, 0.05), '#8a5a35', 0, 0.025, 0, g); mk(cyl(0.07, 0.07, 0.62, 10), '#8a5a35', 0, 0.33, 0, g);
+    mk(rb(0.92, 0.07, 0.82, 0.02), '#a86f42', 0, 0.63, 0, g); mk(rb(1.04, 0.07, 0.94, 0.03), '#fffaf0', 0, 0.69, 0, g); mk(rb(1.05, 0.02, 0.3, 0.008), '#3fb7b0', 0, 0.725, 0, g);
+    mk(cyl(0.035, 0.05, 0.11, 8), '#8ecae6', 0, 0.78, 0, g, { roughness: 0.3 }); mk(sph(0.05), '#ff8fa3', 0, 0.9, 0, g);
+  } else if (z === 1) {  // 红丝绒卡座
+    mk(rb(0.5, 0.05, 0.5, 0.02), '#2b2b2b', 0, 0.025, 0, g); mk(cyl(0.08, 0.08, 0.62, 10), '#2b2b2b', 0, 0.33, 0, g);
+    mk(rb(1.04, 0.09, 0.94, 0.03), '#5c3a21', 0, 0.685, 0, g, { roughness: 0.4 }); mk(rb(0.5, 0.012, 0.9, 0.004), '#e9c46a', 0, 0.732, 0, g);
+    mk(cyl(0.03, 0.03, 0.13, 8), '#fffaf0', 0, 0.8, 0, g); mk(sph(0.03), '#ffb703', 0, 0.89, 0, g, { emissive: '#ff9500', emissiveIntensity: 1 });
+  } else {               // 花园雅座
+    mk(cyl(0.32, 0.36, 0.04), '#52796f', 0, 0.02, 0, g); mk(cyl(0.05, 0.05, 0.64, 10), '#52796f', 0, 0.34, 0, g);
+    mk(cyl(0.56, 0.56, 0.07, 28), '#ffffff', 0, 0.695, 0, g, { roughness: 0.35 }); mk(cyl(0.3, 0.3, 0.012, 20), '#b7e4c7', 0, 0.733, 0, g);
+    mk(cyl(0.06, 0.045, 0.1, 8), '#e07a5f', 0, 0.78, 0, g); mk(sph(0.08), '#52b788', 0, 0.88, 0, g);
+  }
+  for (const zz of [-0.3, 0.3]) {
+    const sg = new THREE.Group(); sg.position.set(0, 0.74, zz); sg.visible = false; g.add(sg);
     for (let k = 0; k < 3; k++) { mk(rb(0.24, 0.045, 0.13, 0.012), '#58b368', 0, 0.022 + k * 0.047, 0, sg); mk(rb(0.06, 0.047, 0.135, 0.01), '#f1faee', 0, 0.022 + k * 0.047, 0, sg); }
     t.stacks.push(sg);
   }
   for (const dx of [-0.85, 0.85]) {
     const c = new THREE.Group(); c.position.set(dx, 0, 0); g.add(c); const sg = Math.sign(dx);
-    for (const a of [-1, 1]) for (const b of [-1, 1]) mk(cyl(0.035, 0.03, 0.34, 8), '#8a5a35', a * 0.19, 0.17, b * 0.19, c);
-    mk(rb(0.52, 0.12, 0.52, 0.05), '#48acb5', 0, 0.38, 0, c); mk(rb(0.12, 0.62, 0.52, 0.05), '#3a969e', sg * 0.24, 0.7, 0, c);
+    if (z === 0) {
+      for (const a of [-1, 1]) for (const b of [-1, 1]) mk(cyl(0.035, 0.03, 0.34, 6), '#8a5a35', a * 0.19, 0.17, b * 0.19, c);
+      mk(rb(0.52, 0.12, 0.52, 0.05), '#48acb5', 0, 0.38, 0, c); mk(rb(0.12, 0.62, 0.52, 0.05), '#3a8f97', sg * 0.24, 0.7, 0, c);
+    } else if (z === 1) {
+      mk(rb(0.58, 0.42, 0.9, 0.08), '#c1121f', 0, 0.22, 0, c, { roughness: 0.6 }); mk(rb(0.18, 1.0, 0.9, 0.08), '#9d0208', sg * 0.25, 0.55, 0, c, { roughness: 0.6 });
+    } else {
+      mk(cyl(0.03, 0.03, 0.36, 6), '#bc6c25', 0, 0.18, 0, c); mk(cyl(0.2, 0.2, 0.03, 12), '#bc6c25', 0, 0.02, 0, c);
+      mk(cyl(0.29, 0.25, 0.1, 16), '#dda15e', 0, 0.39, 0, c); mk(rb(0.1, 0.5, 0.5, 0.05), '#bc6c25', sg * 0.25, 0.68, 0, c); mk(rb(0.11, 0.3, 0.3, 0.04), '#f1faee', sg * 0.24, 0.68, 0, c);
+    }
     t.seats.push({ x: x + dx, y, side: dx, table: t, state: 'free', claimed: null, plate: null });
   }
   tables.push(t);
 }
 function syncStaff() {
   while (workers.length < 1 + S.up.waiter) {
-    const w = workers.length ? { x: 6.4 + workers.length * 0.5, y: 2.2, dir: 0, face: 0, stack: [], task: null, moving: false,
+    const w = workers.length ? { x: 8 + workers.length * 0.6, y: 2.4, dir: 0, face: 0, stack: [], task: null, moving: false,
       look: Object.assign(randLook(), { shirt: '#2f4858', pants: '#1d2d35', apron: true }) } : player;
     w.mesh = makePerson(w.look); dyn.add(w.mesh); workers.push(w);
   }
-  while (cooks.length < 1 + S.up.cook) {
-    const k = { x: 1.2 + cooks.length * 1.0, y: 0.24, dir: 0, face: 0, order: null, t: 0, stack: [],
-      look: Object.assign(randLook(), { shirt: '#ffffff', pants: '#4a5759', chef: true, style: 'short' }) };
-    k.mesh = makePerson(k.look); dyn.add(k.mesh); cooks.push(k);
-  }
-  barG.visible = S.up.bar > 0; standG.visible = S.up.takeout > 0; standHedge.visible = !standG.visible; drawMenu();
+  standG.visible = S.up.takeout > 0; standHedge.visible = !standG.visible;
+}
+function syncPeds() {
+  const n = 4 + 4 * ownedBiz();
+  while (peds.length < n) { const p = { x: -26 + Math.random() * 66, y: pick([12.5, 16.9, 17.3]), dir: 0, face: 0, stack: [], moving: true, look: randLook(), tx: 0, ty: 0, wait: 0 }; p.tx = p.x; p.ty = p.y; p.mesh = makePerson(p.look); dyn.add(p.mesh); peds.push(p); }
+}
+function syncWorld(announce) {
+  while (ST.length < unlocked()) { addStation(ST.length); const it = ST[ST.length - 1].item; if (announce) toast(T('unlockItem', { e: it.e, n: T(it.m) })); }
+  const t0 = tables.length;
+  while (tables.length < tableCount()) addTable(tables.length, announce);
+  if (announce && tables.length > t0) { const z = Math.floor((tables.length - 1) / 6); toast(t0 % 6 === 0 && t0 > 0 ? T('zoneOpen', { n: T('z' + z) }) : T('newTables')); }
+  if (announce) for (const b of BIZ) if (S.level === b.lv) toast(T('bizAvail', { n: T(b.k) }));
+  syncStaff(); syncDistrict(); syncPeds(); drawMenu(); rebuildObs();
 }
 function init() {
   while (dyn.children.length) dyn.remove(dyn.children[0]);
-  tables = []; customers = []; orders = []; workers = []; cooks = []; floats = [];
-  KIT.slots.fill(null); BAR.slots.fill(null); BAR.cur = null;
-  Object.assign(player, { x: 6.8, y: 2.0, stack: [], target: null });
-  for (let i = 0; i < S.tables; i++) addTable(i);
-  tables.forEach(t => t.pop = 1);
-  STAND.cash = 0; STAND.seat.state = 'free'; combo = 0; pups = []; mouse = null; mouseT = 50; pupT = 18; for (const k in buff) buff[k] = 0;
-  syncStaff(); applyTier(false);
+  tables = []; customers = []; orders = []; workers = []; floats = []; ST = []; peds = []; pups = []; mouse = null; coins = [];
+  Object.assign(player, { x: 9, y: 2.4, stack: [], target: null, stackDirty: true });
+  STAND.cash = 0; STAND.seat.state = 'free'; combo = 0; mouseT = 50; pupT = 18; rushT = 0; stockWarned = false; for (const k in buff) buff[k] = 0;
+  syncWorld(false); tier = -1; applyTier(false);
   if (!S.mission) newMission();
+  CT.set(player.x, 0.4, player.y); placeCam();
 }
 
 // ================= 任务 =================
 function newMission() {
   const n = S.missionN, type = ['serve', 'earn', 'wash', 'happy', 'vip'][n % 5];
-  const goal = { serve: 5 + 3 * n, earn: Math.round(80 * Math.pow(1.5, n) / 10) * 10, wash: 4 + 2 * n, happy: 3 + 2 * n, vip: 1 + Math.floor(n / 5) }[type];
-  S.mission = { type, goal, prog: 0, reward: Math.round(50 * Math.pow(1.4, n) / 10) * 10 }; hudDirty = true;
+  const goal = { serve: 5 + 3 * n, earn: Math.round(80 * Math.pow(1.35, n) / 10) * 10, wash: 4 + 2 * n, happy: 3 + 2 * n, vip: 1 + Math.floor(n / 5) }[type];
+  S.mission = { type, goal, prog: 0, reward: Math.round(50 * Math.pow(1.25, n) / 10) * 10 }; hudDirty = true;
 }
 function progress(type, v) {
   const m = S.mission; if (!m || m.type !== type) return;
@@ -634,32 +788,40 @@ function floatText(x, y, z, text, color) { floats.push({ x, y, z, text, color: c
 function addMoney(n) { S.money += n; if (n > 0) progress('earn', n); hudDirty = true; }
 function addXp(n) {
   S.xp += n;
-  while (S.xp >= xpNeed()) { S.xp -= xpNeed(); S.level++; const b = 40 * S.level; S.money += b; toast(T('levelUp', { l: S.level, n: fmt(b) })); sfx('level'); applyTier(true); }
+  while (S.xp >= xpNeed()) {
+    S.xp -= xpNeed(); S.level++; const b = 40 * S.level; S.money += b;
+    toast(T('levelUp', { l: S.level, n: fmt(b) })); sfx('level'); applyTier(true); syncWorld(true); save();
+  }
   hudDirty = true;
 }
 function rate(d) { S.rating = Math.max(0, Math.min(5, S.rating + d)); hudDirty = true; }
-function collect(t) {
-  if (t.cash <= 0) return; floatText(t.x, t.y, 1.3, '+' + fmt(t.cash), '#ffe066');
-  const [px, py] = proj(t.x, t.y, 1); for (let i = 0; i < 5; i++) coins.push({ x: px + (Math.random() - 0.5) * 34, y: py + (Math.random() - 0.5) * 22, t: -i * 0.06 });
-  sfx('coin'); addMoney(t.cash); t.cash = 0;
+function payout(x, y, z, n) {   // 只有店主走到钱旁边才会入账
+  floatText(x, y, z, '+' + fmt(n), '#ffe066');
+  const [px, py] = proj(x, y, z); for (let i = 0; i < 6; i++) coins.push({ x: px + (Math.random() - 0.5) * 34, y: py + (Math.random() - 0.5) * 22, t: -i * 0.06 });
+  sfx('coin'); addMoney(n);
+}
+function collect(t) { if (t.cash > 0) { payout(t.x, t.y, 1.3, t.cash); t.cash = 0; } }
+function restock(auto) {   // 花钱进货
+  const u = unitCost(); let n = Math.min(BATCH, stockCap() - S.stock); if (n <= 0) return false;
+  const afford = Math.floor(S.money / u);
+  if (afford <= 0) { if (auto || S.stock > 0) return false; S.stock += 5; toast(T('credit')); hudDirty = true; return true; }
+  n = Math.min(n, afford); S.money -= n * u; S.stock += n; hudDirty = true;
+  floatText(FRIDGE.x, FRIDGE.y, 1.6, '🥬 +' + n + '  -💰' + fmt(n * u), '#b9f6ca'); if (!auto) sfx('pop'); return true;
 }
 
-const QMAX = 5, qPos = i => [10.75, DOOR.y + 0.25 + i * 0.68];
-let combo = 0, coins = [];
-const comboMul = () => 1 + Math.min(combo, 20) * 0.05;
+const QMAX = 6, qPos = i => [W + 0.75, DOOR.y + 0.25 + i * 0.68];
 function spawnCustomer() {
-  if (S.up.takeout > 0 && STAND.seat.state === 'free' && Math.random() < 0.22) {   // 外卖骑手
-    STAND.seat.state = 'taken';
-    const c = { x: 10.9, y: -2.5, dir: 0, face: 0, path: [[10.9, 1.2], [10.6, 2.2]], state: 'in', seat: STAND.seat, t: 0, moving: true, kind: 'rider', stack: [],
-      item: DISHES[Math.floor(Math.random() * (1 + S.up.menu))], st: KIT, look: Object.assign(randLook(), { shirt: '#ffb703', pants: '#22333b', helmet: true, style: 'short' }) };
+  const item = ITEMS[Math.floor(Math.random() * unlocked())];
+  if (S.up.takeout > 0 && STAND.seat.state === 'free' && Math.random() < 0.2) {   // 外卖骑手
+    STAND.seat.state = 'taken'; const food = ITEMS.filter((it, i) => i < unlocked() && !it.drink);
+    const c = { x: W + 0.9, y: -2.5, dir: 0, face: 0, path: [[W + 0.9, 1.2], [W + 0.6, 2.2]], state: 'in', seat: STAND.seat, t: 0, moving: true, kind: 'rider', stack: [],
+      item: pick(food), look: Object.assign(randLook(), { shirt: '#ffb703', pants: '#22333b', helmet: true, style: 'short' }) };
     c.mesh = makePerson(c.look); dyn.add(c.mesh); customers.push(c); return true;
   }
   const q = customers.filter(c => c.state === 'q').length; if (q >= QMAX) return false;
   const r = Math.random();
   const kind = r < (S.mission && S.mission.type === 'vip' ? 0.3 : 0.1) ? 'vip' : r > 0.3 && r < 0.38 && S.level >= 3 ? 'critic' : r > 0.86 && S.level >= 2 ? 'hurry' : 'normal';
-  const drink = S.up.bar > 0 && Math.random() < 0.35;
-  const c = { x: 10.9, y: -2.5, dir: 0, face: 0, state: 'q', qi: q, qpat: 26, t: 0, moving: true, kind, vip: kind === 'vip', stack: [],
-    item: drink ? DRINKS[Math.floor(Math.random() * S.up.bar)] : DISHES[Math.floor(Math.random() * (1 + S.up.menu))], st: drink ? BAR : KIT,
+  const c = { x: W + 0.9, y: -2.5, dir: 0, face: 0, state: 'q', qi: q, qpat: 26, t: 0, moving: true, kind, vip: kind === 'vip', stack: [], item,
     look: Object.assign(randLook(), kind === 'vip' ? { vip: true, shirt: '#3d2c6b', pants: '#1c1433' } : kind === 'critic' ? { beret: true, shirt: '#22333b' } : kind === 'hurry' ? { band: true } : {}) };
   c.mesh = makePerson(c.look); dyn.add(c.mesh); customers.push(c); return true;
 }
@@ -677,14 +839,14 @@ function killOrder(o) {
   if (o.state === 'ready') { o.st.slots[o.slot] = null; rm(o.mesh); }
 }
 function leave(c) {
-  c.state = 'out';
-  c.path = c.kind === 'rider' ? [[10.9, 2.2], [10.9, -3]] : [[c.seat.x, c.seat.y + 0.75], [DOOR.x, DOOR.y], [11.5, DOOR.y], [11.5, 13]];
+  c.state = 'out'; const far = Math.random() < 0.5 ? W + 15 : W - 34;
+  c.path = c.kind === 'rider' ? [[W + 0.9, 2.2], [W + 0.9, -3]] : [[c.seat.x, c.seat.y + 0.75], [DOOR.x, DOOR.y], [W + 0.75, DOOR.y], [W + 0.75, H + 0.5], [far, H + 0.5]];
 }
 function updCustomer(c, dt) {
   if (c.state === 'q') {
     const [qx, qy] = qPos(c.qi); if (go(c, qx, qy, 2.4, dt)) c.dir = -1.57;
     if (buff.clock <= 0) c.qpat -= dt;
-    if (c.qpat <= 0) { rate(-0.02); floatText(c.x, c.y, 2.0, T('qLeave'), '#ffcc80'); c.state = 'out'; c.path = [[11.5, c.y], [11.5, 13]]; }
+    if (c.qpat <= 0) { rate(-0.02); floatText(c.x, c.y, 2.0, T('qLeave'), '#ffcc80'); c.state = 'out'; c.path = [[W + 0.75, H + 0.5], [W + 14, H + 0.5]]; }
   } else if (c.state === 'in' || c.state === 'out') {
     const p = c.path[0];
     if (go(c, p[0], p[1], 2.4, dt)) {
@@ -692,7 +854,7 @@ function updCustomer(c, dt) {
       if (!c.path.length) {
         if (c.state === 'in') {
           c.state = 'wait'; c.patMax = c.pat = patience() * ({ vip: 0.75, hurry: 0.5, rider: 0.8 }[c.kind] || 1); c.dir = c.seat.side < 0 ? 1.57 : -1.57;
-          c.order = { item: c.item, st: c.st, seat: c.seat, cust: c, state: 'queue', slot: -1, claimed: null };
+          c.order = { item: c.item, st: ST[ITEMS.indexOf(c.item)], seat: c.seat, cust: c, state: 'queue', slot: -1, claimed: null };
           orders.push(c.order);
         } else { c.dead = true; rm(c.mesh); }
       } else c.moving = true;
@@ -700,14 +862,14 @@ function updCustomer(c, dt) {
   } else if (c.state === 'wait') {
     if (buff.clock <= 0) c.pat -= dt;
     if (c.pat <= 0) {
-      killOrder(c.order); c.seat.state = 'free'; rate(-0.15 * (c.kind === 'critic' ? 3 : 1)); combo = 0; sfx('angry');
+      killOrder(c.order); c.seat.state = 'free'; rate(-0.15 * (c.kind === 'critic' ? 3 : 1)); combo = 0; sfx('angry'); hudDirty = true;
       floatText(c.x, c.y, 2.1, T('angry'), '#ff8a80'); leave(c);
     }
   } else if (c.state === 'eat') {
     c.t -= dt;
     if (c.t <= 0) {
       const mul = { vip: 3, hurry: 1.6, rider: 1.8, critic: 1.5 }[c.kind] || 1;
-      const pay = c.item.p * (1 + 0.2 * S.up.tip) * (0.82 + S.rating * 0.07) * mul * (rushT > 0 ? 1.5 : 1) * (c.happy ? 1.3 : 1) * c.mult;
+      const pay = price(c.item) * (0.82 + S.rating * 0.07) * mul * (rushT > 0 ? 1.5 : 1) * (c.happy ? 1.3 : 1) * c.mult;
       c.seat.table.cash += Math.max(1, Math.round(pay)); rm(c.food);
       if (c.kind === 'rider') c.seat.state = 'free';
       else { c.seat.state = 'dirty'; c.seat.claimed = null; c.seat.plate = makeItem('dirty'); c.seat.plate.position.copy(c.food.position); dyn.add(c.seat.plate); }
@@ -719,7 +881,7 @@ function serve(o) {
   const c = o.cust, s = o.seat; orders.splice(orders.indexOf(o), 1);
   c.state = 'eat'; c.t = c.kind === 'rider' ? 0.8 : EAT; c.happy = c.pat / c.patMax > 0.5;
   c.food = makeItem(o.item.m);
-  if (s.takeout) c.food.position.set(9.7, 0.86, 2.0); else c.food.position.set(s.table.x + Math.sign(s.side) * 0.27, 0.735, s.table.y);
+  if (s.takeout) c.food.position.set(STAND.x, 0.86, 2.0); else c.food.position.set(s.table.x + Math.sign(s.side) * 0.27, 0.735, s.table.y);
   dyn.add(c.food);
   const cr = c.kind === 'critic' ? 4 : 1;
   rate((c.happy ? 0.05 : 0.015) * cr); progress('serve', 1);
@@ -727,25 +889,25 @@ function serve(o) {
   c.mult = comboMul(); hudDirty = true;
   if (c.vip) progress('vip', 1);
 }
-function toSlot(st, o) {
-  const i = st.slots.indexOf(null); if (i < 0) return false;
-  st.slots[i] = o; o.slot = i; o.state = 'ready';
-  o.mesh = makeItem(o.item.m); o.mesh.position.set(st.slotX(i), 0.81, st === KIT ? 0.82 : 0.86); dyn.add(o.mesh); return true;
-}
 function takeFromSlot(o, w) { o.st.slots[o.slot] = null; rm(o.mesh); o.state = 'carry'; w.stack.push({ o, m: o.item.m }); w.stackDirty = true; }
-function updCook(k, dt) {
-  if (k.order && k.order.dead) k.order = null;
-  if (!k.order) { const o = orders.find(o => o.state === 'queue' && o.st === KIT); if (o) { o.state = 'cook'; k.order = o; k.total = k.t = cookTime(o.item); } return; }
-  if (k.t > 0) { k.t -= dt * (buff.fire > 0 ? 3 : 1); return; }
-  if (toSlot(KIT, k.order)) k.order = null;
+function updStation(st, dt) {   // 每位厨师只做自己的那一道，每做一份消耗一份食材
+  if (st.cur && st.cur.dead) st.cur = null;
+  st.starved = false;
+  if (!st.cur) {
+    const o = orders.find(o => o.state === 'queue' && o.st === st);
+    if (o) {
+      if (S.stock <= 0) { st.starved = true; if (!stockWarned) { stockWarned = true; toast(T('noStock')); sfx('alert'); } }
+      else { S.stock--; hudDirty = true; o.state = 'cook'; st.cur = o; st.total = st.t = cookTime(st.item); }
+    }
+  }
+  else if (st.t > 0) st.t -= dt * (buff.fire > 0 ? 3 : 1);
+  else {
+    const i = st.slots.indexOf(null);
+    if (i >= 0) { const o = st.cur; st.slots[i] = o; o.slot = i; o.state = 'ready'; o.mesh = makeItem(o.item.m); o.mesh.position.set(slotX(o), 0.81, 0.82); dyn.add(o.mesh); st.cur = null; }
+  }
+  st.chef.order = st.cur; st.chef.t = st.t;
 }
-function updBar(dt) {
-  if (BAR.cur && BAR.cur.dead) BAR.cur = null;
-  if (!BAR.cur) { const o = orders.find(o => o.state === 'queue' && o.st === BAR); if (o) { o.state = 'cook'; BAR.cur = o; BAR.total = BAR.t = cookTime(o.item); } return; }
-  if (BAR.t > 0) { BAR.t -= dt * (buff.fire > 0 ? 3 : 1); return; }
-  if (toSlot(BAR, BAR.cur)) BAR.cur = null;
-}
-function washed(w) { addXp(0); progress('wash', 1); floatText(SINK.x, 0.8, 1.3, '✨', '#fff'); }
+function washed() { progress('wash', 1); floatText(SINK.x, 0.8, 1.3, '✨', '#fff'); }
 function autoTask(w) {
   const o = orders.find(o => o.state === 'ready' && !o.claimed);
   if (o) { o.claimed = w; return { type: 'deliver', order: o }; }
@@ -756,18 +918,18 @@ function autoTask(w) {
 }
 function updWaiter(w, dt) {
   if (!w.task) { w.task = autoTask(w); if (!w.task) { w.moving = false; return; } w.phase = 0; }
-  const t = w.task, sp = walkSpeed();
+  const t = w.task, sp = waiterSpeed();
   if (t.type === 'deliver') {
     const o = t.order;
     if (o.dead) { w.stack = []; w.stackDirty = true; w.task = null; return; }
-    if (w.phase === 0) { if (go(w, o.st.slotX(o.slot), 1.6, sp, dt)) { w.dir = Math.PI; takeFromSlot(o, w); w.phase = 1; } }
-    else if (go(w, o.seat.x - (o.seat.takeout ? 0.65 : 0), o.seat.y + (o.seat.takeout ? 0 : 0.75), sp, dt)) { w.dir = o.seat.takeout ? 1.57 : Math.PI; w.stack = []; w.stackDirty = true; if (o.seat.takeout) collect(STAND); serve(o); w.task = null; }
+    if (w.phase === 0) { if (go(w, slotX(o), 1.6, sp, dt)) { w.dir = Math.PI; takeFromSlot(o, w); w.phase = 1; } }
+    else if (go(w, o.seat.x - (o.seat.takeout ? 0.75 : 0), o.seat.y + (o.seat.takeout ? 0 : 0.75), sp, dt)) { w.dir = o.seat.takeout ? 1.57 : Math.PI; w.stack = []; w.stackDirty = true; serve(o); w.task = null; }
   } else {
     const s = t.seat;
     if (s.state !== 'dirty' && w.phase < 2) { w.task = null; return; }
-    if (w.phase === 0) { if (go(w, s.x, s.y + 0.75, sp, dt)) { w.dir = Math.PI; w.phase = 1; w.timer = 0.35; } }
-    else if (w.phase === 1) { w.timer -= dt; if (w.timer <= 0) { clearSeat(s, w); collect(s.table); w.phase = 2; } }
-    else if (go(w, SINK.x, 1.6, sp, dt)) { w.dir = Math.PI; w.stack = []; w.stackDirty = true; washed(w); w.task = null; }
+    if (w.phase === 0) { if (go(w, s.x, s.y + 0.75, sp, dt)) { w.dir = Math.PI; w.phase = 1; w.timer = 0.4 * Math.pow(0.8, S.up.eff); } }
+    else if (w.phase === 1) { w.timer -= dt; if (w.timer <= 0) { clearSeat(s, w); w.phase = 2; } }
+    else if (go(w, SINK.x, 1.6, sp, dt)) { w.dir = Math.PI; w.stack = []; w.stackDirty = true; washed(); w.task = null; }
   }
 }
 function clearSeat(s, w) { rm(s.plate); s.plate = null; s.state = 'free'; s.claimed = null; w.stack.push({ m: 'dirty' }); w.stackDirty = true; }
@@ -775,7 +937,7 @@ function clearSeat(s, w) { rm(s.plate); s.plate = null; s.state = 'free'; s.clai
 // ---- 玩家 ----
 const keys = {}, joy = { on: false, sx: 0, sy: 0, dx: 0, dy: 0, moved: false, t0: 0 };
 function updPlayer(dt) {
-  const p = player, sp = walkSpeed() * 1.2 * (buff.skate > 0 ? 1.5 : 1);
+  const p = player, sp = playerSpeed() * (buff.skate > 0 ? 1.5 : 1);
   let sx = joy.on && joy.moved ? joy.dx : 0, sy = joy.on && joy.moved ? joy.dy : 0;
   if (keys.a || keys.arrowleft) sx -= 1; if (keys.d || keys.arrowright) sx += 1;
   if (keys.w || keys.arrowup) sy -= 1; if (keys.s || keys.arrowdown) sy += 1;
@@ -787,12 +949,11 @@ function updPlayer(dt) {
   } else if (p.target) { if (go(p, p.target.x, p.target.y, sp, dt)) p.target = null; }
   else p.moving = false;
   // 碰撞
-  p.x = Math.max(0.35, Math.min(W - 0.35, p.x)); p.y = Math.max(1.5, Math.min(H - 0.35, p.y));
-  if (S.up.takeout > 0 && p.y < 2.95 && p.x > 9.2) p.x = 9.2;
-  for (const t of tables) {
-    const dx = p.x - t.x, dy = p.y - t.y, hx = 1.32, hy = 0.68;
+  p.x = Math.max(-26.5, Math.min(42.5, p.x)); p.y = Math.max(1.5, Math.min(17.4, p.y));
+  for (const t of OBS) {
+    const dx = p.x - t.x, dy = p.y - t.y, hx = t.hx, hy = t.hy;
     if (Math.abs(dx) < hx && Math.abs(dy) < hy) {
-      const tg = p.target, slide = tg ? sp * dt * 0.9 : 0;   // 点地移动时沿桌边绕到最近的桌角
+      const tg = p.target, slide = tg ? sp * dt * 0.9 : 0;   // 点地移动时沿边绕到最近的角
       if (hx - Math.abs(dx) < hy - Math.abs(dy)) {
         p.x = t.x + Math.sign(dx || 1) * hx;
         if (tg) p.y += Math.sign((Math.abs(tg.y - t.y) > hy ? tg.y : t.y + (dy >= 0 ? 1 : -1) * (hy + 0.05)) - p.y) * slide;
@@ -805,47 +966,39 @@ function updPlayer(dt) {
   if (p.target && Math.hypot(p.x - ox0, p.y - oy0) < sp * dt * 0.2) p.target = null;
   if (!p.target && !(sx || sy)) p.moving = false;
 
-  // 交互
+  // 收钱：只有店主亲自走到旁边
   const n0 = p.stack.length; p.stack = p.stack.filter(it => !(it.o && it.o.dead));
   if (p.stack.length !== n0) { p.stackDirty = true; floatText(p.x, p.y, 2, T('gone'), '#ff8a80'); }
   for (const t of tables) if (t.cash > 0 && Math.abs(p.x - t.x) < 1.75 && Math.abs(p.y - t.y) < 1.1) collect(t);
   if (STAND.cash > 0 && Math.abs(p.x - STAND.x) < 1.3 && Math.abs(p.y - STAND.y) < 1.3) collect(STAND);
+  for (const b of BIZ) { const s = S.biz[b.k]; if (s.lv > 0 && s.cash >= b.inc * s.lv * 4 && Math.hypot(p.x - b.px, p.y - PADY) < 1.3) { const n = Math.floor(s.cash); s.cash -= n; payout(b.px, PADY, 1, n); hideHint(); } }
+  // 进货：站在冰箱前的地垫上
+  if (Math.hypot(p.x - FRIDGE.x, p.y - FRIDGE.y) < 0.8 && S.stock < stockCap()) { fridgeT += dt; if (fridgeT > 0.6) { fridgeT = 0; restock(false); hideHint(); } } else fridgeT = 0;
   p.cd -= dt;
   if (p.cd <= 0) {
     const act = n => { p.cd = 0.16; p.stackDirty = true; hideHint(); sfx(n || 'pop'); };
     const near = s => Math.hypot(p.x - s.x, p.y - s.y) < 1.15;
     const it = p.stack.find(it => it.o && near(it.o.seat));
     if (it) { p.stack.splice(p.stack.indexOf(it), 1); serve(it.o); act('serve'); }
-    else if (p.y < 2.1 && Math.abs(p.x - SINK.x) < 0.85 && p.stack.some(it => !it.o)) { p.stack.splice(p.stack.findIndex(it => !it.o), 1); washed(p); act(); }
+    else if (p.y < 2.1 && Math.abs(p.x - SINK.x) < 0.85 && p.stack.some(it => !it.o)) { p.stack.splice(p.stack.findIndex(it => !it.o), 1); washed(); act(); }
     else if (p.stack.length < capacity()) {
       let done = false;
-      if (p.y < 2.1) for (const st of [KIT, BAR]) for (const o of st.slots) if (!done && o && !o.claimed && Math.abs(p.x - st.slotX(o.slot)) < 0.6) { takeFromSlot(o, p); act(); done = true; }
+      if (p.y < 2.1) for (const st of ST) for (const o of st.slots) if (!done && o && !o.claimed && Math.abs(p.x - slotX(o)) < 0.45) { takeFromSlot(o, p); act(); done = true; }
       if (!done) for (const t of tables) for (const s of t.seats) if (!done && s.state === 'dirty' && !s.claimed && near(s)) { clearSeat(s, p); act(); done = true; }
     }
   }
-  // 站在地垫上购买桌子
-  if (S.tables < SPOTS.length) {
-    const [px, py] = SPOTS[S.tables], cost = TABLE_COST[S.tables];
-    if (Math.abs(p.x - px) < 1.2 && Math.abs(p.y - py) < 0.6 && S.money >= cost) {
-      padT += dt;
-      if (padT > 0.8) {
-        padT = 0; addMoney(-cost); addTable(S.tables); S.tables++; save();
-        floatText(px, py, 1.6, T('newTable'), '#b9f6ca'); p.y = py + 0.7; p.target = null; sfx('buy');
-      }
-    } else padT = 0;
-  }
 }
 
-// ---- 道具、老鼠 ----
+// ---- 道具、老鼠、产业、行人 ----
 let pups = [], pupT = 18, mouse = null, mouseT = 50, buffTxt = '';
 const buff = { skate: 0, clock: 0, fire: 0 }, PUP = { skate: '🛼', cash: '💼', clock: '⏰', fire: '🔥' };
 function spawnPup() {
   const kind = pick(Object.keys(PUP)); let x, y, ok, n = 0;
-  do { x = 0.8 + Math.random() * (W - 1.8); y = 2 + Math.random() * (H - 2.8); ok = !tables.some(t => Math.abs(x - t.x) < 1.5 && Math.abs(y - t.y) < 0.9); } while (!ok && ++n < 25);
+  do { x = 0.8 + Math.random() * (W - 1.8); y = 2 + Math.random() * (H - 2.8); ok = !tables.some(t => Math.abs(x - t.x) < 1.5 && Math.abs(y - t.y) < 0.9) && Math.hypot(x - FRIDGE.x, y - FRIDGE.y) > 2; } while (!ok && ++n < 25);
   if (!ok) return;
   const g = new THREE.Group(); g.position.set(x, 0, y);
-  mk(cyl(0.42, 0.42, 0.02, 28), '#fff3b0', 0, 0.015, 0, g, { emissive: '#ffd60a', emissiveIntensity: 0.8, transparent: true, opacity: 0.85 }).castShadow = false;
-  const sp = emojiSprite(PUP[kind], 0.62); sp.position.y = 0.62; g.add(sp); dyn.add(g); pups.push({ kind, x, y, t: 14, g, sp, a: 0 });
+  mk(cyl(0.42, 0.42, 0.02, 24), '#fff3b0', 0, 0.015, 0, g, { emissive: '#ffd60a', emissiveIntensity: 0.8, transparent: true, opacity: 0.85 }).castShadow = false;
+  const sp = emojiSprite(PUP[kind], 0.62); sp.position.y = 0.62; g.add(sp); dyn.add(g); pups.push({ kind, x, y, t: 16, g, sp, a: 0 });
 }
 function makeMouse() {
   const g = new THREE.Group();
@@ -858,6 +1011,8 @@ function updExtras(dt) {
   for (const k in buff) if (buff[k] > 0) buff[k] -= dt;
   const bt = Object.keys(buff).filter(k => buff[k] > 0).map(k => PUP[k] + ' ' + Math.ceil(buff[k]) + 's').join('  ');
   if (bt !== buffTxt) { buffTxt = bt; const el = document.getElementById('buffs'); el.textContent = bt; el.style.display = bt ? 'block' : 'none'; }
+  if (S.stock > 0) stockWarned = false;
+  buyerT -= dt; if (S.up.buyer > 0 && buyerT <= 0 && S.stock < 15) { buyerT = 1.5; restock(true); }
   pupT -= dt; if (pupT <= 0) { pupT = 20 + Math.random() * 18; if (pups.length < 2) spawnPup(); }
   for (const u of pups) {
     u.t -= dt; u.a = Math.min(1, u.a + dt * 4);
@@ -870,30 +1025,38 @@ function updExtras(dt) {
   }
   pups = pups.filter(u => !u.dead);
   if (!mouse) {
-    if (S.level >= 2) { mouseT -= dt; if (mouseT <= 0) { mouse = { x: DOOR.x - 0.4, y: DOOR.y, tx: 5, ty: 4, t: 14, dir: 0, g: makeMouse() }; dyn.add(mouse.g); toast(T('mouse')); sfx('alert'); } }
+    if (S.level >= 2) { mouseT -= dt; if (mouseT <= 0) { mouse = { x: DOOR.x - 0.4, y: DOOR.y, tx: 10, ty: 5.2, t: 18, dir: 0, g: makeMouse() }; dyn.add(mouse.g); toast(T('mouse')); sfx('alert'); } }
   } else {
     const m = mouse; m.t -= dt;
     if (go(m, m.tx, m.ty, 2.9, dt)) { m.tx = 0.6 + Math.random() * (W - 1.2); m.ty = 1.8 + Math.random() * (H - 2.4); }
     let end = false;
     if (Math.hypot(player.x - m.x, player.y - m.y) < 0.85) { const n = 10 + 12 * S.level; addMoney(n); rate(0.1); floatText(m.x, m.y, 1, T('mouseOk') + ' +' + fmt(n), '#b9f6ca'); sfx('serve'); end = true; }
     else if (m.t <= 0) { rate(-0.2); toast(T('mouseBad')); sfx('angry'); end = true; }
-    if (end) { rm(m.g); mouse = null; mouseT = 60 + Math.random() * 50; }
+    if (end) { rm(m.g); mouse = null; mouseT = 70 + Math.random() * 50; }
+  }
+  for (const b of BIZ) { const s = S.biz[b.k]; if (s.lv > 0) s.cash = Math.min(bizCap(b), s.cash + bizRate(b) * dt); }
+  for (const p of peds) {
+    if (p.wait > 0) { p.wait -= dt; p.moving = false; continue; }
+    if (go(p, p.tx, p.ty, 1.5, dt)) {
+      const own = BIZ.filter(b => S.biz[b.k].lv > 0);
+      if (own.length && Math.random() < 0.45) { const b = pick(own); p.tx = b.px + (Math.random() - 0.5) * 2; p.ty = 12.5; p.wait = 1 + Math.random() * 2; }
+      else { p.tx = -26 + Math.random() * 68; p.ty = pick([12.5, 16.9, 17.3]); p.wait = Math.random() < 0.3 ? 1 : 0; }
+    }
   }
 }
 
 function update(dt) {
   time += dt;
-  // 高峰期
   if (rushT > 0) { rushT -= dt; if (rushT <= 0) { document.getElementById('rush').style.display = 'none'; nextRush = 70 + Math.random() * 40; } }
   else if (S.level >= 2) { nextRush -= dt; if (nextRush <= 0) { rushT = 22; document.getElementById('rush').style.display = 'block'; } }
   spawnT -= dt;
   if (spawnT <= 0) {
-    const gap = Math.max(0.9, 3.8 - 0.5 * S.up.ad) * (1.45 - S.rating * 0.13) * (rushT > 0 ? 0.4 : 1) * (0.7 + Math.random() * 0.6);
+    const gap = Math.max(0.8, 3.6 - 0.45 * S.up.ad) * (1.45 - S.rating * 0.13) * (rushT > 0 ? 0.4 : 1) * (0.7 + Math.random() * 0.6) / Math.pow(tables.length / 2, 0.6);
     spawnT = spawnCustomer() ? gap : 0.5;
   }
   seatQueue();
   customers.forEach(c => updCustomer(c, dt)); customers = customers.filter(c => !c.dead);
-  cooks.forEach(k => updCook(k, dt)); if (S.up.bar > 0) updBar(dt);
+  ST.forEach(st => updStation(st, dt));
   workers.forEach(w => w.isPlayer ? updPlayer(dt) : updWaiter(w, dt));
   floats.forEach(f => f.t += dt); floats = floats.filter(f => f.t < 1.3);
   updExtras(dt);
@@ -908,53 +1071,50 @@ function syncPerson(p, dt, sit) {
   const sw = p.moving ? Math.sin(ph) : 0, carry = p.stack.length > 0;
   g.position.set(p.x, (sit ? 0.07 : 0) + (p.moving ? Math.abs(Math.cos(ph)) * 0.05 : 0), p.y);
   u.legs[0].rotation.x = sit ? -1.5 : sw * 0.75; u.legs[1].rotation.x = sit ? -1.5 : -sw * 0.75;
-  const cooking = p.look.chef && p.order && p.t > 0, eating = p.state === 'eat';
+  const cooking = p.order && p.t > 0 && !p.state, eating = p.state === 'eat';
   u.arms[0].rotation.x = carry ? -1.25 : cooking ? -1.0 + Math.sin(time * 14) * 0.35 : eating ? -1.1 + Math.sin(time * 7) * 0.35 : sit ? -0.5 : -sw * 0.7;
   u.arms[1].rotation.x = carry ? -1.25 : cooking ? -1.0 - Math.sin(time * 14) * 0.35 : sit ? -0.5 : sw * 0.7;
   u.head.rotation.z = !p.moving && !sit ? Math.sin(time * 2 + ph) * 0.04 : 0;
   u.head.rotation.x = eating ? 0.12 + Math.sin(time * 7) * 0.08 : 0;
-  if (u.marker) { u.marker.position.y = 1.85 + Math.sin(time * 4) * 0.06 + p.stack.length * 0; u.marker.rotation.y = time * 2; u.marker.visible = !carry; }
+  if (u.marker) { u.marker.position.y = 1.85 + Math.sin(time * 4) * 0.06; u.marker.rotation.y = time * 2; u.marker.visible = !carry; }
   if (p.stackDirty) {
     p.stackDirty = false; while (u.tray.children.length) u.tray.remove(u.tray.children[0]);
     if (p.stack.length) mk(rb(0.5, 0.03, 0.4, 0.012), '#8a5a35', 0, 0, 0, u.tray);
-    let y = 0.015; p.stack.forEach(it => { const m = makeItem(it.m); m.position.y = y; u.tray.add(m); y += it.o ? (it.o.st === BAR ? 0.27 : 0.19) : 0.06; });
+    let y = 0.015; p.stack.forEach(it => { const m = makeItem(it.m); m.position.y = y; u.tray.add(m); y += it.o ? (it.o.item.drink ? 0.27 : 0.19) : 0.06; });
   }
 }
 let steamT = 0;
 function sync3D(dt) {
-  cooks.forEach(k => syncPerson(k, dt));
-  workers.forEach(w => syncPerson(w, dt));
+  const k = Math.min(1, dt * 6); CT.x += (player.x - CT.x) * k; CT.z += (player.y - CT.z) * k; placeCam();
+  ST.forEach(st => syncPerson(st.chef, dt)); workers.forEach(w => syncPerson(w, dt)); peds.forEach(p => syncPerson(p, dt));
   customers.forEach(c => syncPerson(c, dt, c.kind !== 'rider' && (c.state === 'wait' || c.state === 'eat')));
-  for (const st of [KIT, BAR]) for (const o of st.slots) if (o && o.mesh) o.mesh.position.y = 0.81 + (o.claimed ? 0 : Math.abs(Math.sin(time * 5 + o.slot)) * 0.1);
+  for (const st of ST) for (const o of st.slots) if (o && o.mesh) o.mesh.position.y = 0.81 + (o.claimed ? 0 : Math.abs(Math.sin(time * 5 + o.slot + st.i)) * 0.1);
   for (const t of tables) {
     t.stacks[0].visible = t.cash > 0; t.stacks[1].visible = t.cash > 60;
-    if (t.pop < 1) { t.pop = Math.min(1, t.pop + dt * 2.6); const k = t.pop - 1; t.g.scale.setScalar(1 + 2.7 * k * k * k + 1.7 * k * k); }
+    if (t.pop < 1) { t.pop = Math.min(1, t.pop + dt * 2.6); const q = t.pop - 1; t.g.scale.setScalar(Math.max(0.01, 1 + 2.7 * q * q * q + 1.7 * q * q)); }
   }
   STAND.stack.visible = STAND.cash > 0;
-  for (const u of pups) { u.sp.position.y = 0.62 + Math.sin(time * 4 + u.x) * 0.08; u.g.scale.setScalar(u.a); u.g.visible = u.t > 3.5 || Math.sin(time * 16) > -0.2; }
+  crates.forEach((c, i) => c.visible = S.stock > [0, 0.3, 0.65][i] * stockCap());
+  for (const b of BIZ) { const s = S.biz[b.k]; b.stack.visible = s.lv > 0 && s.cash >= b.inc * s.lv * 4; if (b.stack.visible) b.stack.scale.setScalar(0.7 + 0.9 * s.cash / bizCap(b)); }
+  for (const f of anim) f(time);
+  for (const u of pups) { u.sp.position.y = 0.62 + Math.sin(time * 4 + u.x) * 0.08; u.g.scale.setScalar(Math.max(0.01, u.a)); u.g.visible = u.t > 3.5 || Math.sin(time * 16) > -0.2; }
   if (mouse) { mouse.g.position.set(mouse.x, Math.abs(Math.sin(time * 18)) * 0.04, mouse.y); mouse.g.rotation.y = mouse.dir; }
-  // 热气
   steamT -= dt;
   if (steamT <= 0) {
     steamT = 0.14; const src = [];
-    for (const o of KIT.slots) if (o && o.mesh) src.push(o.mesh.position);
-    for (const c of customers) if (c.state === 'eat' && c.st === KIT && c.food) src.push(c.food.position);
+    for (const st of ST) if (!st.item.drink) for (const o of st.slots) if (o && o.mesh) src.push(o.mesh.position);
+    for (const c of customers) if (c.state === 'eat' && !c.item.drink && c.food) src.push(c.food.position);
     const f = steam.find(x => x.t >= 1.2);
     if (src.length && f) { const p = pick(src); f.t = 0; f.sp.visible = true; f.sp.position.set(p.x + (Math.random() - 0.5) * 0.12, p.y + 0.2, p.z + (Math.random() - 0.5) * 0.12); }
   }
   for (const f of steam) if (f.t < 1.2) {
-    f.t += dt; const k = f.t / 1.2; f.sp.position.y += dt * 0.45; f.sp.scale.setScalar(0.16 + k * 0.3); f.sp.material.opacity = 0.42 * Math.sin(Math.PI * k);
+    f.t += dt; const q = f.t / 1.2; f.sp.position.y += dt * 0.45; f.sp.scale.setScalar(0.16 + q * 0.3); f.sp.material.opacity = 0.42 * Math.sin(Math.PI * q);
     if (f.t >= 1.2) f.sp.visible = false;
   }
-  if (S.tables < SPOTS.length) {
-    const [x, y] = SPOTS[S.tables], ok = S.money >= TABLE_COST[S.tables];
-    pad.visible = true; pad.position.set(x, 0.02, y); pad.material.color.set(ok ? '#3fb950' : '#8d99a6');
-    pad.material.opacity = ok ? 0.4 + Math.sin(time * 5) * 0.12 : 0.3;
-  } else pad.visible = false;
 }
 
 // ================= 2D 叠加层 =================
-function at(x, y, z, fn) { const [px, py] = proj(x, y, z); octx.save(); octx.translate(px, py); octx.scale(K, K); fn(); octx.restore(); }
+function at(x, y, z, fn) { const [px, py] = proj(x, y, z); if (px < -80 || px > cw + 80 || py < -80 || py > ch + 120) return; octx.save(); octx.translate(px, py); octx.scale(K, K); fn(); octx.restore(); }
 function label(text, y, size, fill, stroke) {
   octx.font = '800 ' + size + 'px "Helvetica Neue",Arial,"PingFang SC",sans-serif'; octx.textAlign = 'center'; octx.textBaseline = 'middle';
   octx.lineWidth = 3.5; octx.lineJoin = 'round'; octx.strokeStyle = stroke || 'rgba(0,0,0,.65)'; octx.strokeText(text, 0, y);
@@ -970,43 +1130,56 @@ function bubble(e, o = {}) {
   if (o.prog != null) {
     octx.lineWidth = 4; octx.strokeStyle = '#e3e3e3'; octx.beginPath(); octx.arc(0, cy, r, 0, 7); octx.stroke();
     octx.strokeStyle = o.col || '#3fb950'; octx.lineCap = 'round';
-    octx.beginPath(); octx.arc(0, cy, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.max(0.001, o.prog)); octx.stroke();
+    octx.beginPath(); octx.arc(0, cy, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.max(0.001, Math.min(1, o.prog))); octx.stroke();
   }
   octx.font = '18px ' + EMO; octx.textAlign = 'center'; octx.textBaseline = 'middle'; octx.fillStyle = '#000'; octx.fillText(e, 0, cy + 1);
   octx.globalAlpha = 1;
 }
-function drawOverlay() {
+function edgeBubble(x, y, e, o) {   // 目标在屏幕外时贴边提示
+  const [px, py] = proj(x, y, 1); if (px >= 0 && px <= cw && py >= 0 && py <= ch) return;
+  const ex = Math.max(34, Math.min(cw - 34, px)), ey = Math.max(150, Math.min(ch - 110, py));
+  octx.save(); octx.translate(ex, ey + 24 * K); octx.scale(K, K); bubble(e, o); octx.restore();
+}
+const BADGE = { critic: '📝', hurry: '⚡', rider: '🛵' };
+function drawOverlay(dt) {
   octx.setTransform(dpr, 0, 0, dpr, 0, 0); octx.clearRect(0, 0, cw, ch);
-  for (const k of cooks) if (k.order && k.t > 0) at(k.x, k.y, 1.95, () => bubble(k.order.item.e, { prog: 1 - k.t / k.total }));
-  if (BAR.cur && BAR.t > 0) at(8.1, 0.6, 1.6, () => bubble(BAR.cur.item.e, { prog: 1 - BAR.t / BAR.total }));
+  for (const st of ST) {
+    if (st.cur && st.t > 0) at(st.x, 0.24, 1.95, () => bubble(st.item.e, { prog: 1 - st.t / st.total }));
+    else if (st.starved) at(st.x, 0.24, 1.95 + Math.sin(time * 6) * 0.05, () => bubble('🥬', { bg: '#ffe3e3', prog: 0.001, col: '#e5383b' }));
+  }
   for (const c of customers) if (c.state === 'wait') {
-    const r = c.pat / c.patMax, st = c.order.state;
-    at(c.x, c.y, c.vip ? 1.9 : 1.75, () => bubble(c.item.e, { prog: r, col: r > 0.5 ? '#3fb950' : r > 0.25 ? '#f4a300' : '#e5383b',
-      bg: st === 'ready' ? '#e6ffe6' : '#fff', dim: st === 'carry' }));
+    const r = c.pat / c.patMax, s = c.order.state;
+    at(c.x, c.y, c.vip ? 1.9 : 1.75, () => {
+      bubble(c.item.e, { prog: r, col: r > 0.5 ? '#3fb950' : r > 0.25 ? '#f4a300' : '#e5383b', bg: s === 'ready' ? '#e6ffe6' : '#fff', dim: s === 'carry' });
+      if (BADGE[c.kind]) { octx.font = '15px ' + EMO; octx.fillStyle = '#000'; octx.fillText(BADGE[c.kind], 19, -42); }
+    });
   }
   for (const t of tables) {
     for (const s of t.seats) if (s.state === 'dirty' && !s.claimed) at(s.x, s.y, 1.15 + Math.sin(time * 4) * 0.04, () => bubble('🧽'));
     if (t.cash > 0) at(t.x, t.y, 1.0, () => label('💰' + fmt(t.cash), 0, 14, '#fff', '#1d6b2c'));
   }
+  if (STAND.cash > 0) at(STAND.x, STAND.y, 1.15, () => label('💰' + fmt(STAND.cash), 0, 14, '#fff', '#1d6b2c'));
   if (player.stack.some(it => !it.o)) at(SINK.x, 0.6, 1.3 + Math.sin(time * 5) * 0.05, () => bubble('🚰', { bg: '#e0f4ff' }));
-  if (S.tables < SPOTS.length) {
-    const [x, y] = SPOTS[S.tables], ok = S.money >= TABLE_COST[S.tables];
-    at(x, y, 0.05, () => { label(T('addTable'), -9, 14, ok ? '#d8ffd8' : '#eee'); label('💰' + fmt(TABLE_COST[S.tables]), 9, 14, ok ? '#fff' : '#ffb4a8');
-      if (padT > 0) { octx.strokeStyle = '#fff'; octx.lineWidth = 5; octx.beginPath(); octx.arc(0, -40, 13, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * padT / 0.8); octx.stroke(); } });
+  if (mouse) at(mouse.x, mouse.y, 0.45, () => bubble('🐭', { prog: Math.max(0, mouse.t / 18), col: '#e5383b', bg: '#fff0f0' }));
+  // 冰箱 / 进货
+  const cap = stockCap(), low = S.stock < 8;
+  at(FRIDGE.x, FRIDGE.y, 1.5, () => {
+    label('🥬 ' + T('fridge', { n: S.stock, c: cap }), -9, 13, low ? '#ffb4a8' : '#fff');
+    label(S.stock >= cap ? T('stockFull') : T('restock', { n: fmt(Math.min(BATCH, cap - S.stock) * unitCost()) }), 9, 12, S.stock >= cap ? '#ddd' : '#b9f6ca');
+    if (fridgeT > 0) { octx.strokeStyle = '#fff'; octx.lineWidth = 5; octx.beginPath(); octx.arc(0, -40, 12, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * fridgeT / 0.6); octx.stroke(); }
+  });
+  if (low) edgeBubble(FRIDGE.x, FRIDGE.y, '🥬', { bg: '#ffe3e3', prog: Math.max(0.001, S.stock / cap), col: '#e5383b' });
+  // 产业
+  for (const b of BIZ) {
+    const s = S.biz[b.k];
+    if (s.lv > 0) {
+      const full = s.cash >= bizCap(b) - 1;
+      at(b.px, PADY, 1.1, () => { label(T(b.k) + ' Lv.' + s.lv, -18, 13, '#fff'); label('💰' + fmt(s.cash) + (full ? ' ' + T('full') : ''), 0, 15, full ? '#ffe066' : '#fff', '#1d6b2c'); });
+      if (s.cash >= bizCap(b) * 0.5) edgeBubble(b.px, PADY, b.e, { bg: '#fff8d6', prog: s.cash / bizCap(b), col: '#f4a300' });
+    } else at(b.px, BY - 1.2, 2.9, () => { label(T(b.k), -9, 15, '#fff'); label(S.level >= b.lv ? T('forSale') + ' 💰' + fmt(b.cost) : T('needLv', { l: b.lv }), 10, 13, S.level >= b.lv ? '#b9f6ca' : '#ffd6a5'); });
   }
   if (player.stack.length) at(player.x, player.y, 2.05, () => label(player.stack.length + '/' + capacity(), 0, 12, player.stack.length >= capacity() ? '#ffb4a8' : '#fff'));
   for (const f of floats) at(f.x, f.y, f.z + f.t * 0.7, () => { octx.globalAlpha = Math.max(0, 1 - f.t / 1.3); label(f.text, 0, 16, f.color); });
-  if (joy.on && joy.moved) {
-    octx.globalAlpha = 0.35; octx.fillStyle = '#fff'; octx.beginPath(); octx.arc(joy.sx, joy.sy, 46, 0, 7); octx.fill();
-    octx.globalAlpha = 0.8; octx.beginPath(); octx.arc(joy.sx + joy.dx * 46, joy.sy + joy.dy * 46, 20, 0, 7); octx.fill(); octx.globalAlpha = 1;
-  }
-}
-
-function drawOverlayExtra(dt) {
-  const BADGE = { critic: '📝', hurry: '⚡', rider: '🛵' };
-  for (const c of customers) if (c.state === 'wait' && BADGE[c.kind]) at(c.x, c.y, 1.75, () => { octx.font = '15px ' + EMO; octx.textAlign = 'center'; octx.textBaseline = 'middle'; octx.fillStyle = '#000'; octx.fillText(BADGE[c.kind], 19, -42); });
-  if (STAND.cash > 0) at(STAND.x, STAND.y, 1.15, () => label('💰' + fmt(STAND.cash), 0, 14, '#fff', '#1d6b2c'));
-  if (mouse) at(mouse.x, mouse.y, 0.45, () => bubble('🐭', { prog: Math.max(0, mouse.t / 14), col: '#e5383b', bg: '#fff0f0' }));
   for (const c of coins) {
     c.t += dt; if (c.t < 0) continue;
     const k = Math.min(1, c.t / 0.55), e = k * k, x = c.x + (cw - 70 - c.x) * e, y = c.y + (34 - c.y) * e - Math.sin(k * Math.PI) * 46;
@@ -1014,13 +1187,17 @@ function drawOverlayExtra(dt) {
     octx.fillStyle = '#fff6c9'; octx.beginPath(); octx.arc(x - 2 * K, y - 2 * K, 2.2 * K, 0, 7); octx.fill();
   }
   coins = coins.filter(c => c.t < 0.55);
+  if (joy.on && joy.moved) {
+    octx.globalAlpha = 0.35; octx.fillStyle = '#fff'; octx.beginPath(); octx.arc(joy.sx, joy.sy, 46, 0, 7); octx.fill();
+    octx.globalAlpha = 0.8; octx.beginPath(); octx.arc(joy.sx + joy.dx * 46, joy.sy + joy.dy * 46, 20, 0, 7); octx.fill(); octx.globalAlpha = 1;
+  }
 }
 
 // ================= 输入 =================
-function setTarget(x, y) {   // 目标点若落在桌子范围内，挪到最近的桌边
-  for (const t of tables) {
+function setTarget(x, y) {   // 目标点若落在障碍内，挪到最近的边
+  for (const t of OBS) {
     const dx = x - t.x, dy = y - t.y;
-    if (Math.abs(dx) < 1.36 && Math.abs(dy) < 0.72) { if (1.36 - Math.abs(dx) < 0.72 - Math.abs(dy)) x = t.x + Math.sign(dx || 1) * 1.38; else y = t.y + Math.sign(dy || 1) * 0.74; }
+    if (Math.abs(dx) < t.hx + 0.04 && Math.abs(dy) < t.hy + 0.04) { if (t.hx - Math.abs(dx) < t.hy - Math.abs(dy)) x = t.x + Math.sign(dx || 1) * (t.hx + 0.06); else y = t.y + Math.sign(dy || 1) * (t.hy + 0.06); }
   }
   player.target = { x, y };
 }
@@ -1046,12 +1223,18 @@ addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
 
 // ================= HUD =================
 const $ = id => document.getElementById(id);
-let toastTimer = 0, hintHidden = false;
-function toast(msg) { const t = $('toast'); t.textContent = msg; t.style.opacity = 1; clearTimeout(toastTimer); toastTimer = setTimeout(() => t.style.opacity = 0, 2600); }
-function hideHint() { if (!hintHidden) { hintHidden = true; setTimeout(() => $('hint').style.opacity = 0, 6000); } }
-const canBuyAny = () => Object.keys(UP).some(k => S.up[k] < UP[k].cost.length && S.money >= UP[k].cost[S.up[k]]);
+const tq = []; let tBusy = false, hintHidden = false;
+function nextToast() { const m = tq.shift(), t = $('toast'); if (!m) { tBusy = false; t.style.opacity = 0; return; } tBusy = true; t.textContent = m; t.style.opacity = 1; setTimeout(nextToast, tq.length > 1 ? 1300 : 2300); }
+function toast(msg) { tq.push(msg); if (!tBusy) nextToast(); }
+function hideHint() { if (!hintHidden) { hintHidden = true; setTimeout(() => $('hint').style.opacity = 0, 8000); } }
+function canBuyAny() {
+  return Object.keys(UP).some(k => S.up[k] < UP[k].cost.length && S.money >= UP[k].cost[S.up[k]]) ||
+    ITEMS.some((it, i) => i < unlocked() && S.skill[it.m] < 5 && S.money >= skillCost(it)) ||
+    BIZ.some(b => S.level >= b.lv && S.biz[b.k].lv < BIZMAX && S.money >= bizCost(b));
+}
 function renderHud() {
   $('money').textContent = '💰 ' + fmt(S.money);
+  $('stock').textContent = '🥬 ' + S.stock + '/' + stockCap(); $('stock').className = 'pill' + (S.stock < 8 ? ' low' : '');
   $('rating').textContent = '⭐ ' + T('rating') + ' ' + S.rating.toFixed(1);
   $('star').textContent = S.level;
   $('combo').style.display = combo >= 2 ? 'block' : 'none'; $('combo').textContent = '🔥 ×' + comboMul().toFixed(2) + '  (' + combo + ')';
@@ -1066,26 +1249,31 @@ function renderHud() {
 }
 function renderPanel() {
   const list = $('list'), sc = list.scrollTop; list.innerHTML = '';
-  for (const k of Object.keys(UP)) {
-    const u = UP[k], lv = S.up[k], max = u.cost.length, full = lv >= max;
-    const row = document.createElement('div'); row.className = 'row';
-    const [nm, ds0] = T(k === 'tip' ? 'tipUp' : k); let ds = ds0;
-    if (k === 'menu' && !full) ds = T('unlock', { e: DISHES[lv + 1].e, n: T(DISHES[lv + 1].m), p: DISHES[lv + 1].p });
-    if (k === 'bar') ds = full ? T('barFull') : T(lv ? 'barNew' : 'barOpen', { e: DRINKS[lv].e, n: T(DRINKS[lv].m), p: DRINKS[lv].p });
-    row.innerHTML = '<div class="ic">' + u.ic + '</div><div class="tx"><div class="nm">' + nm +
-      ' <span style="color:#c08a3e;font-size:12px">Lv.' + lv + '/' + max + '</span></div><div class="ds">' + ds + '</div></div>';
-    const b = document.createElement('button');
-    b.textContent = full ? T('max') : '💰' + fmt(u.cost[lv]); b.disabled = full || S.money < u.cost[lv];
-    b.onclick = () => { if (S.money < u.cost[lv]) return; addMoney(-u.cost[lv]); S.up[k]++; syncStaff(); save(); renderHud(); sfx('buy'); };
-    row.appendChild(b); list.appendChild(row);
-  }
+  const sec = t => { const d = document.createElement('div'); d.className = 'sec'; d.textContent = t; list.appendChild(d); };
+  const row = (ic, nm, lv, ds, btn, cost, fn) => {
+    const r = document.createElement('div'); r.className = 'row';
+    r.innerHTML = '<div class="ic">' + ic + '</div><div class="tx"><div class="nm">' + nm + ' <span style="color:#c08a3e;font-size:12px">' + lv + '</span></div><div class="ds">' + ds + '</div></div>';
+    const b = document.createElement('button'); b.textContent = btn; b.disabled = cost == null || S.money < cost;
+    b.onclick = () => { if (cost == null || S.money < cost) return; addMoney(-cost); fn(); sfx('buy'); syncWorld(false); save(); renderHud(); };
+    r.appendChild(b); list.appendChild(r);
+  };
+  sec(T('secChef'));
+  ITEMS.slice(0, unlocked()).forEach(it => { const lv = S.skill[it.m], full = lv >= 5, c = skillCost(it);
+    row(it.e, T('chefOf', { n: T(it.m) }), 'Lv.' + lv + '/5', T('chefDs') + ' (💰' + Math.round(price(it)) + ')', full ? T('max') : '💰' + fmt(c), full ? null : c, () => S.skill[it.m]++); });
+  sec(T('secStaff'));
+  for (const k of Object.keys(UP)) { const u = UP[k], lv = S.up[k], max = u.cost.length, full = lv >= max, [nm, ds] = T(k);
+    row(u.ic, nm, 'Lv.' + lv + '/' + max, ds, full ? T('max') : '💰' + fmt(u.cost[lv]), full ? null : u.cost[lv], () => S.up[k]++); }
+  sec(T('secBiz'));
+  for (const b of BIZ) { const s = S.biz[b.k], lock = S.level < b.lv, full = s.lv >= BIZMAX, c = bizCost(b), nl = Math.min(BIZMAX, s.lv + 1);
+    let ds = lock ? T('bizLocked', { l: b.lv }) : T('bizDs', { n: fmt(Math.round(b.inc * nl * (0.8 + S.rating * 0.08))), c: fmt(b.inc * nl * 240) });
+    if (b.k === 'market') ds += ' · ' + T('perk');
+    row(b.e, T(b.k), 'Lv.' + s.lv + '/' + BIZMAX, ds, lock ? T('needLv', { l: b.lv }) : full ? T('max') : '💰' + fmt(c), lock || full ? null : c, () => { s.lv++; if (s.lv === 1) toast(T('bizNew', { n: T(b.k) })); }); }
   list.scrollTop = sc;
 }
 $('upBtn').onclick = () => { $('panel').classList.add('open'); renderPanel(); };
 $('close').onclick = () => $('panel').classList.remove('open');
 $('panel').onclick = e => { if (e.target === $('panel')) $('panel').classList.remove('open'); };
 $('reset').onclick = () => { if (confirm(T('resetAsk'))) { S = fresh(); init(); save(); hudDirty = true; $('panel').classList.remove('open'); } };
-
 function applyLang() {
   document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang; document.title = T('title');
   $('langBtn').textContent = '🌐 ' + LANGS[lang]; $('upTxt').textContent = T('upgrade');
@@ -1093,32 +1281,35 @@ function applyLang() {
   $('panelTitle').textContent = T('panel'); $('reset').textContent = T('reset');
   drawMenu(); drawSign(); hudDirty = true;
 }
-$('sndBtn').textContent = AU.on ? '🔊' : '🔇';
-$('sndBtn').onclick = () => {
-  AU.on = !AU.on; $('sndBtn').textContent = AU.on ? '🔊' : '🔇'; if (AU.master) AU.master.gain.value = AU.on ? 1 : 0;
-  try { localStorage.setItem('shiguang-snd', AU.on ? '1' : '0'); } catch (e) {}
-};
 $('langBtn').onclick = () => {
   const ks = Object.keys(LANGS); lang = ks[(ks.indexOf(lang) + 1) % ks.length];
   try { localStorage.setItem('shiguang-lang', lang); } catch (e) {}
   applyLang();
 };
+$('sndBtn').textContent = AU.on ? '🔊' : '🔇';
+$('sndBtn').onclick = () => {
+  AU.on = !AU.on; $('sndBtn').textContent = AU.on ? '🔊' : '🔇'; if (AU.master) AU.master.gain.value = AU.on ? 1 : 0;
+  try { localStorage.setItem('shiguang-snd', AU.on ? '1' : '0'); } catch (e) {}
+};
+
 // ================= 主循环 =================
 init(); applyLang();
-if (S.last && S.up.waiter > 0) {   // 离线收入
-  const sec = Math.min(7200, (Date.now() - S.last) / 1000);
-  if (sec > 120) { const n = Math.round(sec * S.up.waiter * (6 + 6 * S.up.menu) * (1 + 0.2 * S.up.tip) * 0.025); S.money += n; hudDirty = true; setTimeout(() => toast(T('offline', { n: fmt(n) })), 900); }
+if (S.last) {   // 离开期间产业继续营业，收入存在店里等你去收
+  const sec = (Date.now() - S.last) / 1000; let n = 0;
+  if (sec > 60) for (const b of BIZ) { const s = S.biz[b.k]; if (s.lv > 0) { const add = Math.min(bizCap(b) - s.cash, bizRate(b) * sec); if (add > 0) { s.cash += add; n += add; } } }
+  if (n >= 1) setTimeout(() => toast(T('offline', { n: fmt(n) })), 900);
 }
 let last = performance.now();
 function frame(now) {
   const dt = Math.min(0.1, (now - last) / 1000); last = now;
-  update(dt); sync3D(dt); renderer.render(scene, cam); drawOverlay(); drawOverlayExtra(dt);
+  update(dt); sync3D(dt); renderer.render(scene, cam); drawOverlay(dt);
   if (hudDirty) { hudDirty = false; renderHud(); }
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
 setInterval(save, 5000); addEventListener('pagehide', save);
-window.__game = { setTarget, get S() { return S; }, player, get tables() { return tables; }, get customers() { return customers; }, KIT, BAR, SINK, STAND, buff, get pups() { return pups; }, get mouse() { return mouse; }, get combo() { return combo; }, step: update };
+window.__game = { get S() { return S; }, player, get tables() { return tables; }, get customers() { return customers; }, get ST() { return ST; }, get workers() { return workers; },
+  SINK, STAND, FRIDGE, BIZ, PADY, buff, get pups() { return pups; }, get mouse() { return mouse; }, get combo() { return combo; }, step: update, setTarget, addXp, unitCost, stockCap };
 })();
 </script>
 </body>
