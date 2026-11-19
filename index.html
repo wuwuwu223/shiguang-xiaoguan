@@ -39,6 +39,7 @@
     border: 2px solid #fff; display: none; }
   #hint { left: 50%; bottom: 18px; transform: translateX(-50%); background: rgba(0,0,0,.6); color: #fff; padding: 8px 14px;
     border-radius: 14px; font-size: 13px; width: max-content; max-width: 62vw; text-align: center; transition: opacity .6s; line-height: 1.5; }
+  @media (max-width: 640px) { #hint { bottom: 132px; max-width: 92vw; font-size: 12px; } #mission { width: 170px; } }
   #toast { left: 50%; top: 150px; transform: translateX(-50%); background: #ffc93c; color: #5a3600; font-weight: 800;
     padding: 10px 18px; border-radius: 16px; opacity: 0; transition: opacity .4s; box-shadow: 0 3px 8px rgba(0,0,0,.3); width: max-content; max-width: 90vw; text-align: center; }
   #rush { left: 50%; top: 200px; transform: translateX(-50%); background: #e5383b; color: #fff; font-weight: 800;
@@ -210,10 +211,10 @@ function fit() {
   const a = cw / ch;
   Object.assign(cam, { left: -a, right: a, top: 1, bottom: -1 }); cam.updateProjectionMatrix(); cam.updateMatrixWorld();
   let m = 0;
-  for (const p of [[-0.4,0,-0.4],[-0.4,3.1,-0.4],[W+0.9,0,-0.4],[W+0.2,3.1,-0.4],[-0.4,0,H+0.9],[-0.4,3.1,H+0.2],[W+0.9,0,H+0.9]]) {
+  for (const p of [[-0.4,0,-0.4],[-0.4,3.1,-0.4],[W+0.3,0,-0.4],[W+0.2,3.1,-0.4],[-0.4,0,H+0.3],[-0.4,3.1,H+0.2],[W+0.3,0,H+0.3]]) {
     _v.set(p[0], p[1], p[2]).project(cam); m = Math.max(m, Math.abs(_v.x), Math.abs(_v.y));
   }
-  const hh = m * 1.03;
+  const hh = m * 1.01;
   Object.assign(cam, { left: -hh * a, right: hh * a, top: hh, bottom: -hh }); cam.updateProjectionMatrix();
   ppu = ch / (2 * hh); K = Math.max(0.75, Math.min(1.7, ppu / 42));
 }
