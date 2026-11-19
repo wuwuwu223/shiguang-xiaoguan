@@ -32,6 +32,14 @@
     box-shadow: 0 2px 6px rgba(0,0,0,.3); }
   #rating { color: #a05a00; font-size: 14px; }
   #stock { color: #2d6a4f; font-size: 14px; }
+  #clock { color: #1d3557; font-size: 14px; }
+  #dayBox { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: none; align-items: center; justify-content: center; }
+  #dayBox.open { display: flex; }
+  #dayCard { background: #fff7ea; width: min(360px, 90vw); border-radius: 20px; padding: 18px; box-shadow: 0 10px 30px rgba(0,0,0,.4); text-align: center; }
+  #dayCard h2 { margin: 0 0 10px; color: #5a3600; font-size: 20px; }
+  #dayRows div { display: flex; justify-content: space-between; padding: 7px 4px; font-weight: 700; color: #4a2c00; border-bottom: 1px dashed #e6d3b5; }
+  #dayRows .net { font-size: 19px; border: none; margin-bottom: 10px; }
+  .pos { color: #2a7d36; } .neg { color: #c1121f; }
   #stock.low { background: #ffe3e3; color: #c1121f; }
   #combo { color: #d9480f; font-size: 15px; display: none; }
   #buffs { color: #1d3557; font-size: 14px; display: none; }
@@ -81,6 +89,7 @@
 <div id="topRight" class="hud">
   <div id="money" class="pill">💰 0</div>
   <div id="stock" class="pill">🥬 0</div>
+  <div id="clock" class="pill"></div>
   <div id="rating" class="pill">⭐ 3.0</div>
   <div id="combo" class="pill"></div>
   <div id="buffs" class="pill"></div>
@@ -97,6 +106,8 @@
     <button id="reset"></button>
   </div>
 </div>
+
+<div id="dayBox"><div id="dayCard"><h2 id="dayTitle"></h2><div id="dayRows"></div><button class="btn" id="dayBtn"></button></div></div>
 
 <script src="lib/three.min.js"></script>
 <script>
@@ -155,6 +166,27 @@ const TXT = {
     ramen: 'Mì ramen', dumpling: 'Sủi cảo', curry: 'Cơm cà ri', sushi: 'Sushi', hotpot: 'Lẩu', burger: 'Burger', pizza: 'Pizza', tea: 'Trà sữa', juice: 'Nước ép', coffee: 'Cà phê',
     market: 'Siêu thị', teashop: 'Quán trà sữa', hotel: 'Khách sạn', park: 'Công viên giải trí' },
 };
+Object.assign(TXT.zh, { hint2: '取菜 → 上菜 → 收盘洗碗 → 收钱。食材要去西边超市门口买，再搬回左下角冰箱',
+  noStock: '🥬 食材用完了！去超市门口采购，搬回冰箱', credit: '🥬 没钱了？超市先赊你一箱食材', goShop: '去超市门口买食材', putIn: '走近冰箱放入食材', shopBuy: '买食材 💰{n}/箱',
+  bizDs: '每位顾客约 💰{n}。要亲自接待和备货，或雇人', bizNew: '🏗️ {n} 开业了！站到光圈上接待顾客，货卖完要去备货',
+  clerkN: '店员', clerkD: '自动接待顾客，日薪 💰{n}', mgrN: '店长', mgrD: '自动备货，日薪 💰{n}', needHq: '需公司总部', hired: '已雇佣',
+  hq: '公司总部', hqD: '可为各产业雇店长；每天来签一份合同，当天全部收入 +20%', hqNew: '🏢 公司总部落成！每天可以来签合同', contract: '💼 合同签好了！今天全部收入 +20%', sign: '站这里签合同', signed: '今日合同 ✓',
+  dayEnd: '第 {n} 天结算', rev: '营业收入', cost: '食材支出', wage: '员工工资', rent: '房租', net: '净利润', nextDay: '开始新的一天', debt: '⚠️ 资金为负，口碑下降了', dayN: '第{n}天',
+  buyer: ['雇佣采购员', '食材不足时送货上门（加价 25%，日薪 💰50）'], waiter: ['雇佣服务员', '上菜、收盘、洗碗、收钱（每人日薪 💰30）'] });
+Object.assign(TXT.en, { hint2: 'Grab food → serve → wash plates → collect cash. Buy ingredients at the supermarket door to the west and carry them back to the fridge',
+  noStock: '🥬 Out of ingredients! Buy some at the supermarket door and bring them to the fridge', credit: '🥬 Broke? The supermarket fronts you one crate', goShop: 'Buy ingredients at the supermarket', putIn: 'Walk up to the fridge to stock', shopBuy: 'Ingredients 💰{n}/crate',
+  bizDs: 'About 💰{n} per customer. Serve and restock in person, or hire staff', bizNew: '🏗️ {n} is open! Stand on the pad to serve; restock when you sell out',
+  clerkN: 'Clerk', clerkD: 'Serves customers, wage 💰{n}/day', mgrN: 'Manager', mgrD: 'Restocks automatically, wage 💰{n}/day', needHq: 'Needs HQ', hired: 'Hired',
+  hq: 'Company HQ', hqD: 'Lets you hire managers; sign one contract a day for +20% income that day', hqNew: '🏢 Your HQ is built! Come by each day to sign a contract', contract: '💼 Contract signed! All income +20% today', sign: 'Stand here to sign', signed: 'Contract signed ✓',
+  dayEnd: 'Day {n} report', rev: 'Revenue', cost: 'Ingredients', wage: 'Wages', rent: 'Rent', net: 'Net profit', nextDay: 'Start next day', debt: '⚠️ You are in debt — rating dropped', dayN: 'Day {n}',
+  buyer: ['Hire Buyer', 'Delivers ingredients when low (+25% price, wage 💰50/day)'], waiter: ['Hire Waiter', 'Serves, clears, washes, collects (wage 💰30/day each)'] });
+Object.assign(TXT.vi, { hint2: 'Lấy món → phục vụ → rửa đĩa → thu tiền. Nguyên liệu phải mua ở cửa siêu thị phía tây rồi mang về tủ lạnh',
+  noStock: '🥬 Hết nguyên liệu! Hãy mua ở cửa siêu thị và mang về tủ lạnh', credit: '🥬 Hết tiền? Siêu thị cho nợ một thùng nguyên liệu', goShop: 'Mua nguyên liệu ở siêu thị', putIn: 'Đến gần tủ lạnh để cất', shopBuy: 'Nguyên liệu 💰{n}/thùng',
+  bizDs: 'Khoảng 💰{n} mỗi khách. Phải tự phục vụ và nhập hàng, hoặc thuê người', bizNew: '🏗️ {n} đã khai trương! Đứng trên vòng sáng để phục vụ; hết hàng thì đi nhập',
+  clerkN: 'Nhân viên', clerkD: 'Tự phục vụ khách, lương 💰{n}/ngày', mgrN: 'Quản lý', mgrD: 'Tự nhập hàng, lương 💰{n}/ngày', needHq: 'Cần trụ sở', hired: 'Đã thuê',
+  hq: 'Trụ sở công ty', hqD: 'Cho phép thuê quản lý; mỗi ngày ký một hợp đồng, thu nhập hôm đó +20%', hqNew: '🏢 Trụ sở đã xây xong! Mỗi ngày hãy đến ký hợp đồng', contract: '💼 Đã ký hợp đồng! Hôm nay thu nhập +20%', sign: 'Đứng đây để ký', signed: 'Đã ký hợp đồng ✓',
+  dayEnd: 'Tổng kết ngày {n}', rev: 'Doanh thu', cost: 'Nguyên liệu', wage: 'Lương nhân viên', rent: 'Tiền thuê', net: 'Lợi nhuận', nextDay: 'Bắt đầu ngày mới', debt: '⚠️ Bạn đang nợ — uy tín giảm', dayN: 'Ngày {n}',
+  buyer: ['Thuê người mua hàng', 'Giao nguyên liệu khi sắp hết (giá +25%, lương 💰50/ngày)'], waiter: ['Thuê phục vụ', 'Mang món, dọn, rửa, thu tiền (lương 💰30/ngày mỗi người)'] });
 let lang = '';
 try { lang = localStorage.getItem('shiguang-lang') || ''; } catch (e) {}
 if (!TXT[lang]) { const n = (navigator.language || 'zh').toLowerCase(); lang = n.startsWith('vi') ? 'vi' : n.startsWith('zh') ? 'zh' : 'en'; }
@@ -177,31 +209,32 @@ const ITEMS = [   // 每升一级解锁一项，每项有一位专属厨师
 const SPOTS = [];   // 三个用餐区，每区 6 桌
 for (let z = 0; z < 3; z++) for (let k = 0; k < 6; k++) SPOTS.push([[0.8, 7.38, 13.96][z] + 1.32 + (k % 2) * 2.64, [3.9, 6.6, 9.3][Math.floor(k / 2)]]);
 const UP = {
-  waiter:  { ic: '🤵', cost: [150, 500, 1500, 4000, 10000, 25000] },
-  eff:     { ic: '⚡', cost: [120, 300, 750, 1800, 4500] },
-  svc:     { ic: '👟', cost: [80, 200, 500, 1200, 3000] },
-  cap:     { ic: '🍽️', cost: [90, 300, 900, 2700] },
-  store:   { ic: '📦', cost: [200, 600, 1800] },
-  buyer:   { ic: '🧑‍🌾', cost: [800] },
-  pat:     { ic: '🛋️', cost: [70, 180, 450, 1100, 2800] },
-  ad:      { ic: '📣', cost: [100, 300, 900, 2500, 7000] },
-  takeout: { ic: '🛵', cost: [600] },
+  waiter:  { ic: '🤵', cost: [300, 1000, 3000, 9000, 25000, 70000] },
+  eff:     { ic: '⚡', cost: [200, 600, 1800, 5400, 16000] },
+  svc:     { ic: '👟', cost: [150, 450, 1300, 4000, 12000] },
+  cap:     { ic: '🍽️', cost: [150, 500, 1600, 5000] },
+  store:   { ic: '📦', cost: [300, 1000, 3200] },
+  buyer:   { ic: '🧑‍🌾', cost: [2000] },
+  pat:     { ic: '🛋️', cost: [120, 350, 1000, 3000, 9000] },
+  ad:      { ic: '📣', cost: [200, 700, 2200, 7000, 22000] },
+  takeout: { ic: '🛵', cost: [1500] },
 };
-const BIZ = [   // 商业街产业
-  { k: 'market',  e: '🛒', lv: 3,  cost: 1500,  inc: 4,  x0: -10.5, x1: -2.6,  y0: 5.5 },
-  { k: 'teashop', e: '🧋', lv: 5,  cost: 5000,  inc: 10, x0: 24.2,  x1: 29.2,  y0: 6.6 },
-  { k: 'hotel',   e: '🏨', lv: 8,  cost: 18000, inc: 30, x0: 33.5,  x1: 40.5,  y0: 5.5 },
-  { k: 'park',    e: '🎡', lv: 11, cost: 60000, inc: 90, x0: -25,   x1: -12.5, y0: 2 },
+const BIZ = [   // 商业街产业：gmax = 可售库存上限
+  { k: 'market',  e: '🛒', lv: 3,  cost: 3000,   inc: 4,  x0: -10.5, x1: -2.6,  y0: 5.5, gmax: 12, ge: '📦' },
+  { k: 'teashop', e: '🧋', lv: 5,  cost: 12000,  inc: 10, x0: 24.2,  x1: 29.2,  y0: 6.6, gmax: 8,  ge: '🧋' },
+  { k: 'hotel',   e: '🏨', lv: 8,  cost: 50000,  inc: 30, x0: 33.5,  x1: 40.5,  y0: 5.5, gmax: 8,  ge: '🛏️' },
+  { k: 'park',    e: '🎡', lv: 11, cost: 200000, inc: 90, x0: -25,   x1: -12.5, y0: 2,   gmax: 6,  ge: '🎠' },
 ];
-const BY = 11.6, PADY = 12.65, BIZMAX = 5, BATCH = 20;
+const HQ = { lv: 13, cost: 500000, x0: -34.5, x1: -27.5, y0: 5.5, px: -31 };
+const BY = 11.6, PADY = 12.65, BIZMAX = 10, CRATE = 20, DAYLEN = 300;
 BIZ.forEach(b => { b.px = (b.x0 + b.x1) / 2; });
 const EAT = 4.5, SAVE_KEY = 'shiguang-xiaoguan-v3', SINKS = [0.8, 10.0, 19.0], nearSink = x => SINKS.reduce((a, b) => Math.abs(b - x) < Math.abs(a - x) ? b : a), FRIDGE = { x: 1.25, y: 10.9 };
 
 // ================= 存档 =================
 function fresh() {
-  const s = { money: 30, level: 1, xp: 0, rating: 3, missionN: 0, mission: null, last: 0, stock: 20, tables: 2,
+  const s = { money: 30, level: 1, xp: 0, rating: 3, missionN: 0, mission: null, last: 0, stock: 20, tables: 2, day: 1, dayT: 0, hq: 0, contract: 0, d: { rev: 0, cost: 0 },
     up: { waiter: 0, eff: 0, svc: 0, cap: 0, store: 0, buyer: 0, pat: 0, ad: 0, takeout: 0 }, skill: {}, biz: {} };
-  ITEMS.forEach(i => s.skill[i.m] = 0); BIZ.forEach(b => s.biz[b.k] = { lv: 0, cash: 0 }); return s;
+  ITEMS.forEach(i => s.skill[i.m] = 0); BIZ.forEach(b => s.biz[b.k] = { lv: 0, cash: 0, clerk: 0, mgr: 0 }); return s;
 }
 let S = fresh();
 try {
@@ -214,19 +247,23 @@ const save = () => { try { S.last = Date.now(); localStorage.setItem(SAVE_KEY, J
 const unlocked = () => Math.min(S.level, ITEMS.length);
 const tableCount = () => S.tables;
 const tableMax = () => Math.min(S.level * 2, SPOTS.length);
-const tableCost = () => Math.round(100 * Math.pow(1.5, S.tables - 2) / 10) * 10;
+const tableCost = () => Math.round(150 * Math.pow(1.6, S.tables - 2) / 10) * 10;
 const playerSpeed = () => 3.3 * (1 + 0.14 * S.up.svc);
 const waiterSpeed = () => 2.6 * (1 + 0.18 * S.up.eff);
 const cookTime = it => it.t * Math.pow(0.88, S.skill[it.m]);
 const price = it => it.p * (1 + 0.15 * S.skill[it.m]);
-const skillCost = it => Math.round(it.p * 8 * Math.pow(2.2, S.skill[it.m]) / 10) * 10;
+const skillCost = it => Math.round(it.p * 15 * Math.pow(2.2, S.skill[it.m]) / 10) * 10;
 const patience = () => 36 * (1 + 0.15 * S.up.pat);
 const capacity = () => 2 + S.up.cap;
 const stockCap = () => 60 + 40 * S.up.store;
-const unitCost = () => { let a = 0; const n = unlocked(); for (let i = 0; i < n; i++) a += ITEMS[i].p; return Math.max(1, Math.round(a / n * 0.25 * (S.biz.market.lv > 0 ? 0.7 : 1))); };
+const unitCost = () => { let a = 0; const n = unlocked(); for (let i = 0; i < n; i++) a += ITEMS[i].p; return Math.max(1, Math.round(a / n * 0.4 * (S.biz.market.lv > 0 ? 0.7 : 1))); };
 const xpNeed = () => Math.round(14 * Math.pow(S.level, 1.7));
 const bizRate = b => b.inc * S.biz[b.k].lv * (0.8 + S.rating * 0.08);
-const bizCap = b => b.inc * S.biz[b.k].lv * 240;
+const bizCap = b => b.inc * S.biz[b.k].lv * 600;
+const cratePrice = () => unitCost() * CRATE;
+const incMul = () => (S.contract === S.day ? 1.2 : 1);
+const wages = () => 30 * S.up.waiter + 50 * S.up.buyer + BIZ.reduce((a, b) => { const s = S.biz[b.k]; return a + (s.lv > 0 ? (s.clerk ? b.inc * s.lv * 40 : 0) + (s.mgr ? b.inc * s.lv * 80 : 0) : 0); }, 0);
+const rent = () => 20 * S.tables + 40 * S.level + BIZ.reduce((a, b) => a + (S.biz[b.k].lv > 0 ? b.inc * 15 : 0), 0) + (S.hq ? 2000 : 0);
 const bizCost = b => { const l = S.biz[b.k].lv; return l ? Math.round(b.cost * 0.6 * Math.pow(2, l) / 100) * 100 : b.cost; };
 const ownedBiz = () => BIZ.filter(b => S.biz[b.k].lv > 0).length;
 const pick = a => a[Math.floor(Math.random() * a.length)];
@@ -244,7 +281,7 @@ const scene = new THREE.Scene(); scene.background = new THREE.Color('#8fc97a');
 const cam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 120);
 const CT = new THREE.Vector3(10, 0.4, 5);
 cam.position.copy(CT).add(new THREE.Vector3(14, 14.6, 14)); cam.lookAt(CT);
-scene.add(new THREE.HemisphereLight(0xffffff, 0xc9b79a, 1.7));
+const hemi = new THREE.HemisphereLight(0xffffff, 0xc9b79a, 1.7); scene.add(hemi);
 const sun = new THREE.DirectionalLight(0xfff1d6, 2.3);
 sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
 Object.assign(sun.shadow.camera, { left: -24, right: 24, top: 24, bottom: -24, near: 1, far: 60 });
@@ -351,6 +388,9 @@ function makeItem(kind) {
     mk(cyl(0.14, 0.11, 0.025), '#ffffff', 0, 0.013, 0, g, { roughness: 0.3 });
     mk(cyl(0.09, 0.07, 0.14), '#ffffff', 0, 0.095, 0, g, { roughness: 0.3 }); mk(cyl(0.078, 0.078, 0.01), '#5c3a21', 0, 0.163, 0, g);
     const h = new THREE.Mesh(G('handle', () => new THREE.TorusGeometry(0.045, 0.014, 8, 14)), M('#ffffff')); h.position.set(0.1, 0.095, 0); g.add(h);
+  } else if (kind === 'crate') {
+    mk(rb(0.44, 0.24, 0.36, 0.03), '#a86f42', 0, 0.12, 0, g); mk(rb(0.46, 0.04, 0.38, 0.015), '#8a5a35', 0, 0.2, 0, g);
+    [['#e63946', -0.11, -0.06], ['#52b788', 0.1, -0.05], ['#f4a261', 0, 0.08], ['#52b788', -0.12, 0.09]].forEach(([c, x, z]) => mk(sph(0.085), c, x, 0.27, z, g));
   } else { // dirty plate
     plate(); mk(sph(0.08), '#b08968', 0.02, 0.03, 0.01, g).scale.set(1, 0.12, 0.7); mk(sph(0.03), '#e9c46a', -0.07, 0.035, 0.05, g).scale.y = 0.3;
     mk(rb(0.03, 0.012, 0.2, 0.005), '#cfd8dc', 0.1, 0.04, -0.02, g, { metalness: 0.6, roughness: 0.3 }).rotation.y = 0.5;
@@ -528,14 +568,14 @@ const fountain = new THREE.Group(); scene.add(fountain);
 (function buildDistrict() {
   const s = scene;
   flat(400, 400, '#8fc97a', 0, -0.02, 0);
-  flat(76, 1.3, '#d9d4c7', 7.5, -0.012, 12.25); flat(76, 3.4, '#59636e', 7.5, -0.008, 14.6); flat(76, 1.4, '#d9d4c7', 7.5, -0.012, 17.0);
+  flat(92, 1.3, '#d9d4c7', 3.5, -0.012, 12.25); flat(92, 3.4, '#59636e', 3.5, -0.008, 14.6); flat(92, 1.4, '#d9d4c7', 3.5, -0.012, 17.0);
   flat(0.9, 21, '#d9d4c7', 20.75, -0.012, 1.4); flat(2.6, 21, '#59636e', 22.5, -0.009, 1.4); flat(0.4, 21, '#d9d4c7', 24.0, -0.012, 1.4);
-  for (let x = -29; x < 45; x += 2.4) flat(1.2, 0.14, '#f1e9c9', x, -0.004, 14.6);
+  for (let x = -41; x < 49; x += 2.4) flat(1.2, 0.14, '#f1e9c9', x, -0.004, 14.6);
   for (let z = -8; z < 12; z += 2.4) flat(0.14, 1.2, '#f1e9c9', 22.5, -0.004, z);
-  for (let x = -28; x <= 44; x += 8) {
+  for (let x = -36; x <= 44; x += 8) {
     mk(cyl(0.05, 0.07, 2.6, 8), '#3b4a5a', x, 1.3, 17.45, s); mk(sph(0.17), '#fff3b0', x, 2.7, 17.45, s, { emissive: '#ffd60a', emissiveIntensity: 1 }); mk(cyl(0.2, 0.12, 0.08), '#3b4a5a', x, 2.86, 17.45, s);
   }
-  for (let x = -26; x <= 44; x += 5.5) tree(x + (Math.abs(x) % 3) * 0.3, 19.2 + (Math.abs(x) % 2), 1 + (Math.abs(x) % 3) * 0.12);
+  for (let x = -37; x <= 44; x += 5.5) tree(x + (Math.abs(x) % 3) * 0.3, 19.2 + (Math.abs(x) % 2), 1 + (Math.abs(x) % 3) * 0.12);
   for (const [x, z] of [[-1.5, 3], [-1.6, 8.5], [30.8, 8], [31.5, 3.5], [42.5, 9], [-27, 6], [26, 3], [28.5, 1], [-6, 2], [-9, 3.4]]) tree(x, z, 1.1);
   // 喷泉广场（产业 ≥2 后出现）
   flat(7, 3.2, '#e9e2d0', 10, -0.006, 20.2, fountain);
@@ -610,9 +650,26 @@ const fountain = new THREE.Group(); scene.add(fountain);
     mk(cyl(0.55, 0.55, 0.03, 24), '#fff3b0', 0, 0.015, 0, b.stack, { emissive: '#ffd60a', emissiveIntensity: 0.6 }).castShadow = false;
     for (let k = 0; k < 4; k++) { mk(rb(0.3, 0.06, 0.17, 0.015), '#58b368', 0, 0.06 + k * 0.062, 0, b.stack); mk(rb(0.08, 0.062, 0.175, 0.012), '#f1faee', 0, 0.06 + k * 0.062, 0, b.stack); }
   }
+  { // 公司总部
+    const w = HQ.x1 - HQ.x0, d = BY - HQ.y0, cx = HQ.px, cz = (HQ.y0 + BY) / 2;
+    const lot = HQ.lot = new THREE.Group(); s.add(lot); flat(w, d, '#c9c2b0', cx, -0.005, cz, lot);
+    mk(cyl(0.06, 0.06, 1.6, 6), '#8a5a35', cx, 0.8, BY - 1.2, lot); mk(rb(1.5, 1.1, 0.1, 0.04), '#fffaf0', cx, 1.9, BY - 1.2, lot);
+    const ls = emojiSprite('🏢', 0.9, true); ls.position.set(cx, 1.9, BY - 1.1); lot.add(ls);
+    const g = HQ.g = new THREE.Group(); s.add(g);
+    mk(rb(w, 8.5, d, 0.08), '#2b3a55', cx, 4.25, cz, g); mk(rb(w + 0.3, 0.3, d + 0.3, 0.06), '#e9c46a', cx, 8.6, cz, g);
+    const c = document.createElement('canvas'); c.width = c.height = 256; const x = c.getContext('2d'); x.fillStyle = '#2b3a55'; x.fillRect(0, 0, 256, 256);
+    for (let r = 0; r < 6; r++) for (let col = 0; col < 5; col++) { x.fillStyle = (r * 2 + col * 3) % 5 ? '#9ad1ff' : '#ffe9a8'; x.fillRect(14 + col * 48, 10 + r * 41, 36, 30); }
+    const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.3 });
+    const f = new THREE.Mesh(new THREE.PlaneGeometry(w - 0.4, 6.4), mat); f.position.set(cx, 5.0, BY + 0.01); g.add(f);
+    const e = new THREE.Mesh(new THREE.PlaneGeometry(d - 0.4, 6.4), mat); e.rotation.y = Math.PI / 2; e.position.set(HQ.x1 + 0.01, 5.0, cz); g.add(e);
+    mk(rb(2.2, 1.6, 0.08, 0.02), '#bfe9f5', cx, 0.82, BY + 0.03, g, { emissive: '#ffe9a8', emissiveIntensity: 0.5, roughness: 0.1 }); mk(rb(3.2, 0.18, 1.2, 0.05), '#e9c46a', cx, 1.8, BY + 0.55, g);
+    const sp = emojiSprite('🏢', 1.6, true); sp.position.set(cx, 9.6, cz); g.add(sp);
+    mk(cyl(0.55, 0.55, 0.03, 24), '#fff3b0', HQ.px, 0.015, PADY, g, { emissive: '#ffd60a', emissiveIntensity: 0.6 }).castShadow = false;
+  }
 })();
 function syncDistrict() {
-  for (const b of BIZ) { const o = S.biz[b.k].lv > 0; b.g.visible = o; b.lot.visible = !o; }
+  for (const b of BIZ) { const o = S.biz[b.k].lv > 0 || b.k === 'market'; b.g.visible = o; b.lot.visible = !o; }
+  HQ.g.visible = !!S.hq; HQ.lot.visible = !S.hq;
   fountain.visible = ownedBiz() >= 2;
 }
 const tpad = mk(rb(2.5, 0.03, 1.3, 0.012), '#3fb950', 0, 0.02, 0, scene); tpad.material = new THREE.MeshStandardMaterial({ color: '#3fb950', transparent: true, opacity: 0.4 }); tpad.castShadow = false;
@@ -679,8 +736,8 @@ document.addEventListener('visibilitychange', () => { if (AU.ctx) document.hidde
 
 // ================= 运行时状态 =================
 let tables = [], customers = [], orders = [], workers = [], floats = [], ST = [], peds = [], OBS = [];
-let padT = 0, spawnT = 1.5, time = 0, rushT = 0, nextRush = 80, hudDirty = true, combo = 0, coins = [], fridgeT = 0, stockWarned = false, buyerT = 0;
-const comboMul = () => 1 + Math.min(combo, 20) * 0.05;
+let padT = 0, spawnT = 1.5, time = 0, rushT = 0, nextRush = 80, hudDirty = true, combo = 0, coins = [], shopT = 0, hqT = 0, paused = false, lastClock = '', stockWarned = false, buyerT = 0;
+const comboMul = () => 1 + Math.min(combo, 20) * 0.02;
 const player = { isPlayer: true, x: 9, y: 2.4, dir: 0, face: 0, stack: [], moving: false, cd: 0, target: null,
   look: { shirt: '#ff7a45', hair: '#3b2a1a', skin: '#f6c9a0', pants: '#2f3e46', style: 'short', apron: true, player: true } };
 
@@ -692,6 +749,7 @@ function rebuildObs() {
   box(0.05, 0.6, 10.4, H);
   if (S.up.takeout > 0) box(W - 0.6, W + 0.28, 1.65, 2.75);
   for (const b of BIZ) box(b.x0, b.x1, -4, BY);
+  box(HQ.x0, HQ.x1, -4, BY);
   for (const t of tables) o.push({ x: t.x, y: t.y, hx: 1.32, hy: 0.68 });
   OBS = o;
 }
@@ -775,7 +833,7 @@ function init() {
 function newMission() {
   const n = S.missionN, type = ['serve', 'earn', 'wash', 'happy', 'vip'][n % 5];
   const goal = { serve: 5 + 3 * n, earn: Math.round(80 * Math.pow(1.35, n) / 10) * 10, wash: 4 + 2 * n, happy: 3 + 2 * n, vip: 1 + Math.floor(n / 5) }[type];
-  S.mission = { type, goal, prog: 0, reward: Math.round(50 * Math.pow(1.25, n) / 10) * 10 }; hudDirty = true;
+  S.mission = { type, goal, prog: 0, reward: Math.round(30 * Math.pow(1.2, n) / 10) * 10 }; hudDirty = true;
 }
 function progress(type, v) {
   const m = S.mission; if (!m || m.type !== type) return;
@@ -791,11 +849,11 @@ function go(e, tx, ty, sp, dt) {
   e.x += dx / d * step; e.y += dy / d * step; e.moving = true; return false;
 }
 function floatText(x, y, z, text, color) { floats.push({ x, y, z, text, color: color || '#fff', t: 0 }); }
-function addMoney(n) { S.money += n; if (n > 0) progress('earn', n); hudDirty = true; }
+function addMoney(n) { S.money += n; if (n > 0) { S.d.rev += n; progress('earn', n); } hudDirty = true; }
 function addXp(n) {
   S.xp += n;
   while (S.xp >= xpNeed()) {
-    S.xp -= xpNeed(); S.level++; const b = 40 * S.level; S.money += b;
+    S.xp -= xpNeed(); S.level++; const b = 20 * S.level; S.money += b;
     toast(T('levelUp', { l: S.level, n: fmt(b) })); sfx('level'); applyTier(true); syncWorld(true); save();
   }
   hudDirty = true;
@@ -813,12 +871,9 @@ function buyTable() {   // 升级只提高可购买上限，桌子要自己花�
   toast((S.tables - 1) % 6 === 0 ? T('zoneOpen', { n: T('z' + Math.floor((S.tables - 1) / 6)) }) : '🪑 ' + S.tables + '/' + tableMax());
   return true;
 }
-function restock(auto) {   // 花钱进货
-  const u = unitCost(); let n = Math.min(BATCH, stockCap() - S.stock); if (n <= 0) return false;
-  const afford = Math.floor(S.money / u);
-  if (afford <= 0) { if (auto || S.stock > 0) return false; S.stock += 5; toast(T('credit')); hudDirty = true; return true; }
-  n = Math.min(n, afford); S.money -= n * u; S.stock += n; hudDirty = true;
-  floatText(FRIDGE.x, FRIDGE.y, 1.6, '🥬 +' + n + '  -💰' + fmt(n * u), '#b9f6ca'); if (!auto) sfx('pop'); return true;
+function restock() {   // 采购员送货上门，加价 25%
+  const c = Math.round(cratePrice() * 1.25); if (S.stock + CRATE > stockCap() || S.money < c) return false;
+  S.money -= c; S.d.cost += c; S.stock += CRATE; hudDirty = true; floatText(FRIDGE.x, FRIDGE.y, 1.6, '🥬 +' + CRATE + '  -💰' + fmt(c), '#b9f6ca'); return true;
 }
 
 const QMAX = 6, qPos = i => [W + 0.75, DOOR.y + 0.25 + i * 0.68];
@@ -881,7 +936,7 @@ function updCustomer(c, dt) {
     c.t -= dt;
     if (c.t <= 0) {
       const mul = { vip: 3, hurry: 1.6, rider: 1.8, critic: 1.5 }[c.kind] || 1;
-      const pay = price(c.item) * (0.82 + S.rating * 0.07) * mul * (rushT > 0 ? 1.5 : 1) * (c.happy ? 1.3 : 1) * c.mult;
+      const pay = price(c.item) * incMul() * (0.82 + S.rating * 0.07) * mul * (rushT > 0 ? 1.5 : 1) * (c.happy ? 1.3 : 1) * c.mult;
       c.seat.table.cash += Math.max(1, Math.round(pay)); rm(c.food);
       if (c.kind === 'rider') c.seat.state = 'free';
       else { c.seat.state = 'dirty'; c.seat.claimed = null; c.seat.plate = makeItem('dirty'); c.seat.plate.position.copy(c.food.position); dyn.add(c.seat.plate); }
@@ -958,15 +1013,15 @@ function updPlayer(dt) {
   let sx = joy.on && joy.moved ? joy.dx : 0, sy = joy.on && joy.moved ? joy.dy : 0;
   if (keys.a || keys.arrowleft) sx -= 1; if (keys.d || keys.arrowright) sx += 1;
   if (keys.w || keys.arrowup) sy -= 1; if (keys.s || keys.arrowdown) sy += 1;
-  const ox0 = p.x, oy0 = p.y;
+  const ox0 = p.x, oy0 = p.y, tg0 = p.target;
   if (sx || sy) {
-    p.target = null;
+    p.target = null; p.path = null;
     let wx = sx + sy, wy = -sx + sy; const l = Math.hypot(wx, wy), mag = Math.min(1, Math.hypot(sx, sy));
     wx /= l; wy /= l; p.x += wx * sp * mag * dt; p.y += wy * sp * mag * dt; p.dir = Math.atan2(wx, wy); p.moving = true;
-  } else if (p.target) { if (go(p, p.target.x, p.target.y, sp, dt)) p.target = null; }
+  } else if (p.target) { if (go(p, p.target.x, p.target.y, sp, dt)) p.target = (p.path && p.path.shift()) || null; }
   else p.moving = false;
   // 碰撞
-  p.x = Math.max(-26.5, Math.min(42.5, p.x)); p.y = Math.max(1.5, Math.min(17.4, p.y));
+  p.x = Math.max(-36.5, Math.min(42.5, p.x)); p.y = Math.max(1.5, Math.min(17.4, p.y));
   for (const t of OBS) {
     const dx = p.x - t.x, dy = p.y - t.y, hx = t.hx, hy = t.hy;
     if (Math.abs(dx) < hx && Math.abs(dy) < hy) {
@@ -980,7 +1035,7 @@ function updPlayer(dt) {
       }
     }
   }
-  if (p.target && Math.hypot(p.x - ox0, p.y - oy0) < sp * dt * 0.2) p.target = null;
+  if (p.target && p.target === tg0 && Math.hypot(p.x - ox0, p.y - oy0) < sp * dt * 0.2) { p.target = null; p.path = null; }   // 被挡住走不动就停下
   if (!p.target && !(sx || sy)) p.moving = false;
 
   // 收钱：只有店主亲自走到旁边
@@ -988,21 +1043,30 @@ function updPlayer(dt) {
   if (p.stack.length !== n0) { p.stackDirty = true; floatText(p.x, p.y, 2, T('gone'), '#ff8a80'); }
   for (const t of tables) if (t.cash > 0 && Math.abs(p.x - t.x) < 1.75 && Math.abs(p.y - t.y) < 1.1) collect(t);
   if (STAND.cash > 0 && Math.abs(p.x - STAND.x) < 1.3 && Math.abs(p.y - STAND.y) < 1.3) collect(STAND);
-  for (const b of BIZ) { const s = S.biz[b.k]; if (s.lv > 0 && s.cash >= b.inc * s.lv * 4 && Math.hypot(p.x - b.px, p.y - PADY) < 1.3) { const n = Math.floor(s.cash); s.cash -= n; payout(b.px, PADY, 1, n); hideHint(); } }
+  for (const b of BIZ) { const s = S.biz[b.k]; if (s.lv > 0 && s.cash >= 1 && Math.hypot(p.x - b.px, p.y - PADY) < 1.3) { const n = Math.floor(s.cash); s.cash -= n; payout(b.px, PADY, 1, n); hideHint(); } }
   // 买桌子：站在空位光圈上
   if (S.tables < tableMax()) {
     const [tx, ty] = SPOTS[S.tables];
     if (Math.abs(p.x - tx) < 1.2 && Math.abs(p.y - ty) < 0.6 && S.money >= tableCost()) { padT += dt; if (padT > 0.8) { padT = 0; buyTable(); p.target = null; hideHint(); } } else padT = 0;
   } else padT = 0;
   // 进货：站在冰箱前的地垫上
-  if (Math.hypot(p.x - FRIDGE.x, p.y - FRIDGE.y) < 0.8 && S.stock < stockCap()) { fridgeT += dt; if (fridgeT > 0.6) { fridgeT = 0; restock(false); hideHint(); } } else fridgeT = 0;
+  { const shopX = BIZ[0].px + 2.8, cp = cratePrice();   // 到超市门口买食材，一箱一箱搬回冰箱
+    if (Math.hypot(p.x - shopX, p.y - 12.5) < 0.9 && p.stack.length < capacity()) {
+      shopT += dt;
+      if (shopT > 0.5) { shopT = 0;
+        if (S.money >= cp) { S.money -= cp; S.d.cost += cp; p.stack.push({ m: 'crate' }); p.stackDirty = true; hudDirty = true; sfx('pop'); floatText(shopX, 12.5, 1.7, '🥬 -💰' + fmt(cp), '#b9f6ca'); hideHint(); }
+        else if (S.stock <= 0 && !p.stack.some(it => it.m === 'crate')) { p.stack.push({ m: 'crate' }); p.stackDirty = true; toast(T('credit')); }
+      }
+    } else shopT = 0;
+    if (p.cd <= 0 && S.stock < stockCap() && Math.hypot(p.x - FRIDGE.x, p.y - FRIDGE.y) < 1.0) { const i = p.stack.findIndex(it => it.m === 'crate');
+      if (i >= 0) { p.stack.splice(i, 1); p.stackDirty = true; S.stock = Math.min(stockCap(), S.stock + CRATE); hudDirty = true; p.cd = 0.2; sfx('pop'); floatText(FRIDGE.x, FRIDGE.y, 1.6, '🥬 +' + CRATE, '#b9f6ca'); } } }
   p.cd -= dt;
   if (p.cd <= 0) {
     const act = n => { p.cd = 0.16; p.stackDirty = true; hideHint(); sfx(n || 'pop'); };
     const near = s => Math.hypot(p.x - s.x, p.y - s.y) < 1.15;
     const it = p.stack.find(it => it.o && near(it.o.seat));
     if (it) { p.stack.splice(p.stack.indexOf(it), 1); serve(it.o); act('serve'); }
-    else if (p.y < 2.1 && Math.abs(p.x - nearSink(p.x)) < 0.75 && p.stack.some(it => !it.o)) { p.stack.splice(p.stack.findIndex(it => !it.o), 1); washed(p.x); act(); }
+    else if (p.y < 2.1 && Math.abs(p.x - nearSink(p.x)) < 0.75 && p.stack.some(it => it.m === 'dirty')) { p.stack.splice(p.stack.findIndex(it => it.m === 'dirty'), 1); washed(p.x); act(); }
     else if (p.stack.length < capacity()) {
       let done = false;
       if (p.y < 2.1) for (const st of ST) for (const o of st.slots) if (!done && o && !o.claimed && Math.abs(p.x - slotX(o)) < 0.45) { takeFromSlot(o, p); act(); done = true; }
@@ -1029,43 +1093,51 @@ function makeMouse() {
   mk(sph(0.025), '#f4acb7', 0, 0.14, 0.33, g); mk(cyl(0.015, 0.008, 0.34, 6), '#f4acb7', 0, 0.12, -0.36, g).rotation.x = 1.3;
   return g;
 }
-// ---- 产业经营：门口排队的顾客 + 各店专属杂务 ----
-const CHORE = { market: '📦', teashop: '🧊', hotel: '🧹', park: '🔧' }, SERVE = { market: '🛍️', teashop: '🧋', hotel: '🔑', park: '🎟️' };
+// ---- 产业经营：每家店都要亲自接待顾客 + 备货，或者花钱雇人 ----
+const SERVE = { market: '🛍️', teashop: '🧋', hotel: '🔑', park: '🎟️' }, WORK = { market: '🚚', teashop: '🫖', hotel: '🧹', park: '🎠' };
 const vqPos = (b, i) => [b.px + 1.0 + i * 0.62, 12.75];
-const choreSpots = b => b.k === 'market' ? [[b.px - 2.4, 13.1], [b.px + 2.8, 12.5]] : [[b.px - 2.4, 12.65]];
-const choreHold = b => b.k === 'market' ? 0.45 : 1.6;
+const workSpot = b => [b.px - 2.4, b.k === 'market' ? 13.1 : 12.65];
+const workHold = b => ({ market: 0.45, teashop: 0.8, hotel: 1.0, park: 1.5 })[b.k];
 function updBiz(b, dt) {
   const s = S.biz[b.k]; if (s.lv <= 0) return;
-  const r = b.rt || (b.rt = { v: [], arrT: 1, clerkT: 4, pT: 0, chore: false, choreT: 25, step: 0, hold: 0, wait: 0 });
+  const r = b.rt || (b.rt = { v: [], arrT: 1, clerkT: 3, pT: 0, goods: Math.ceil(b.gmax / 2), hold: 0, carry: false, mgrT: 4 });
+  const away = () => b.px + (Math.random() < 0.5 ? -1 : 1) * (10 + Math.random() * 4);
   r.arrT -= dt;
   if (r.arrT <= 0) {
-    r.arrT = (2.2 + Math.random() * 1.6) / (1 + 0.12 * s.lv);
+    r.arrT = (2.4 + Math.random() * 1.6) / (1 + 0.08 * s.lv);
     if (r.v.filter(v => v.state !== 'go').length < 6) {
-      const v = { x: b.px + (Math.random() < 0.5 ? -1 : 1) * (9 + Math.random() * 4), y: 16.9, dir: 0, face: 0, stack: [], moving: true, look: randLook(), state: 'come' };
+      const v = { x: away(), y: 16.9, dir: 0, face: 0, stack: [], moving: true, look: randLook(), state: 'come', pat: 22 };
       v.mesh = makePerson(v.look); dyn.add(v.mesh); r.v.push(v);
     }
   }
   let qi = 0, head = null;
   for (const v of r.v) {
     if (v.state === 'go') { if (go(v, v.tx, 16.9, 2.2, dt)) { v.dead = true; rm(v.mesh); } continue; }
-    const [qx, qy] = vqPos(b, qi); if (go(v, qx, qy, 2.2, dt)) { v.dir = -1.57; if (qi === 0) head = v; } qi++;
+    const [qx, qy] = vqPos(b, qi);
+    if (go(v, qx, qy, 2.2, dt)) {
+      v.dir = -1.57; v.pat -= dt;
+      if (v.pat <= 0) { v.state = 'go'; v.tx = away(); floatText(v.x, v.y, 2, '😤', '#ffcc80'); continue; }   // 等太久，没人接待就走了
+      if (qi === 0) head = v;
+    }
+    qi++;
   }
   r.v = r.v.filter(v => !v.dead);
-  const full = s.cash >= bizCap(b) - 1, here = Math.hypot(player.x - b.px, player.y - PADY) < 1.1;
-  const done = boost => { head.state = 'go'; head.tx = b.px + (Math.random() < 0.5 ? -1 : 1) * (10 + Math.random() * 4); s.cash = Math.min(bizCap(b), s.cash + b.inc * s.lv * 4 * (0.8 + S.rating * 0.08) * boost); };
-  if (head && here) { r.pT += dt; r.clerkT = 2; if (r.pT >= 0.6) { r.pT = 0; done(1.5); floatText(b.px, PADY, 1.7, SERVE[b.k] + ' +50%', '#ffe066'); sfx('pop'); hideHint(); } }
-  else { r.pT = 0; if (head && !full) { r.clerkT -= dt * (r.chore ? 0.5 : 1); if (r.clerkT <= 0) { r.clerkT = 4; done(1); } } }
-  if (!r.chore) { r.choreT -= dt; if (r.choreT <= 0) { r.chore = true; r.step = 0; r.hold = 0; r.wait = 0; } }
-  else {
-    const sp = choreSpots(b), [cx, cy] = sp[r.step];
-    if (Math.hypot(player.x - cx, player.y - cy) < 0.9) { r.hold += dt; if (r.hold >= choreHold(b)) { r.hold = 0; r.step++; sfx('pop'); } } else r.hold = 0;
-    r.wait += dt;
-    const auto = s.lv >= 3 && r.wait > 12 && r.step === 0;
-    if (r.step >= sp.length || auto) {
-      r.chore = false; r.choreT = 45 + Math.random() * 35; r.step = 0;
-      if (!auto) { const n = b.inc * s.lv * 40; s.cash = Math.min(bizCap(b), s.cash + n); rate(0.03); floatText(b.px, PADY, 2.1, CHORE[b.k] + ' ' + T('choreOk') + ' +' + fmt(n), '#b9f6ca'); sfx('serve'); hideHint(); }
-    }
-  }
+  const here = Math.hypot(player.x - b.px, player.y - PADY) < 1.1, full = s.cash >= bizCap(b) - 1;
+  const done = mul => { head.state = 'go'; head.tx = away(); r.goods--; s.cash = Math.min(bizCap(b), s.cash + b.inc * s.lv * 2.5 * (0.8 + S.rating * 0.08) * mul * incMul()); };
+  if (head && r.goods > 0 && here) { r.pT += dt; r.clerkT = 2; if (r.pT >= 0.6) { r.pT = 0; done(1); floatText(b.px, PADY, 1.7, SERVE[b.k], '#ffe066'); sfx('pop'); hideHint(); } }
+  else { r.pT = 0; if (head && r.goods > 0 && s.clerk && !full) { r.clerkT -= dt; if (r.clerkT <= 0) { r.clerkT = 3; done(0.8); } } }
+  // 备货：超市从货车搬货到收银台；奶茶店煮茶；酒店打扫房间；游乐场开动设备
+  const [wx, wy] = workSpot(b), atWork = Math.hypot(player.x - wx, player.y - wy) < 0.9;
+  if (b.k === 'market') {
+    if (r.carry) { if (here) { r.carry = false; r.goods = Math.min(b.gmax, r.goods + 8); sfx('serve'); floatText(b.px, PADY, 2.1, '📦 +8', '#b9f6ca'); hideHint(); } }
+    else if (atWork && r.goods < b.gmax) { r.hold += dt; if (r.hold >= workHold(b)) { r.hold = 0; r.carry = true; sfx('pop'); } } else r.hold = 0;
+  } else if (atWork && r.goods < b.gmax) {
+    r.hold += dt; if (r.hold >= workHold(b)) { r.hold = 0; r.goods = b.k === 'park' ? b.gmax : r.goods + 1; sfx('pop'); hideHint(); }
+  } else r.hold = 0;
+  if (s.mgr && S.hq) { r.mgrT -= dt; if (r.mgrT <= 0) { r.mgrT = 3.5; if (r.goods < b.gmax) r.goods++; } }
+}
+function updHQ(dt) {   // 每天可以来公司签一份合同
+  if (S.hq && S.contract !== S.day && Math.hypot(player.x - HQ.px, player.y - PADY) < 1.1) { hqT += dt; if (hqT >= 2) { hqT = 0; S.contract = S.day; toast(T('contract')); sfx('level'); hudDirty = true; } } else hqT = 0;
 }
 function updExtras(dt) {
   for (const k in buff) if (buff[k] > 0) buff[k] -= dt;
@@ -1095,6 +1167,7 @@ function updExtras(dt) {
     if (end) { rm(m.g); mouse = null; mouseT = 70 + Math.random() * 50; }
   }
   for (const b of BIZ) updBiz(b, dt);
+  updHQ(dt);
   for (const p of peds) {
     if (p.wait > 0) { p.wait -= dt; p.moving = false; continue; }
     if (go(p, p.tx, p.ty, 1.5, dt)) {
@@ -1107,11 +1180,13 @@ function updExtras(dt) {
 
 function update(dt) {
   time += dt;
+  S.dayT += dt; if (S.dayT >= DAYLEN) endDay();
+  { const ck = clockStr(); if (ck !== lastClock) { lastClock = ck; hudDirty = true; } }
   if (rushT > 0) { rushT -= dt; if (rushT <= 0) { document.getElementById('rush').style.display = 'none'; nextRush = 70 + Math.random() * 40; } }
   else if (S.level >= 2) { nextRush -= dt; if (nextRush <= 0) { rushT = 22; document.getElementById('rush').style.display = 'block'; } }
   spawnT -= dt;
   if (spawnT <= 0) {
-    const gap = Math.max(0.8, 3.6 - 0.45 * S.up.ad) * (1.45 - S.rating * 0.13) * (rushT > 0 ? 0.4 : 1) * (0.7 + Math.random() * 0.6) / Math.pow(tables.length / 2, 0.6);
+    const gap = Math.max(1.0, 4.8 - 0.55 * S.up.ad) * (1.45 - S.rating * 0.13) * (rushT > 0 ? 0.4 : 1) * (0.7 + Math.random() * 0.6) / Math.pow(tables.length / 2, 0.6);
     spawnT = spawnCustomer() ? gap : 0.5;
   }
   seatQueue();
@@ -1140,11 +1215,12 @@ function syncPerson(p, dt, sit) {
   if (p.stackDirty) {
     p.stackDirty = false; while (u.tray.children.length) u.tray.remove(u.tray.children[0]);
     if (p.stack.length) mk(rb(0.5, 0.03, 0.4, 0.012), '#8a5a35', 0, 0, 0, u.tray);
-    let y = 0.015; p.stack.forEach(it => { const m = makeItem(it.m); m.position.y = y; u.tray.add(m); y += it.o ? (it.o.item.drink ? 0.27 : 0.19) : 0.06; });
+    let y = 0.015; p.stack.forEach(it => { const m = makeItem(it.m); m.position.y = y; u.tray.add(m); y += it.o ? (it.o.item.drink ? 0.27 : 0.19) : it.m === 'crate' ? 0.3 : 0.06; });
   }
 }
 let steamT = 0;
 function sync3D(dt) {
+  const ev = Math.max(0, Math.min(1, (S.dayT / DAYLEN - 0.72) / 0.28)); sun.intensity = 2.3 - 1.2 * ev; sun.color.setRGB(1, 0.945 - 0.3 * ev, 0.84 - 0.5 * ev); hemi.intensity = 1.7 - 0.6 * ev;
   const k = Math.min(1, dt * 6); CT.x += (player.x - CT.x) * k; CT.z += (player.y - CT.z) * k; placeCam();
   ST.forEach(st => syncPerson(st.chef, dt)); workers.forEach(w => syncPerson(w, dt)); peds.forEach(p => syncPerson(p, dt));
   customers.forEach(c => syncPerson(c, dt, c.kind !== 'rider' && (c.state === 'wait' || c.state === 'eat')));
@@ -1157,7 +1233,7 @@ function sync3D(dt) {
   tpad.visible = S.tables < SPOTS.length;
   if (tpad.visible) { const [tx, ty] = SPOTS[S.tables], ok = S.tables < tableMax() && S.money >= tableCost(); tpad.position.set(tx, 0.02, ty); tpad.material.color.set(ok ? '#3fb950' : '#8d99a6'); tpad.material.opacity = ok ? 0.4 + Math.sin(time * 5) * 0.12 : 0.28; }
   crates.forEach((c, i) => c.visible = S.stock > [0, 0.3, 0.65][i] * stockCap());
-  for (const b of BIZ) { const s = S.biz[b.k]; b.stack.visible = s.lv > 0 && s.cash >= b.inc * s.lv * 4; if (b.stack.visible) b.stack.scale.setScalar(0.7 + 0.9 * s.cash / bizCap(b)); }
+  for (const b of BIZ) { const s = S.biz[b.k]; b.stack.visible = s.lv > 0 && s.cash >= 1; if (b.stack.visible) b.stack.scale.setScalar(0.7 + 0.9 * s.cash / bizCap(b)); }
   for (const f of anim) f(time);
   for (const u of pups) { u.sp.position.y = 0.62 + Math.sin(time * 4 + u.x) * 0.08; u.g.scale.setScalar(Math.max(0.01, u.a)); u.g.visible = u.t > 3.5 || Math.sin(time * 16) > -0.2; }
   if (mouse) { mouse.g.position.set(mouse.x, Math.abs(Math.sin(time * 18)) * 0.04, mouse.y); mouse.g.rotation.y = mouse.dir; }
@@ -1221,38 +1297,40 @@ function drawOverlay(dt) {
     if (t.cash > 0) at(t.x, t.y, 1.0, () => label('💰' + fmt(t.cash), 0, 14, '#fff', '#1d6b2c'));
   }
   if (STAND.cash > 0) at(STAND.x, STAND.y, 1.15, () => label('💰' + fmt(STAND.cash), 0, 14, '#fff', '#1d6b2c'));
-  if (player.stack.some(it => !it.o)) for (const sx of SINKS) at(sx, 0.6, 1.3 + Math.sin(time * 5) * 0.05, () => bubble('🚰', { bg: '#e0f4ff' }));
+  if (player.stack.some(it => it.m === 'dirty')) for (const sx of SINKS) at(sx, 0.6, 1.3 + Math.sin(time * 5) * 0.05, () => bubble('🚰', { bg: '#e0f4ff' }));
   if (mouse) at(mouse.x, mouse.y, 0.45, () => bubble('🐭', { prog: Math.max(0, mouse.t / 18), col: '#e5383b', bg: '#fff0f0' }));
   if (S.tables < SPOTS.length) {
     const [tx, ty] = SPOTS[S.tables], lock = S.tables >= tableMax(), ok = !lock && S.money >= tableCost();
     at(tx, ty, 0.05, () => { label(T('addTable'), -9, 14, ok ? '#d8ffd8' : '#eee'); label(lock ? T('needLv', { l: S.level + 1 }) : '💰' + fmt(tableCost()), 9, 14, ok ? '#fff' : '#ffb4a8');
       if (padT > 0) { octx.strokeStyle = '#fff'; octx.lineWidth = 5; octx.beginPath(); octx.arc(0, -40, 13, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * padT / 0.8); octx.stroke(); } });
   }
-  // 冰箱 / 进货
-  const cap = stockCap(), low = S.stock < 8;
-  at(FRIDGE.x, FRIDGE.y, 1.5, () => {
-    label('🥬 ' + T('fridge', { n: S.stock, c: cap }), -9, 13, low ? '#ffb4a8' : '#fff');
-    label(S.stock >= cap ? T('stockFull') : T('restock', { n: fmt(Math.min(BATCH, cap - S.stock) * unitCost()) }), 9, 12, S.stock >= cap ? '#ddd' : '#b9f6ca');
-    if (fridgeT > 0) { octx.strokeStyle = '#fff'; octx.lineWidth = 5; octx.beginPath(); octx.arc(0, -40, 12, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * fridgeT / 0.6); octx.stroke(); }
-  });
-  if (low) edgeBubble(FRIDGE.x, FRIDGE.y, '🥬', { bg: '#ffe3e3', prog: Math.max(0.001, S.stock / cap), col: '#e5383b' });
+  // 冰箱 & 超市采购点
+  const cap = stockCap(), low = S.stock < 8, shopX = BIZ[0].px + 2.8, cp = cratePrice(), nCr = player.stack.filter(it => it.m === 'crate').length;
+  at(FRIDGE.x, FRIDGE.y, 1.5, () => { label('🥬 ' + T('fridge', { n: S.stock, c: cap }), -9, 13, low ? '#ffb4a8' : '#fff'); if (nCr) label(T('putIn'), 9, 12, '#b9f6ca'); else if (low) label(T('goShop'), 9, 12, '#ffd6a5'); });
+  at(shopX, 12.5, 0.9 + Math.sin(time * 4) * 0.04, () => { bubble('🥬', { bg: low ? '#ffe3e3' : '#eaffea', prog: shopT > 0 ? shopT / 0.5 : null }); label(T('shopBuy', { n: fmt(cp) }), 12, 12, S.money >= cp ? '#fff' : '#ffb4a8'); });
+  if (low && !nCr) edgeBubble(shopX, 12.5, '🥬', { bg: '#ffe3e3', prog: Math.max(0.001, S.stock / cap), col: '#e5383b' });
+  if (nCr) edgeBubble(FRIDGE.x, FRIDGE.y, '🥬', { bg: '#eaffea' });
   // 产业
+  const sale = (lv, cost) => S.level >= lv ? T('forSale') + ' 💰' + fmt(cost) : T('needLv', { l: lv });
   for (const b of BIZ) {
     const s = S.biz[b.k];
     if (s.lv > 0) {
-      const full = s.cash >= bizCap(b) - 1;
+      const r = b.rt, full = s.cash >= bizCap(b) - 1;
       at(b.px, PADY, 1.1, () => { label(T(b.k) + ' Lv.' + s.lv, -18, 13, '#fff'); label('💰' + fmt(s.cash) + (full ? ' ' + T('full') : ''), 0, 15, full ? '#ffe066' : '#fff', '#1d6b2c'); });
       if (s.cash >= bizCap(b) * 0.5) edgeBubble(b.px, PADY, b.e, { bg: '#fff8d6', prog: s.cash / bizCap(b), col: '#f4a300' });
-      const r = b.rt;
-      if (r && r.pT > 0) at(b.px, PADY, 2.2, () => bubble(SERVE[b.k], { prog: r.pT / 0.6 }));
-      if (r && r.chore) {
-        const [cx, cy] = choreSpots(b)[r.step] || [b.px, PADY];
-        at(cx, cy, 0.9 + Math.sin(time * 5) * 0.06, () => bubble(r.step ? '🚪' : CHORE[b.k], { bg: '#fff3cd', prog: r.hold > 0 ? r.hold / choreHold(b) : null, col: '#f4a300' }));
-        edgeBubble(cx, cy, CHORE[b.k], { bg: '#fff3cd' });
-        if (r.step > 0) at(player.x, player.y, 2.35, () => bubble('📦', { bg: '#fff3cd' }));
+      if (r) {
+        at(b.px, PADY, 2.3, () => { bubble(b.ge, { bg: r.goods ? '#fff' : '#ffe3e3', prog: Math.max(0.001, r.goods / b.gmax), col: r.goods > 2 ? '#3fb950' : '#e5383b' }); label(r.goods + '/' + b.gmax, -52, 11, r.goods ? '#fff' : '#ffb4a8'); });
+        const [wx, wy] = workSpot(b);
+        if (r.goods < b.gmax && !r.carry) at(wx, wy, 0.9 + Math.sin(time * 5) * 0.06, () => bubble(WORK[b.k], { bg: '#fff3cd', prog: r.hold > 0 ? r.hold / workHold(b) : null, col: '#f4a300', dim: r.goods > 2 }));
+        if (r.carry) at(player.x, player.y, 2.35, () => bubble('📦', { bg: '#fff3cd' }));
+        if (r.goods === 0 && r.v.some(v => v.state !== 'go')) edgeBubble(wx, wy, WORK[b.k], { bg: '#ffe3e3' });
       }
-    } else at(b.px, BY - 1.2, 2.9, () => { label(T(b.k), -9, 15, '#fff'); label(S.level >= b.lv ? T('forSale') + ' 💰' + fmt(b.cost) : T('needLv', { l: b.lv }), 10, 13, S.level >= b.lv ? '#b9f6ca' : '#ffd6a5'); });
+    } else if (b.k === 'market') at(b.px, PADY, 1.2, () => { label(T(b.k), -9, 15, '#fff'); label(sale(b.lv, b.cost), 10, 13, S.level >= b.lv ? '#b9f6ca' : '#ffd6a5'); });
+    else at(b.px, BY - 1.2, 2.9, () => { label(T(b.k), -9, 15, '#fff'); label(sale(b.lv, b.cost), 10, 13, S.level >= b.lv ? '#b9f6ca' : '#ffd6a5'); });
   }
+  if (S.hq) at(HQ.px, PADY, 1.1, () => { const ok = S.contract === S.day; label(T('hq'), -18, 13, '#fff'); label(ok ? T('signed') : '💼 ' + T('sign'), 0, 14, ok ? '#b9f6ca' : '#ffe066');
+    if (hqT > 0) { octx.strokeStyle = '#fff'; octx.lineWidth = 5; octx.beginPath(); octx.arc(0, -44, 12, -Math.PI / 2, -Math.PI / 2 + Math.PI * hqT); octx.stroke(); } });
+  else at(HQ.px, BY - 1.2, 2.9, () => { label(T('hq'), -9, 15, '#fff'); label(sale(HQ.lv, HQ.cost), 10, 13, S.level >= HQ.lv ? '#b9f6ca' : '#ffd6a5'); });
   if (player.stack.length) at(player.x, player.y, 2.05, () => label(player.stack.length + '/' + capacity(), 0, 12, player.stack.length >= capacity() ? '#ffb4a8' : '#fff'));
   for (const f of floats) at(f.x, f.y, f.z + f.t * 0.7, () => { octx.globalAlpha = Math.max(0, 1 - f.t / 1.3); label(f.text, 0, 16, f.color); });
   for (const c of coins) {
@@ -1274,7 +1352,18 @@ function setTarget(x, y) {   // 目标点若落在障碍内，挪到最近的边
     const dx = x - t.x, dy = y - t.y;
     if (Math.abs(dx) < t.hx + 0.04 && Math.abs(dy) < t.hy + 0.04) { if (t.hx - Math.abs(dx) < t.hy - Math.abs(dy)) x = t.x + Math.sign(dx || 1) * (t.hx + 0.06); else y = t.y + Math.sign(dy || 1) * (t.hy + 0.06); }
   }
-  player.target = { x, y };
+  // 餐厅内外之间自动经过最近的出口
+  const inside = (ax, ay) => ax > 0 && ax < W && ay < H + 0.1, p = player, path = [];
+  if (inside(p.x, p.y) !== inside(x, y)) {
+    let best = null, bd = 1e9;
+    for (const [a, b] of [[[6.75, 11.4], [6.75, 12.8]], [[13.3, 11.4], [13.3, 12.8]], [[19.3, DOOR.y], [20.9, DOOR.y]]]) {
+      const d = Math.hypot(p.x - a[0], p.y - a[1]) + Math.hypot(x - b[0], y - b[1]) + Math.hypot(p.x - b[0], p.y - b[1]) + Math.hypot(x - a[0], y - a[1]);
+      if (d < bd) { bd = d; best = [a, b]; }
+    }
+    const [a, b] = inside(p.x, p.y) ? best : [best[1], best[0]];
+    path.push({ x: a[0], y: a[1] }, { x: b[0], y: b[1] });
+  }
+  path.push({ x, y }); p.target = path.shift(); p.path = path;
 }
 function floorAt(px, py) {
   const o = new THREE.Vector3(px / cw * 2 - 1, 1 - py / ch * 2, -1).unproject(cam), d = cam.getWorldDirection(new THREE.Vector3());
@@ -1304,13 +1393,14 @@ function toast(msg) { tq.push(msg); if (!tBusy) nextToast(); }
 function hideHint() { if (!hintHidden) { hintHidden = true; setTimeout(() => $('hint').style.opacity = 0, 8000); } }
 function canBuyAny() {
   return Object.keys(UP).some(k => S.up[k] < UP[k].cost.length && S.money >= UP[k].cost[S.up[k]]) ||
-    ITEMS.some((it, i) => i < unlocked() && S.skill[it.m] < 5 && S.money >= skillCost(it)) ||
+    ITEMS.some((it, i) => i < unlocked() && S.skill[it.m] < 8 && S.money >= skillCost(it)) ||
     (S.tables < tableMax() && S.money >= tableCost()) ||
     BIZ.some(b => S.level >= b.lv && S.biz[b.k].lv < BIZMAX && S.money >= bizCost(b));
 }
 function renderHud() {
   $('money').textContent = '💰 ' + fmt(S.money);
   $('stock').textContent = '🥬 ' + S.stock + '/' + stockCap(); $('stock').className = 'pill' + (S.stock < 8 ? ' low' : '');
+  $('clock').textContent = '📅 ' + T('dayN', { n: S.day }) + ' ' + clockStr();
   $('rating').textContent = '⭐ ' + T('rating') + ' ' + S.rating.toFixed(1);
   $('star').textContent = S.level;
   $('combo').style.display = combo >= 2 ? 'block' : 'none'; $('combo').textContent = '🔥 ×' + comboMul().toFixed(2) + '  (' + combo + ')';
@@ -1334,8 +1424,8 @@ function renderPanel() {
     r.appendChild(b); list.appendChild(r);
   };
   sec(T('secChef'));
-  ITEMS.slice(0, unlocked()).forEach(it => { const lv = S.skill[it.m], full = lv >= 5, c = skillCost(it);
-    row(it.e, T('chefOf', { n: T(it.m) }), 'Lv.' + lv + '/5', T('chefDs') + ' (💰' + Math.round(price(it)) + ')', full ? T('max') : '💰' + fmt(c), full ? null : c, () => S.skill[it.m]++); });
+  ITEMS.slice(0, unlocked()).forEach(it => { const lv = S.skill[it.m], full = lv >= 8, c = skillCost(it);
+    row(it.e, T('chefOf', { n: T(it.m) }), 'Lv.' + lv + '/8', T('chefDs') + ' (💰' + Math.round(price(it)) + ')', full ? T('max') : '💰' + fmt(c), full ? null : c, () => S.skill[it.m]++); });
   sec(T('secStaff'));
   { const lock = S.tables >= tableMax(), all = S.tables >= SPOTS.length, [nm, ds] = T('tableRow'), r0 = list.children.length;
     row('🪑', nm, S.tables + '/' + tableMax(), ds, all ? T('max') : lock ? T('needLv', { l: S.level + 1 }) : '💰' + fmt(tableCost()), lock ? null : tableCost(), () => {});
@@ -1344,15 +1434,21 @@ function renderPanel() {
     row(u.ic, nm, 'Lv.' + lv + '/' + max, ds, full ? T('max') : '💰' + fmt(u.cost[lv]), full ? null : u.cost[lv], () => S.up[k]++); }
   sec(T('secBiz'));
   for (const b of BIZ) { const s = S.biz[b.k], lock = S.level < b.lv, full = s.lv >= BIZMAX, c = bizCost(b), nl = Math.min(BIZMAX, s.lv + 1);
-    let ds = lock ? T('bizLocked', { l: b.lv }) : T('bizDs', { n: fmt(Math.round(b.inc * nl * (0.8 + S.rating * 0.08))), c: fmt(b.inc * nl * 240) });
-    if (!lock) ds += ' · ' + T('mgr'); if (b.k === 'market') ds += ' · ' + T('perk');
-    row(b.e, T(b.k), 'Lv.' + s.lv + '/' + BIZMAX, ds, lock ? T('needLv', { l: b.lv }) : full ? T('max') : '💰' + fmt(c), lock || full ? null : c, () => { s.lv++; if (s.lv === 1) toast(T('bizNew', { n: T(b.k) })); }); }
+    let ds = lock ? T('bizLocked', { l: b.lv }) : T('bizDs', { n: fmt(Math.round(b.inc * nl * 2.5 * (0.8 + S.rating * 0.08))) });
+    if (b.k === 'market') ds += ' · ' + T('perk');
+    row(b.e, T(b.k), 'Lv.' + s.lv + '/' + BIZMAX, ds, lock ? T('needLv', { l: b.lv }) : full ? T('max') : '💰' + fmt(c), lock || full ? null : c, () => { s.lv++; if (s.lv === 1) toast(T('bizNew', { n: T(b.k) })); });
+    if (s.lv > 0) {
+      const cc = Math.round(b.cost * 0.5), mc = Math.round(b.cost * 1.5);
+      row('🧑‍💼', T(b.k) + ' · ' + T('clerkN'), s.clerk ? '✓' : '', T('clerkD', { n: fmt(b.inc * s.lv * 40) }), s.clerk ? T('hired') : '💰' + fmt(cc), s.clerk ? null : cc, () => { s.clerk = 1; });
+      row('👔', T(b.k) + ' · ' + T('mgrN'), s.mgr ? '✓' : '', T('mgrD', { n: fmt(b.inc * s.lv * 80) }), s.mgr ? T('hired') : !S.hq ? T('needHq') : '💰' + fmt(mc), s.mgr || !S.hq ? null : mc, () => { s.mgr = 1; });
+    } }
+  { const lock = S.level < HQ.lv; row('🏢', T('hq'), S.hq ? '✓' : '', T('hqD'), lock ? T('needLv', { l: HQ.lv }) : S.hq ? T('max') : '💰' + fmt(HQ.cost), lock || S.hq ? null : HQ.cost, () => { S.hq = 1; toast(T('hqNew')); }); }
   list.scrollTop = sc;
 }
 $('upBtn').onclick = () => { $('panel').classList.add('open'); renderPanel(); };
 $('close').onclick = () => $('panel').classList.remove('open');
 $('panel').onclick = e => { if (e.target === $('panel')) $('panel').classList.remove('open'); };
-$('reset').onclick = () => { if (confirm(T('resetAsk'))) { tq.length = 0; S = fresh(); init(); save(); hudDirty = true; $('panel').classList.remove('open'); } };
+$('reset').onclick = () => { if (confirm(T('resetAsk'))) { tq.length = 0; $('dayBox').classList.remove('open'); paused = false; S = fresh(); init(); save(); hudDirty = true; $('panel').classList.remove('open'); } };
 function applyLang() {
   document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang; document.title = T('title');
   $('langBtn').textContent = '🌐 ' + LANGS[lang]; $('upTxt').textContent = T('upgrade');
@@ -1371,24 +1467,30 @@ $('sndBtn').onclick = () => {
   try { localStorage.setItem('shiguang-snd', AU.on ? '1' : '0'); } catch (e) {}
 };
 
+function clockStr() { const m = Math.floor((8 + 14 * S.dayT / DAYLEN) * 6) * 10; return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); }
+function endDay() {   // 每天打烊结算：发工资、交房租
+  const w = wages(), r = rent(), rev = S.d.rev, cost = S.d.cost, net = rev - cost - w - r, day = S.day;
+  S.money -= w + r; S.day++; S.dayT = 0; S.d = { rev: 0, cost: 0 }; hudDirty = true;
+  if (S.money < 0) { rate(-0.3); toast(T('debt')); }
+  const line = (k, v, cls, exp) => { const neg = exp || v < 0; return '<div class="' + (cls || '') + '"><span>' + T(k) + '</span><span class="' + (neg ? 'neg' : 'pos') + '">' + (neg ? '-' : '+') + '💰' + fmt(Math.abs(v)) + '</span></div>'; };
+  $('dayTitle').textContent = '📅 ' + T('dayEnd', { n: day });
+  $('dayRows').innerHTML = line('rev', rev) + line('cost', cost, '', 1) + line('wage', w, '', 1) + line('rent', r, '', 1) + line('net', net, 'net');
+  $('dayBtn').textContent = T('nextDay'); $('dayBox').classList.add('open'); paused = true; sfx('level'); save();
+}
+$('dayBtn').onclick = () => { $('dayBox').classList.remove('open'); paused = false; };
 // ================= 主循环 =================
 init(); applyLang();
-if (S.last) {   // 离开期间产业继续营业，收入存在店里等你去收
-  const sec = (Date.now() - S.last) / 1000; let n = 0;
-  if (sec > 60) for (const b of BIZ) { const s = S.biz[b.k]; if (s.lv > 0) { const add = Math.min(bizCap(b) - s.cash, bizRate(b) * sec); if (add > 0) { s.cash += add; n += add; } } }
-  if (n >= 1) setTimeout(() => toast(T('offline', { n: fmt(n) })), 900);
-}
 let last = performance.now();
 function frame(now) {
   const dt = Math.min(0.1, (now - last) / 1000); last = now;
-  update(dt); sync3D(dt); renderer.render(scene, cam); drawOverlay(dt);
+  if (!paused) update(dt); sync3D(dt); renderer.render(scene, cam); drawOverlay(dt);
   if (hudDirty) { hudDirty = false; renderHud(); }
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
 setInterval(save, 5000); addEventListener('pagehide', save);
 window.__game = { get S() { return S; }, player, get tables() { return tables; }, get customers() { return customers; }, get ST() { return ST; }, get workers() { return workers; },
-  SINKS, nearSink, STAND, FRIDGE, BIZ, PADY, choreSpots, buff, get pups() { return pups; }, get mouse() { return mouse; }, get combo() { return combo; }, step: update, setTarget, addXp, buyTable, tableMax, tableCost, unitCost, stockCap };
+  SINKS, nearSink, STAND, FRIDGE, BIZ, HQ, PADY, workSpot, cratePrice, wages, rent, endDay, buff, get pups() { return pups; }, get mouse() { return mouse; }, get combo() { return combo; }, step: update, setTarget, addXp, buyTable, tableMax, tableCost, unitCost, stockCap };
 })();
 </script>
 </body>
