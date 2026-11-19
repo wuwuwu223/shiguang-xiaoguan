@@ -736,7 +736,7 @@ function addTable(i, pop) {
   tables.push(t);
 }
 function syncStaff() {
-  while (workers.length < 1 + S.up.waiter) {
+  while (workers.length < 2 + S.up.waiter) {   // 开局自带一名服务员
     const w = workers.length ? { x: 8 + workers.length * 0.6, y: 2.4, dir: 0, face: 0, stack: [], task: null, moving: false,
       look: Object.assign(randLook(), { shirt: '#2f4858', pants: '#1d2d35', apron: true }) } : player;
     w.mesh = makePerson(w.look); dyn.add(w.mesh); workers.push(w);
