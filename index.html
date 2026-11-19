@@ -25,6 +25,14 @@
   #mission { background: rgba(13,34,40,.82); color: #fff; border-radius: 12px; padding: 7px 10px; font-size: 12px; width: 190px;
     border: 2px solid rgba(255,255,255,.25); }
   #mission b { color: #ffc93c; }
+  #places { display: flex; gap: 6px; flex-wrap: wrap; max-width: 200px; pointer-events: auto; }
+  .pl { border: none; border-radius: 12px; width: 40px; height: 40px; font-size: 20px; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.3); cursor: pointer; position: relative; padding: 0; }
+  .pl.on { outline: 3px solid #ff7a45; }
+  .pl .dot { position: absolute; top: -4px; right: -4px; width: 14px; height: 14px; border-radius: 50%; background: #e5383b; border: 2px solid #fff; display: none; }
+  .pl.al .dot { display: block; }
+  .tabs { display: flex; gap: 6px; position: sticky; top: 0; background: #fff7ea; padding-bottom: 6px; z-index: 1; }
+  .tab { flex: 1; border: none; border-radius: 12px; padding: 8px 0; font-size: 18px; background: #f0dcc0; cursor: pointer; }
+  .tab.on { background: #ff7a45; }
   #mBarWrap { height: 6px; background: rgba(255,255,255,.2); border-radius: 3px; margin-top: 5px; overflow: hidden; }
   #mBar { height: 100%; background: #ffc93c; width: 0; transition: width .3s; }
   #topRight { top: 12px; right: 12px; display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
@@ -46,14 +54,27 @@
   #btns { right: 12px; bottom: 16px; display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
   .btn { pointer-events: auto; border: none; border-radius: 16px; padding: 10px 14px; font-size: 15px; font-weight: 800;
     color: #fff; background: #ff7a45; box-shadow: 0 4px 0 #b84d22, 0 6px 10px rgba(0,0,0,.3); cursor: pointer; position: relative; }
+  .brow { display: flex; gap: 8px; align-items: center; }
   #langBtn { background: #3a969e; box-shadow: 0 4px 0 #245f65, 0 6px 10px rgba(0,0,0,.3); font-size: 13px; padding: 8px 12px; }
+  #netBtn { background: #2a9d8f; box-shadow: 0 4px 0 #1b665d, 0 6px 10px rgba(0,0,0,.3); padding: 8px 12px; font-size: 14px; }
+  #netBox { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: none; align-items: center; justify-content: center; }
+  #netBox.open { display: flex; }
+  #netCard { background: #fff7ea; width: min(360px, 90vw); border-radius: 20px; padding: 16px; box-shadow: 0 10px 30px rgba(0,0,0,.4); text-align: center; }
+  #netCard h2 { margin: 0 0 8px; color: #5a3600; font-size: 20px; display: flex; justify-content: space-between; align-items: center; }
+  #netClose { border: none; background: #e5383b; color: #fff; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; font-weight: 800; cursor: pointer; }
+  #netBody { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+  #netBody .nt { font-size: 12px; color: #9a7b55; line-height: 1.5; }
+  #netBody .nrow { display: flex; gap: 8px; }
+  #netBody input { width: 130px; border: 2px solid #f0dcc0; border-radius: 12px; padding: 8px; font-size: 20px; font-weight: 800; text-align: center; letter-spacing: 3px; }
+  #netBody .ncode { color: #5a3600; font-weight: 700; } #netBody .ncode b { display: block; font-size: 40px; letter-spacing: 6px; color: #d9480f; }
+  #netBody .nst { font-weight: 800; color: #2a6b3a; } #netBody .nerr { color: #c1121f; font-weight: 700; font-size: 13px; }
   #sndBtn { background: #6d597a; box-shadow: 0 4px 0 #453a4f, 0 6px 10px rgba(0,0,0,.3); padding: 8px 12px; }
   .btn:active { transform: translateY(2px); }
   .btn .dot { position: absolute; top: -6px; right: -6px; width: 18px; height: 18px; border-radius: 50%; background: #e5383b;
     border: 2px solid #fff; display: none; }
   #hint { left: 50%; bottom: 18px; transform: translateX(-50%); background: rgba(0,0,0,.6); color: #fff; padding: 8px 14px;
     border-radius: 14px; font-size: 13px; width: max-content; max-width: 62vw; text-align: center; transition: opacity .6s; line-height: 1.5; }
-  @media (max-width: 640px) { #hint { bottom: 184px; max-width: 92vw; font-size: 12px; } #mission { width: 170px; } }
+  @media (max-width: 640px) { #hint { bottom: 136px; max-width: 92vw; font-size: 12px; } #mission { width: 170px; } }
   #toast { left: 50%; top: 150px; transform: translateX(-50%); background: #ffc93c; color: #5a3600; font-weight: 800;
     padding: 10px 18px; border-radius: 16px; opacity: 0; transition: opacity .3s; box-shadow: 0 3px 8px rgba(0,0,0,.3); width: max-content; max-width: 90vw; text-align: center; }
   #rush { left: 50%; top: 200px; transform: translateX(-50%); background: #e5383b; color: #fff; font-weight: 800;
@@ -85,6 +106,7 @@
 <div id="topLeft" class="hud">
   <div id="lvRow"><div id="star">1</div><div id="xpWrap"><div id="xpBar"></div><div id="xpText"></div></div></div>
   <div id="mission"><div id="mText"></div><div id="mBarWrap"><div id="mBar"></div></div></div>
+  <div id="places"></div>
 </div>
 <div id="topRight" class="hud">
   <div id="money" class="pill">💰 0</div>
@@ -94,7 +116,7 @@
   <div id="combo" class="pill"></div>
   <div id="buffs" class="pill"></div>
 </div>
-<div id="btns" class="hud"><button class="btn" id="sndBtn">🔊</button><button class="btn" id="langBtn"></button><button class="btn" id="upBtn">⬆️ <span id="upTxt"></span><span class="dot" id="upDot"></span></button></div>
+<div id="btns" class="hud"><div class="brow"><button class="btn" id="netBtn">👥</button><button class="btn" id="sndBtn">🔊</button><button class="btn" id="langBtn"></button></div><button class="btn" id="upBtn">⬆️ <span id="upTxt"></span><span class="dot" id="upDot"></span></button></div>
 <div id="hint" class="hud"></div>
 <div id="toast" class="hud"></div>
 <div id="rush" class="hud"></div>
@@ -107,6 +129,7 @@
   </div>
 </div>
 
+<div id="netBox"><div id="netCard"><h2><span id="netTitle"></span><button id="netClose">✕</button></h2><div id="netBody"></div></div></div>
 <div id="dayBox"><div id="dayCard"><h2 id="dayTitle"></h2><div id="dayRows"></div><button class="btn" id="dayBtn"></button></div></div>
 
 <script src="lib/three.min.js"></script>
@@ -114,6 +137,7 @@
 (() => {
 'use strict';
 const EMO = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
+const net = { role: null, peer: false, ev: [], acts: [], seq: 0, acc: 0, rx: 0, sig: '', cm: new Map(), mq: null, topic: '', code: '', st: '' };
 // ================= 多语言 =================
 const LANGS = { zh: '中文', en: 'English', vi: 'Tiếng Việt' };
 const TXT = {
@@ -187,9 +211,54 @@ Object.assign(TXT.vi, { hint2: 'Lấy món → phục vụ → rửa đĩa → t
   hq: 'Trụ sở công ty', hqD: 'Cho phép thuê quản lý; mỗi ngày ký một hợp đồng, thu nhập hôm đó +20%', hqNew: '🏢 Trụ sở đã xây xong! Mỗi ngày hãy đến ký hợp đồng', contract: '💼 Đã ký hợp đồng! Hôm nay thu nhập +20%', sign: 'Đứng đây để ký', signed: 'Đã ký hợp đồng ✓',
   dayEnd: 'Tổng kết ngày {n}', rev: 'Doanh thu', cost: 'Nguyên liệu', wage: 'Lương nhân viên', rent: 'Tiền thuê', net: 'Lợi nhuận', nextDay: 'Bắt đầu ngày mới', debt: '⚠️ Bạn đang nợ — uy tín giảm', dayN: 'Ngày {n}',
   buyer: ['Thuê người mua hàng', 'Giao nguyên liệu khi sắp hết (giá +25%, lương 💰50/ngày)'], waiter: ['Thuê phục vụ', 'Mang món, dọn, rửa, thu tiền (lương 💰30/ngày mỗi người)'] });
+Object.assign(TXT.zh, { coop: '双人联机', createRoom: '创建房间（我当房主）', joinRoom: '加入', roomCode: '把房间号告诉伙伴', codePh: '房间号', waiting: '等待伙伴加入…', connected: '✅ 已连接，一起经营吧', connecting: '连接中…',
+  netFail: '连接失败，请再试一次', badCode: '房间号是 5 位数字', leave: '离开房间', mateJoin: '👥 伙伴加入了！', mateLeft: '👥 伙伴离开了', netLost: '⚠️ 与房主的连接中断了',
+  netHint: '两台设备一起经营同一家店。进度存在房主那边；房主要保持游戏在前台，切到别的应用游戏会暂停。' });
+Object.assign(TXT.en, { coop: 'Co-op', createRoom: 'Create room (I host)', joinRoom: 'Join', roomCode: 'Tell your partner this code', codePh: 'Code', waiting: 'Waiting for your partner…', connected: '✅ Connected — run it together', connecting: 'Connecting…',
+  netFail: 'Connection failed, please try again', badCode: 'The code is 5 digits', leave: 'Leave room', mateJoin: '👥 Your partner joined!', mateLeft: '👥 Your partner left', netLost: '⚠️ Lost connection to the host',
+  netHint: 'Run the same shop from two devices. Progress is saved on the host; the host must keep the game in the foreground or it pauses.' });
+Object.assign(TXT.vi, { coop: 'Chơi hai người', createRoom: 'Tạo phòng (tôi làm chủ)', joinRoom: 'Vào', roomCode: 'Gửi mã phòng này cho bạn', codePh: 'Mã phòng', waiting: 'Đang chờ bạn vào…', connected: '✅ Đã kết nối — cùng kinh doanh nào', connecting: 'Đang kết nối…',
+  netFail: 'Kết nối thất bại, hãy thử lại', badCode: 'Mã phòng gồm 5 chữ số', leave: 'Rời phòng', mateJoin: '👥 Bạn của bạn đã vào!', mateLeft: '👥 Bạn của bạn đã rời đi', netLost: '⚠️ Mất kết nối với chủ phòng',
+  netHint: 'Hai thiết bị cùng kinh doanh một quán. Tiến trình lưu ở máy chủ phòng; chủ phòng phải để trò chơi ở phía trước, nếu không trò chơi sẽ tạm dừng.' });
+Object.assign(TXT.zh, { restN: '餐厅', vEnter: '进入{n}', vExit: '回到街上', vNeed: '需要{n}满级', vBuy: '开设{n}', vBuyD: '买下后可以走进店里经营', vCap: '容量 {n}', vLocked: '未解锁', secVStaff: '👥 员工与经营',
+  v_sk: '理货员', v_skD: '自动从仓库补货，日薪 💰{n}', v_ck: '收银员', v_ckD: '自动结账，多一位多开一个收银台，日薪 💰{n}', v_spd: '员工速度', v_spdD: '理货员和收银员更快', v_cap: '搬运量', v_capD: '理货员每趟多搬一箱', v_ad: '宣传', v_adD: '顾客来得更多',
+  vOpen: '🏗️ {n}开业了！点左边的图标进店：仓库取货 → 上架 → 到收银台结账', vDoneT: '🎉 {n}满级了！下一处产业可以开了', restDoneT: '🎉 餐厅满级了！可以开超市了', hqD: '每天来签一份合同，当天全部收入 +20%',
+  hint2: '取菜 → 上菜 → 收盘洗碗 → 收钱。食材去西边超市门口买。餐厅满级后可以开超市，之后依次开奶茶店、酒店、游乐场',
+  fruit: '水果', veg: '蔬菜', bread: '面包', milk: '牛奶', soda: '饮料', snack: '零食', ice: '冰淇淋', fish: '海鲜', mtea: '珍珠奶茶', matcha: '抹茶', fruitea: '水果茶', latte: '拿铁', cake: '蛋糕', donut: '甜甜圈',
+  single: '单人间', double: '双人间', family: '亲子房', seaview: '海景房', suite: '总统套房', spa: '温泉', carousel: '旋转木马', bumper: '碰碰车', shoot: '射击摊', popcorn: '爆米花', coaster: '过山车', wheel: '摩天轮' });
+Object.assign(TXT.en, { restN: 'Restaurant', vEnter: 'Enter {n}', vExit: 'Back to the street', vNeed: 'Max out the {n} first', vBuy: 'Open the {n}', vBuyD: 'Buy it, then walk inside and run it', vCap: 'holds {n}', vLocked: 'Locked', secVStaff: '👥 Staff & Operations',
+  v_sk: 'Stocker', v_skD: 'Restocks from the warehouse, wage 💰{n}/day', v_ck: 'Cashier', v_ckD: 'Checks customers out; each one opens a register, wage 💰{n}/day', v_spd: 'Staff Speed', v_spdD: 'Stockers and cashiers work faster', v_cap: 'Carry Size', v_capD: 'Stockers carry one more box per trip', v_ad: 'Advertising', v_adD: 'More customers',
+  vOpen: '🏗️ The {n} is open! Tap its icon on the left: warehouse → shelves → checkout', vDoneT: '🎉 {n} maxed out! The next business is available', restDoneT: '🎉 Restaurant maxed out! You can open the supermarket', hqD: 'Sign one contract a day for +20% income that day',
+  hint2: 'Grab food → serve → wash plates → collect. Buy ingredients at the supermarket door. Max out the restaurant to open the supermarket, then the tea shop, hotel and amusement park',
+  fruit: 'Fruit', veg: 'Vegetables', bread: 'Bread', milk: 'Milk', soda: 'Soft drinks', snack: 'Snacks', ice: 'Ice cream', fish: 'Seafood', mtea: 'Bubble tea', matcha: 'Matcha', fruitea: 'Fruit tea', latte: 'Latte', cake: 'Cake', donut: 'Donuts',
+  single: 'Single room', double: 'Double room', family: 'Family room', seaview: 'Sea-view room', suite: 'Presidential suite', spa: 'Hot spring', carousel: 'Carousel', bumper: 'Bumper cars', shoot: 'Shooting gallery', popcorn: 'Popcorn', coaster: 'Roller coaster', wheel: 'Ferris wheel' });
+Object.assign(TXT.vi, { restN: 'Nhà hàng', vEnter: 'Vào {n}', vExit: 'Ra đường', vNeed: 'Cần nâng tối đa {n}', vBuy: 'Mở {n}', vBuyD: 'Mua xong có thể vào trong để kinh doanh', vCap: 'chứa {n}', vLocked: 'Chưa mở', secVStaff: '👥 Nhân viên & vận hành',
+  v_sk: 'Nhân viên kho', v_skD: 'Tự lấy hàng từ kho lên kệ, lương 💰{n}/ngày', v_ck: 'Thu ngân', v_ckD: 'Tự tính tiền, thêm người thêm quầy, lương 💰{n}/ngày', v_spd: 'Tốc độ nhân viên', v_spdD: 'Nhân viên kho và thu ngân nhanh hơn', v_cap: 'Sức mang', v_capD: 'Nhân viên kho mang thêm một thùng', v_ad: 'Quảng cáo', v_adD: 'Khách đến nhiều hơn',
+  vOpen: '🏗️ {n} đã khai trương! Bấm biểu tượng bên trái để vào: kho → kệ → quầy thu ngân', vDoneT: '🎉 {n} đã tối đa! Có thể mở cơ sở tiếp theo', restDoneT: '🎉 Nhà hàng đã tối đa! Có thể mở siêu thị', hqD: 'Mỗi ngày ký một hợp đồng, thu nhập hôm đó +20%',
+  hint2: 'Lấy món → phục vụ → rửa đĩa → thu tiền. Mua nguyên liệu ở cửa siêu thị. Nâng tối đa nhà hàng để mở siêu thị, rồi đến quán trà sữa, khách sạn, công viên',
+  fruit: 'Trái cây', veg: 'Rau củ', bread: 'Bánh mì', milk: 'Sữa', soda: 'Nước ngọt', snack: 'Đồ ăn vặt', ice: 'Kem', fish: 'Hải sản', mtea: 'Trà sữa trân châu', matcha: 'Trà matcha', fruitea: 'Trà trái cây', latte: 'Cà phê latte', cake: 'Bánh kem', donut: 'Bánh donut',
+  single: 'Phòng đơn', double: 'Phòng đôi', family: 'Phòng gia đình', seaview: 'Phòng hướng biển', suite: 'Phòng tổng thống', spa: 'Suối nước nóng', carousel: 'Ngựa gỗ xoay', bumper: 'Xe đụng', shoot: 'Gian bắn súng', popcorn: 'Bắp rang', coaster: 'Tàu lượn', wheel: 'Vòng đu quay' });
+Object.assign(TXT.zh, { v_spdD: '店里的员工动作更快', v_capD: '每趟多搬一份',
+  r_sk_market: '理货员', r_skD_market: '从仓库搬货上架，日薪 💰{n}', r_ck_market: '收银员', r_ckD_market: '自动结账，多一位多开一个收银台，日薪 💰{n}',
+  r_sk_teashop: '备料员', r_skD_teashop: '给各台机器补原料，日薪 💰{n}', r_ck_teashop: '店员', r_ckD_teashop: '自动收款出杯，多一位多开一个窗口，日薪 💰{n}',
+  r_sk_hotel: '保洁员', r_skD_hotel: '从布草间送干净布草到客房，日薪 💰{n}', r_ck_hotel: '前台接待', r_ckD_hotel: '自动办理退房结账，多一位多开一个前台，日薪 💰{n}',
+  r_sk_park: '检修员', r_skD_park: '从器材库取配件维护设施，日薪 💰{n}', r_ck_park: '售票员', r_ckD_park: '自动售票结算，多一位多开一个窗口，日薪 💰{n}' });
+Object.assign(TXT.en, { v_spdD: 'Staff in this business work faster', v_capD: 'Carry one more per trip',
+  r_sk_market: 'Stocker', r_skD_market: 'Restocks shelves from the warehouse, wage 💰{n}/day', r_ck_market: 'Cashier', r_ckD_market: 'Checks customers out; each one opens a register, wage 💰{n}/day',
+  r_sk_teashop: 'Prep Staff', r_skD_teashop: 'Refills every machine, wage 💰{n}/day', r_ck_teashop: 'Barista', r_ckD_teashop: 'Takes payment and hands out drinks; each one opens a window, wage 💰{n}/day',
+  r_sk_hotel: 'Housekeeper', r_skD_hotel: 'Brings fresh linen to the rooms, wage 💰{n}/day', r_ck_hotel: 'Receptionist', r_ckD_hotel: 'Handles check-out; each one opens a desk, wage 💰{n}/day',
+  r_sk_park: 'Mechanic', r_skD_park: 'Services the rides with parts from the shed, wage 💰{n}/day', r_ck_park: 'Ticket Seller', r_ckD_park: 'Sells tickets; each one opens a booth, wage 💰{n}/day' });
+Object.assign(TXT.vi, { v_spdD: 'Nhân viên trong cửa hàng làm nhanh hơn', v_capD: 'Mỗi chuyến mang thêm một phần',
+  r_sk_market: 'Nhân viên kho', r_skD_market: 'Lấy hàng từ kho lên kệ, lương 💰{n}/ngày', r_ck_market: 'Thu ngân', r_ckD_market: 'Tự tính tiền, thêm người thêm quầy, lương 💰{n}/ngày',
+  r_sk_teashop: 'Nhân viên pha chế phụ', r_skD_teashop: 'Châm nguyên liệu cho các máy, lương 💰{n}/ngày', r_ck_teashop: 'Nhân viên quầy', r_ckD_teashop: 'Tự thu tiền và giao đồ uống, thêm người thêm quầy, lương 💰{n}/ngày',
+  r_sk_hotel: 'Nhân viên buồng phòng', r_skD_hotel: 'Mang ga gối sạch đến các phòng, lương 💰{n}/ngày', r_ck_hotel: 'Lễ tân', r_ckD_hotel: 'Tự làm thủ tục trả phòng, thêm người thêm quầy, lương 💰{n}/ngày',
+  r_sk_park: 'Thợ bảo trì', r_skD_park: 'Lấy phụ tùng bảo dưỡng trò chơi, lương 💰{n}/ngày', r_ck_park: 'Nhân viên bán vé', r_ckD_park: 'Tự bán vé, thêm người thêm quầy, lương 💰{n}/ngày' });
 let lang = '';
 try { lang = localStorage.getItem('shiguang-lang') || ''; } catch (e) {}
 if (!TXT[lang]) { const n = (navigator.language || 'zh').toLowerCase(); lang = n.startsWith('vi') ? 'vi' : n.startsWith('zh') ? 'zh' : 'en'; }
+// 可跨语言传输的文本：TK 生成占位符，显示时用 loc 按本机语言展开（联机时双方各看各的语言）
+const TK = (key, v) => '\u0001' + key + '\u0002' + JSON.stringify(v || {}) + '\u0003';
+function loc(s) { s = String(s); for (let i = 0; i < 4 && s.indexOf('\u0001') >= 0; i++) s = s.replace(/\u0001([^\u0001-\u0003]*)\u0002([^\u0001\u0003]*)\u0003/g, (m, k, j) => { try { return T(k, JSON.parse(j)); } catch (e) { return ''; } }); return s; }
 function T(key, v) { let s = TXT[lang][key]; if (v) for (const k in v) s = s.replace('{' + k + '}', v[k]); return s; }
 
 // ================= 配置 =================
@@ -219,35 +288,40 @@ const UP = {
   ad:      { ic: '📣', cost: [200, 700, 2200, 7000, 22000] },
   takeout: { ic: '🛵', cost: [1500] },
 };
-const BIZ = [   // 商业街产业：gmax = 可售库存上限
-  { k: 'market',  e: '🛒', lv: 3,  cost: 3000,   inc: 4,  x0: -10.5, x1: -2.6,  y0: 5.5, gmax: 12, ge: '📦' },
-  { k: 'teashop', e: '🧋', lv: 5,  cost: 12000,  inc: 10, x0: 24.2,  x1: 29.2,  y0: 6.6, gmax: 8,  ge: '🧋' },
-  { k: 'hotel',   e: '🏨', lv: 8,  cost: 50000,  inc: 30, x0: 33.5,  x1: 40.5,  y0: 5.5, gmax: 8,  ge: '🛏️' },
-  { k: 'park',    e: '🎡', lv: 11, cost: 200000, inc: 90, x0: -25,   x1: -12.5, y0: 2,   gmax: 6,  ge: '🎠' },
+const BIZ = [   // 产业按顺序开放：上一处满级才能开下一处；售价和花费逐级翻倍（mul）
+  { k: 'market',  e: '🛒', x0: -10.5, x1: -2.6,  y0: 5.5, cost: 80000, mul: 4, useT: 0.5, users: 3,
+    items: [['fruit', '🍎', '#e63946', 16], ['veg', '🥬', '#52b788', 22], ['bread', '🍞', '#e0a04a', 30], ['milk', '🥛', '#f1faee', 40], ['soda', '🥤', '#3a86ff', 54], ['snack', '🍪', '#bc6c25', 72], ['ice', '🍦', '#ffd6de', 96], ['fish', '🐟', '#8ecae6', 128]] },
+  { k: 'teashop', e: '🧋', x0: 24.2,  x1: 29.2,  y0: 6.6, cost: 2e6, mul: 32, useT: 1.3, users: 2,
+    items: [['mtea', '🧋', '#d6a574', 18], ['matcha', '🍵', '#74c69d', 26], ['fruitea', '🍹', '#ff9f1c', 36], ['latte', '☕', '#8a5a35', 50], ['cake', '🍰', '#ffd6de', 70], ['donut', '🍩', '#e85d75', 96]] },
+  { k: 'hotel',   e: '🏨', x0: 33.5,  x1: 40.5,  y0: 5.5, cost: 3.5e7, mul: 260, useT: 5, users: 2,
+    items: [['single', '🛏️', '#8ecae6', 24], ['double', '🛌', '#b7e4c7', 36], ['family', '🧸', '#ffd166', 52], ['seaview', '🌅', '#f4a261', 74], ['suite', '👑', '#b07cd8', 104], ['spa', '♨️', '#e85d75', 150]] },
+  { k: 'park',    e: '🎡', x0: -25,   x1: -12.5, y0: 2,   cost: 5e8, mul: 2100, useT: 3.5, users: 3,
+    items: [['carousel', '🎠', '#ffd6de', 20], ['bumper', '🚗', '#3a86ff', 30], ['shoot', '🎯', '#e63946', 44], ['popcorn', '🍿', '#ffd166', 60], ['coaster', '🎢', '#f4a261', 86], ['wheel', '🎡', '#b07cd8', 126]] },
 ];
-const HQ = { lv: 13, cost: 500000, x0: -34.5, x1: -27.5, y0: 5.5, px: -31 };
+const HQ = { cost: 5e9, x0: -34.5, x1: -27.5, y0: 5.5, px: -31 };
 const BY = 11.6, PADY = 12.65, BIZMAX = 10, CRATE = 20, DAYLEN = 300;
-BIZ.forEach(b => { b.px = (b.x0 + b.x1) / 2; });
-const EAT = 4.5, SAVE_KEY = 'shiguang-xiaoguan-v3', SINKS = [0.8, 10.0, 19.0], nearSink = x => SINKS.reduce((a, b) => Math.abs(b - x) < Math.abs(a - x) ? b : a), FRIDGE = { x: 1.25, y: 10.9 };
+const VW = 22, VH = 15, BOXU = 6;
+BIZ.forEach((b, i) => { b.idx = i; b.px = (b.x0 + b.x1) / 2; b.ox = 0; b.oz = 44 + i * 26; b.rt = null; b.obs = []; });
+const EAT = 4.5, SAVE_KEY = 'shiguang-xiaoguan-v4', SINKS = [0.8, 10.0, 19.0], nearSink = x => SINKS.reduce((a, b) => Math.abs(b - x) < Math.abs(a - x) ? b : a), FRIDGE = { x: 1.25, y: 10.9 };
 
 // ================= 存档 =================
 function fresh() {
   const s = { money: 30, level: 1, xp: 0, rating: 3, missionN: 0, mission: null, last: 0, stock: 20, tables: 2, day: 1, dayT: 0, hq: 0, contract: 0, d: { rev: 0, cost: 0 },
     up: { waiter: 0, eff: 0, svc: 0, cap: 0, store: 0, buyer: 0, pat: 0, ad: 0, takeout: 0 }, skill: {}, biz: {} };
-  ITEMS.forEach(i => s.skill[i.m] = 0); BIZ.forEach(b => s.biz[b.k] = { lv: 0, cash: 0, clerk: 0, mgr: 0 }); return s;
+  ITEMS.forEach(i => s.skill[i.m] = 0); BIZ.forEach(b => s.biz[b.k] = { lv: 0, st: b.items.map((it, i) => i ? 0 : 1), sk: 0, ck: 0, spd: 0, cap: 0, ad: 0 }); s.ms = {}; return s;
 }
 let S = fresh();
 try {
   const d = JSON.parse(localStorage.getItem(SAVE_KEY));
   if (d && d.up) { const f = fresh(); if (d.tables == null) d.tables = Math.min(d.level * 2, 18); S = Object.assign(f, d, { up: Object.assign(f.up, d.up), skill: Object.assign(f.skill, d.skill), biz: Object.assign(f.biz, d.biz) }); }
 } catch (e) {}
-const save = () => { try { S.last = Date.now(); localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) {} };
+const save = () => { if (net.role === 'guest') return; try { S.last = Date.now(); localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) {} };
 
 // ================= 数值 =================
 const unlocked = () => Math.min(S.level, ITEMS.length);
 const tableCount = () => S.tables;
 const tableMax = () => Math.min(S.level * 2, SPOTS.length);
-const tableCost = () => Math.round(150 * Math.pow(1.6, S.tables - 2) / 10) * 10;
+const tableCost = () => Math.round(150 * Math.pow(1.45, S.tables - 2) / 10) * 10;
 const playerSpeed = () => 3.3 * (1 + 0.14 * S.up.svc);
 const waiterSpeed = () => 2.6 * (1 + 0.18 * S.up.eff);
 const cookTime = it => it.t * Math.pow(0.88, S.skill[it.m]);
@@ -258,16 +332,25 @@ const capacity = () => 2 + S.up.cap;
 const stockCap = () => 60 + 40 * S.up.store;
 const unitCost = () => { let a = 0; const n = unlocked(); for (let i = 0; i < n; i++) a += ITEMS[i].p; return Math.max(1, Math.round(a / n * 0.4 * (S.biz.market.lv > 0 ? 0.7 : 1))); };
 const xpNeed = () => Math.round(14 * Math.pow(S.level, 1.7));
-const bizRate = b => b.inc * S.biz[b.k].lv * (0.8 + S.rating * 0.08);
-const bizCap = b => b.inc * S.biz[b.k].lv * 600;
 const cratePrice = () => unitCost() * CRATE;
 const incMul = () => (S.contract === S.day ? 1.2 : 1);
-const wages = () => 30 * S.up.waiter + 50 * S.up.buyer + BIZ.reduce((a, b) => { const s = S.biz[b.k]; return a + (s.lv > 0 ? (s.clerk ? b.inc * s.lv * 40 : 0) + (s.mgr ? b.inc * s.lv * 80 : 0) : 0); }, 0);
-const rent = () => 20 * S.tables + 40 * S.level + BIZ.reduce((a, b) => a + (S.biz[b.k].lv > 0 ? b.inc * 15 : 0), 0) + (S.hq ? 2000 : 0);
-const bizCost = b => { const l = S.biz[b.k].lv; return l ? Math.round(b.cost * 0.6 * Math.pow(2, l) / 100) * 100 : b.cost; };
+const vOwned = b => S.biz[b.k].lv > 0;
+const restDone = () => S.tables >= SPOTS.length && unlocked() >= ITEMS.length;
+const vDone = b => vOwned(b) && S.biz[b.k].st.every(l => l > 0);
+const vReady = i => (i === 0 ? restDone() : vDone(BIZ[i - 1]));   // 上一处满级才开放
+const vProg = b => S.biz[b.k].st.filter(l => l > 0).length;
+const itPrice = (b, i) => b.items[i][3] * b.mul * (1 + 0.25 * (Math.max(1, S.biz[b.k].st[i]) - 1));
+const stCap = (b, i) => 8 + 4 * (Math.max(1, S.biz[b.k].st[i]) - 1);
+const boxCost = (b, i) => Math.round(itPrice(b, i) * BOXU * 0.35);
+const stCost = (b, i) => { const l = S.biz[b.k].st[i], u = 2500 * b.mul * Math.pow(2, i); return Math.round(l ? u * 0.6 * Math.pow(1.8, l - 1) : u); };
+const VUP = { sk: ['📦', 4, 4000, 2.2], ck: ['🧾', 3, 6000, 2.5], spd: ['👟', 5, 3000, 2], cap: ['🧺', 3, 5000, 2.2], ad: ['📣', 5, 3500, 2] };
+const vupCost = (b, n) => Math.round(VUP[n][2] * b.mul * Math.pow(VUP[n][3], S.biz[b.k][n]));
+const wages = () => 30 * S.up.waiter + 50 * S.up.buyer + BIZ.reduce((a, b) => { const s = S.biz[b.k]; return a + (s.lv > 0 ? (s.sk * 60 + s.ck * 80) * b.mul : 0); }, 0);
+const rent = () => 20 * S.tables + 40 * S.level + BIZ.reduce((a, b) => a + (S.biz[b.k].lv > 0 ? 200 * b.mul : 0), 0) + (S.hq ? 5e6 : 0);
 const ownedBiz = () => BIZ.filter(b => S.biz[b.k].lv > 0).length;
 const pick = a => a[Math.floor(Math.random() * a.length)];
 function fmt(n) {
+  if (n >= 1e9) return (n / 1e9).toFixed(2).replace(/\.?0+$/, '') + 'B';
   if (n >= 1e6) return (n / 1e6).toFixed(2).replace(/\.?0+$/, '') + 'M';
   if (n >= 1e4) return (n / 1e3).toFixed(1).replace(/\.0$/, '') + 'K';
   return String(Math.floor(n));
@@ -298,7 +381,7 @@ function fit() {
   cw = innerWidth; ch = innerHeight; dpr = Math.min(devicePixelRatio || 1, 2);
   renderer.setPixelRatio(dpr); renderer.setSize(cw, ch, false);
   ov.width = cw * dpr; ov.height = ch * dpr;
-  const a = cw / ch, hh = Math.max(7.6, 5.8 / a);
+  const a = cw / ch, hh = Math.max(8.2, 6.2 / a);
   Object.assign(cam, { left: -hh * a, right: hh * a, top: hh, bottom: -hh }); cam.updateProjectionMatrix();
   ppu = ch / (2 * hh); K = Math.max(0.75, Math.min(1.7, ppu / 42));
 }
@@ -344,7 +427,7 @@ function emojiSprite(e, size, depth) {
 }
 
 // ================= 模型 =================
-function makeItem(kind) {
+function makeItem(kind, col) {
   const g = new THREE.Group();
   const plate = () => { mk(cyl(0.2, 0.13, 0.035), '#ffffff', 0, 0.018, 0, g, { roughness: 0.3 }); };
   if (kind === 'ramen') {
@@ -388,6 +471,10 @@ function makeItem(kind) {
     mk(cyl(0.14, 0.11, 0.025), '#ffffff', 0, 0.013, 0, g, { roughness: 0.3 });
     mk(cyl(0.09, 0.07, 0.14), '#ffffff', 0, 0.095, 0, g, { roughness: 0.3 }); mk(cyl(0.078, 0.078, 0.01), '#5c3a21', 0, 0.163, 0, g);
     const h = new THREE.Mesh(G('handle', () => new THREE.TorusGeometry(0.045, 0.014, 8, 14)), M('#ffffff')); h.position.set(0.1, 0.095, 0); g.add(h);
+  } else if (kind === 'box') {
+    mk(rb(0.42, 0.28, 0.34, 0.03), col || '#d9b36c', 0, 0.14, 0, g); mk(rb(0.43, 0.05, 0.1, 0.01), '#fffaf0', 0, 0.14, 0, g);
+  } else if (kind === 'basket') {
+    mk(rb(0.4, 0.2, 0.3, 0.04), '#e63946', 0, 0.1, 0, g); for (const [c, x] of [['#ffd166', -0.1], ['#52b788', 0.1]]) mk(sph(0.09), c, x, 0.24, 0, g);
   } else if (kind === 'crate') {
     mk(rb(0.44, 0.24, 0.36, 0.03), '#a86f42', 0, 0.12, 0, g); mk(rb(0.46, 0.04, 0.38, 0.015), '#8a5a35', 0, 0.2, 0, g);
     [['#e63946', -0.11, -0.06], ['#52b788', 0.1, -0.05], ['#f4a261', 0, 0.08], ['#52b788', -0.12, 0.09]].forEach(([c, x, z]) => mk(sph(0.085), c, x, 0.27, z, g));
@@ -402,6 +489,13 @@ const HAIRS = ['#2b1d12', '#6b3f1d', '#c98a3a', '#151515', '#8a2f2f', '#e0b860',
 const SHIRTS = ['#5b8def', '#e85d75', '#58b368', '#b07cd8', '#f2a541', '#3fb7b0', '#ef7d57', '#f4f1de'];
 const PANTS = ['#3b4a5a', '#2f3e46', '#6d597a', '#4a5759', '#1d3557'];
 const SKINS = ['#f6c9a0', '#e8b088', '#c98e62', '#fbd8b8'];
+let nextId = 1;
+function seedLook(id) {   // 由编号决定外观，联机双方看到的客人一致
+  let a = Math.imul(id, 2654435761) >>> 0;
+  const r = () => { a = (a + 0x6D2B79F5) >>> 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }, pk = arr => arr[Math.floor(r() * arr.length)];
+  return { shirt: pk(SHIRTS), hair: pk(HAIRS), skin: pk(SKINS), pants: pk(PANTS), style: pk(['short', 'bun', 'long', 'pony', 'short']) };
+}
+const custLook = (id, kind) => Object.assign(seedLook(id), kind === 'vip' ? { vip: true, shirt: '#3d2c6b', pants: '#1c1433' } : kind === 'critic' ? { beret: true, shirt: '#22333b' } : kind === 'hurry' ? { band: true } : kind === 'rider' ? { shirt: '#ffb703', pants: '#22333b', helmet: true, style: 'short' } : {});
 const randLook = () => ({ shirt: pick(SHIRTS), hair: pick(HAIRS), skin: pick(SKINS), pants: pick(PANTS), style: pick(['short', 'bun', 'long', 'pony', 'short']) });
 
 function makePerson(L) {
@@ -727,6 +821,7 @@ const SFX = {
 };
 let lastCoin = 0;
 function sfx(n) {
+  if (net.role === 'host' && net.peer && net.ev.length < 80) net.ev.push(['s', n]);
   if (!AU.ctx || !AU.on || AU.ctx.state !== 'running') return; const t = AU.ctx.currentTime;
   if (n === 'coin') { if (t - lastCoin < 0.12) return; lastCoin = t; }
   for (const [f, d, len, type, v] of SFX[n]) tone(f, t + d, len, type, v, AU.sfx);
@@ -736,11 +831,15 @@ document.addEventListener('visibilitychange', () => { if (AU.ctx) document.hidde
 
 // ================= 运行时状态 =================
 let tables = [], customers = [], orders = [], workers = [], floats = [], ST = [], peds = [], OBS = [];
-let padT = 0, spawnT = 1.5, time = 0, rushT = 0, nextRush = 80, hudDirty = true, combo = 0, coins = [], shopT = 0, hqT = 0, paused = false, lastClock = '', stockWarned = false, buyerT = 0;
+let spawnT = 1.5, time = 0, rushT = 0, nextRush = 80, hudDirty = true, combo = 0, coins = [], shopT = 0, hqT = 0, paused = false, lastClock = '', stockWarned = false, buyerT = 0;
 const comboMul = () => 1 + Math.min(combo, 20) * 0.02;
 const player = { isPlayer: true, x: 9, y: 2.4, dir: 0, face: 0, stack: [], moving: false, cd: 0, target: null,
   look: { shirt: '#ff7a45', hair: '#3b2a1a', skin: '#f6c9a0', pants: '#2f3e46', style: 'short', apron: true, player: true } };
 
+const mate = { isPlayer: true, x: 9.8, y: 2.4, dir: 0, face: 0, stack: [], moving: false, cd: 0, mesh: null,
+  look: { shirt: '#3a86ff', hair: '#6b3f1d', skin: '#f6c9a0', pants: '#22333b', style: 'pony', apron: true, apronC: '#ffd166' } };
+const mateOn = () => !!net.role && net.peer && !!mate.mesh;
+const plist = () => net.role === 'host' && net.peer ? [player, mate] : [player];
 function rebuildObs() {
   const R = 0.3, o = [], box = (x0, x1, y0, y1) => o.push({ x: (x0 + x1) / 2, y: (y0 + y1) / 2, hx: (x1 - x0) / 2 + R, hy: (y1 - y0) / 2 + R });
   box(-0.6, 0.05, -3, H + 0.28); box(-0.6, W + 0.28, -4, 1.2);
@@ -813,15 +912,14 @@ function syncPeds() {
   while (peds.length < n) { const p = { x: -26 + Math.random() * 66, y: pick([12.5, 16.9, 17.3]), dir: 0, face: 0, stack: [], moving: true, look: randLook(), tx: 0, ty: 0, wait: 0 }; p.tx = p.x; p.ty = p.y; p.mesh = makePerson(p.look); dyn.add(p.mesh); peds.push(p); }
 }
 function syncWorld(announce) {
-  while (ST.length < unlocked()) { addStation(ST.length); const it = ST[ST.length - 1].item; if (announce) toast(T('unlockItem', { e: it.e, n: T(it.m) })); }
+  while (ST.length < unlocked()) { addStation(ST.length); const it = ST[ST.length - 1].item; if (announce) toast(TK('unlockItem', { e: it.e, n: TK(it.m) })); }
   while (tables.length < tableCount()) addTable(tables.length, false);
-  if (announce && S.level <= 9) toast(T('newTables'));
-  if (announce) for (const b of BIZ) if (S.level === b.lv) toast(T('bizAvail', { n: T(b.k) }));
-  syncStaff(); syncDistrict(); syncPeds(); drawMenu(); rebuildObs();
+  if (announce && S.level <= 9) toast(TK('newTables'));
+  BIZ.forEach(vSync); syncStaff(); syncDistrict(); syncPeds(); drawMenu(); rebuildObs(); buildPlaces();
 }
 function init() {
   while (dyn.children.length) dyn.remove(dyn.children[0]);
-  tables = []; customers = []; orders = []; workers = []; floats = []; ST = []; peds = []; pups = []; mouse = null; coins = [];
+  tables = []; customers = []; orders = []; workers = []; floats = []; ST = []; peds = []; pups = []; mouse = null; coins = []; net.cm.clear(); mate.mesh = null; mate.stack = []; if (net.role === 'host') net.peer = false;
   Object.assign(player, { x: 9, y: 2.4, stack: [], target: null, stackDirty: true });
   BIZ.forEach(b => b.rt = null); STAND.cash = 0; STAND.seat.state = 'free'; combo = 0; mouseT = 50; pupT = 18; rushT = 0; stockWarned = false; for (const k in buff) buff[k] = 0;
   syncWorld(false); tier = -1; applyTier(false);
@@ -838,7 +936,7 @@ function newMission() {
 function progress(type, v) {
   const m = S.mission; if (!m || m.type !== type) return;
   m.prog += v; hudDirty = true;
-  if (m.prog >= m.goal) { toast(T('done', { n: fmt(m.reward) })); S.money += m.reward; S.missionN++; addXp(2); newMission(); }
+  if (m.prog >= m.goal) { toast(TK('done', { n: fmt(m.reward) })); S.money += m.reward; S.missionN++; addXp(2); newMission(); }
 }
 
 // ================= 逻辑 =================
@@ -848,13 +946,13 @@ function go(e, tx, ty, sp, dt) {
   if (d <= step) { e.x = tx; e.y = ty; e.moving = false; return true; }
   e.x += dx / d * step; e.y += dy / d * step; e.moving = true; return false;
 }
-function floatText(x, y, z, text, color) { floats.push({ x, y, z, text, color: color || '#fff', t: 0 }); }
+function floatText(x, y, z, text, color) { floats.push({ x, y, z, text, color: color || '#fff', t: 0 }); if (net.role === 'host' && net.peer && net.ev.length < 80) net.ev.push(['f', q2(x), q2(y), q2(z), text, color || '#fff']); }
 function addMoney(n) { S.money += n; if (n > 0) { S.d.rev += n; progress('earn', n); } hudDirty = true; }
 function addXp(n) {
   S.xp += n;
   while (S.xp >= xpNeed()) {
     S.xp -= xpNeed(); S.level++; const b = 20 * S.level; S.money += b;
-    toast(T('levelUp', { l: S.level, n: fmt(b) })); sfx('level'); applyTier(true); syncWorld(true); save();
+    toast(TK('levelUp', { l: S.level, n: fmt(b) })); sfx('level'); applyTier(true); syncWorld(true); checkMs(); save();
   }
   hudDirty = true;
 }
@@ -862,14 +960,32 @@ function rate(d) { S.rating = Math.max(0, Math.min(5, S.rating + d)); hudDirty =
 function payout(x, y, z, n) {   // 只有店主走到钱旁边才会入账
   floatText(x, y, z, '+' + fmt(n), '#ffe066');
   const [px, py] = proj(x, y, z); for (let i = 0; i < 6; i++) coins.push({ x: px + (Math.random() - 0.5) * 34, y: py + (Math.random() - 0.5) * 22, t: -i * 0.06 });
+  if (net.role === 'host' && net.peer) net.ev.push(['c', q2(x), q2(y), q2(z)]);
   sfx('coin'); addMoney(n);
 }
 function collect(t) { if (t.cash > 0) { payout(t.x, t.y, 1.3, t.cash); t.cash = 0; } }
 function buyTable() {   // 升级只提高可购买上限，桌子要自己花钱买
   const c = tableCost(); if (S.tables >= tableMax() || S.money < c) return false;
-  addMoney(-c); addTable(S.tables, true); S.tables++; rebuildObs(); sfx('buy'); save();
-  toast((S.tables - 1) % 6 === 0 ? T('zoneOpen', { n: T('z' + Math.floor((S.tables - 1) / 6)) }) : '🪑 ' + S.tables + '/' + tableMax());
+  addMoney(-c); addTable(S.tables, true); S.tables++; rebuildObs(); sfx('buy'); checkMs(); save();
+  toast((S.tables - 1) % 6 === 0 ? TK('zoneOpen', { n: TK('z' + Math.floor((S.tables - 1) / 6)) }) : '🪑 ' + S.tables + '/' + tableMax());
   return true;
+}
+function doBuy(a) {   // 所有花钱的操作都走这里（联机时由房主一侧执行）
+  const kind = a[0], key = a[1]; let cost = null, fn = null;
+  if (kind === 'table') return buyTable();
+  if (kind === 'skill') { const it = ITEMS.find(i => i.m === key); if (it && ITEMS.indexOf(it) < unlocked() && S.skill[key] < 8) { cost = skillCost(it); fn = () => S.skill[key]++; } }
+  else if (kind === 'up') { const u = UP[key]; if (u && S.up[key] < u.cost.length) { cost = u.cost[S.up[key]]; fn = () => S.up[key]++; } }
+  else if (kind === 'biz') { const i = BIZ.findIndex(b => b.k === key), b = BIZ[i]; if (b && !vOwned(b) && vReady(i)) { cost = b.cost; fn = () => { S.biz[key].lv = 1; toast(TK('vOpen', { n: TK(key) })); }; } }
+  else if (kind === 'vst') { const b = BIZ.find(b => b.k === key), i = a[2], s = b && S.biz[key]; if (b && vOwned(b) && s.st[i] != null && s.st[i] < 5 && (s.st[i] > 0 || i === 0 || s.st[i - 1] > 0)) { cost = stCost(b, i); fn = () => { s.st[i]++; }; } }
+  else if (kind === 'vup') { const b = BIZ.find(b => b.k === key), n = a[2], s = b && S.biz[key]; if (b && vOwned(b) && VUP[n] && s[n] < VUP[n][1]) { cost = vupCost(b, n); fn = () => { s[n]++; }; } }
+  else if (kind === 'hq') { if (vDone(BIZ[BIZ.length - 1]) && !S.hq) { cost = HQ.cost; fn = () => { S.hq = 1; toast(TK('hqNew')); }; } }
+  if (cost == null || S.money < cost) return false;
+  addMoney(-cost); fn(); sfx('buy'); syncWorld(false); checkMs(); save(); hudDirty = true; return true;
+}
+function checkMs() {   // 满级里程碑提示
+  const m = S.ms || (S.ms = {});
+  if (!m.rest && restDone()) { m.rest = 1; toast(TK('restDoneT')); sfx('level'); }
+  for (const b of BIZ) if (!m[b.k] && vDone(b)) { m[b.k] = 1; toast(TK('vDoneT', { n: TK(b.k) })); sfx('level'); }
 }
 function restock() {   // 采购员送货上门，加价 25%
   const c = Math.round(cratePrice() * 1.25); if (S.stock + CRATE > stockCap() || S.money < c) return false;
@@ -882,14 +998,14 @@ function spawnCustomer() {
   if (S.up.takeout > 0 && STAND.seat.state === 'free' && Math.random() < 0.2) {   // 外卖骑手
     STAND.seat.state = 'taken'; const food = ITEMS.filter((it, i) => i < unlocked() && !it.drink);
     const c = { x: W + 0.9, y: -2.5, dir: 0, face: 0, path: [[W + 0.9, 1.2], [W + 0.6, 2.2]], state: 'in', seat: STAND.seat, t: 0, moving: true, kind: 'rider', stack: [],
-      item: pick(food), look: Object.assign(randLook(), { shirt: '#ffb703', pants: '#22333b', helmet: true, style: 'short' }) };
+      item: pick(food), id: nextId, look: custLook(nextId++, 'rider') };
     c.mesh = makePerson(c.look); dyn.add(c.mesh); customers.push(c); return true;
   }
   const q = customers.filter(c => c.state === 'q').length; if (q >= QMAX) return false;
   const r = Math.random();
   const kind = r < (S.mission && S.mission.type === 'vip' ? 0.3 : 0.1) ? 'vip' : r > 0.3 && r < 0.38 && S.level >= 3 ? 'critic' : r > 0.86 && S.level >= 2 ? 'hurry' : 'normal';
   const c = { x: W + 0.9, y: -2.5, dir: 0, face: 0, state: 'q', qi: q, qpat: 26, t: 0, moving: true, kind, vip: kind === 'vip', stack: [], item,
-    look: Object.assign(randLook(), kind === 'vip' ? { vip: true, shirt: '#3d2c6b', pants: '#1c1433' } : kind === 'critic' ? { beret: true, shirt: '#22333b' } : kind === 'hurry' ? { band: true } : {}) };
+    id: nextId, look: custLook(nextId++, kind) };
   c.mesh = makePerson(c.look); dyn.add(c.mesh); customers.push(c); return true;
 }
 function seatQueue() {
@@ -913,7 +1029,7 @@ function updCustomer(c, dt) {
   if (c.state === 'q') {
     const [qx, qy] = qPos(c.qi); if (go(c, qx, qy, 2.4, dt)) c.dir = -1.57;
     if (buff.clock <= 0) c.qpat -= dt;
-    if (c.qpat <= 0) { rate(-0.02); floatText(c.x, c.y, 2.0, T('qLeave'), '#ffcc80'); c.state = 'out'; c.path = [[W + 0.75, H + 0.5], [W + 14, H + 0.5]]; }
+    if (c.qpat <= 0) { rate(-0.02); floatText(c.x, c.y, 2.0, TK('qLeave'), '#ffcc80'); c.state = 'out'; c.path = [[W + 0.75, H + 0.5], [W + 14, H + 0.5]]; }
   } else if (c.state === 'in' || c.state === 'out') {
     const p = c.path[0];
     if (go(c, p[0], p[1], 2.4, dt)) {
@@ -930,7 +1046,7 @@ function updCustomer(c, dt) {
     if (buff.clock <= 0) c.pat -= dt;
     if (c.pat <= 0) {
       killOrder(c.order); c.seat.state = 'free'; rate(-0.15 * (c.kind === 'critic' ? 3 : 1)); combo = 0; sfx('angry'); hudDirty = true;
-      floatText(c.x, c.y, 2.1, T('angry'), '#ff8a80'); leave(c);
+      floatText(c.x, c.y, 2.1, TK('angry'), '#ff8a80'); leave(c);
     }
   } else if (c.state === 'eat') {
     c.t -= dt;
@@ -952,7 +1068,7 @@ function serve(o) {
   dyn.add(c.food);
   const cr = c.kind === 'critic' ? 4 : 1;
   rate((c.happy ? 0.05 : 0.015) * cr); progress('serve', 1);
-  if (c.happy) { combo++; progress('happy', 1); floatText(c.x, c.y, 2.1, cr > 1 ? T('critic') : T('tip'), '#ffe066'); }
+  if (c.happy) { combo++; progress('happy', 1); floatText(c.x, c.y, 2.1, cr > 1 ? TK('critic') : TK('tip'), '#ffe066'); }
   c.mult = comboMul(); hudDirty = true;
   if (c.vip) progress('vip', 1);
 }
@@ -963,7 +1079,7 @@ function updStation(st, dt) {   // 每位厨师只做自己的那一道，每做
   if (!st.cur) {
     const o = orders.find(o => o.state === 'queue' && o.st === st);
     if (o) {
-      if (S.stock <= 0) { st.starved = true; if (!stockWarned) { stockWarned = true; toast(T('noStock')); sfx('alert'); } }
+      if (S.stock <= 0) { st.starved = true; if (!stockWarned) { stockWarned = true; toast(TK('noStock')); sfx('alert'); } }
       else { S.stock--; hudDirty = true; o.state = 'cook'; st.cur = o; st.total = st.t = cookTime(st.item); }
     }
   }
@@ -1008,8 +1124,9 @@ function clearSeat(s, w) { rm(s.plate); s.plate = null; s.state = 'free'; s.clai
 
 // ---- 玩家 ----
 const keys = {}, joy = { on: false, sx: 0, sy: 0, dx: 0, dy: 0, moved: false, t0: 0 };
-function updPlayer(dt) {
-  const p = player, sp = playerSpeed() * (buff.skate > 0 ? 1.5 : 1);
+function updPlayer(dt) { movePlayer(player, dt); interact(player, dt); }
+function movePlayer(p, dt) {   // 移动 + 碰撞（联机时各自在本机算自己的移动）
+  const sp = playerSpeed() * (buff.skate > 0 ? 1.5 : 1);
   let sx = joy.on && joy.moved ? joy.dx : 0, sy = joy.on && joy.moved ? joy.dy : 0;
   if (keys.a || keys.arrowleft) sx -= 1; if (keys.d || keys.arrowright) sx += 1;
   if (keys.w || keys.arrowup) sy -= 1; if (keys.s || keys.arrowdown) sy += 1;
@@ -1021,8 +1138,10 @@ function updPlayer(dt) {
   } else if (p.target) { if (go(p, p.target.x, p.target.y, sp, dt)) p.target = (p.path && p.path.shift()) || null; }
   else p.moving = false;
   // 碰撞
-  p.x = Math.max(-36.5, Math.min(42.5, p.x)); p.y = Math.max(1.5, Math.min(17.4, p.y));
-  for (const t of OBS) {
+  const vb = venueAt(p.x, p.y);
+  if (vb) { p.x = Math.max(vb.ox + 0.35, Math.min(vb.ox + VW - 0.35, p.x)); p.y = Math.max(vb.oz + 1.55, Math.min(vb.oz + VH - 0.35, p.y)); }
+  else { p.x = Math.max(-36.5, Math.min(42.5, p.x)); p.y = Math.max(1.5, Math.min(17.4, p.y)); }
+  for (const t of vb ? vb.obs : OBS) {
     const dx = p.x - t.x, dy = p.y - t.y, hx = t.hx, hy = t.hy;
     if (Math.abs(dx) < hx && Math.abs(dy) < hy) {
       const tg = p.target, slide = tg ? sp * dt * 0.9 : 0;   // 点地移动时沿边绕到最近的角
@@ -1037,27 +1156,36 @@ function updPlayer(dt) {
   }
   if (p.target && p.target === tg0 && Math.hypot(p.x - ox0, p.y - oy0) < sp * dt * 0.2) { p.target = null; p.path = null; }   // 被挡住走不动就停下
   if (!p.target && !(sx || sy)) p.moving = false;
-
-  // 收钱：只有店主亲自走到旁边
+}
+function interact(p, dt) {   // 靠近就自动交互（由房主一侧统一结算）
   const n0 = p.stack.length; p.stack = p.stack.filter(it => !(it.o && it.o.dead));
-  if (p.stack.length !== n0) { p.stackDirty = true; floatText(p.x, p.y, 2, T('gone'), '#ff8a80'); }
+  if (p.stack.length !== n0) { p.stackDirty = true; floatText(p.x, p.y, 2, TK('gone'), '#ff8a80'); }
   for (const t of tables) if (t.cash > 0 && Math.abs(p.x - t.x) < 1.75 && Math.abs(p.y - t.y) < 1.1) collect(t);
   if (STAND.cash > 0 && Math.abs(p.x - STAND.x) < 1.3 && Math.abs(p.y - STAND.y) < 1.3) collect(STAND);
-  for (const b of BIZ) { const s = S.biz[b.k]; if (s.lv > 0 && s.cash >= 1 && Math.hypot(p.x - b.px, p.y - PADY) < 1.3) { const n = Math.floor(s.cash); s.cash -= n; payout(b.px, PADY, 1, n); hideHint(); } }
+  { const vb = venueAt(p.x, p.y);   // 产业店内：仓库取货 → 上架（带出店门的货会原价退掉）
+    if (p.stack.some(it => it.m === 'box' && (!vb || it.b !== vb.idx))) { for (const it of p.stack) if (it.m === 'box' && (!vb || it.b !== vb.idx)) { const c = boxCost(BIZ[it.b], it.it); S.money += c; S.d.cost -= c; } p.stack = p.stack.filter(it => it.m !== 'box' || (vb && it.b === vb.idx)); p.stackDirty = true; hudDirty = true; }
+    if (vb && vOwned(vb) && vb.rt) {
+      const s = S.biz[vb.k]; let on = false;
+      if (p.y - vb.oz < 2.3 && p.stack.length < capacity()) for (let i = 0; i < vb.items.length && !on; i++) if (s.st[i] > 0 && Math.abs(p.x - palPos(vb, i)[0]) < 0.8) { on = true; p.vT = (p.vT || 0) + dt;
+        if (p.vT >= 0.3) { p.vT = 0; const c = boxCost(vb, i); if (S.money >= c) { S.money -= c; S.d.cost += c; hudDirty = true; p.stack.push({ m: 'box', b: vb.idx, it: i, c: vb.items[i][2] }); p.stackDirty = true; sfx('pop'); hideHint(); } } }
+      if (!on) p.vT = 0;
+      if (p.cd <= 0) for (let k = p.stack.length - 1; k >= 0; k--) { const it = p.stack[k]; if (it.m !== 'box') continue; const [sx, sy] = stPos(vb, it.it), st = vb.rt.st[it.it];
+        if (Math.hypot(p.x - sx, p.y - sy) < 1.75 && st.stock < stCap(vb, it.it)) { st.stock = Math.min(stCap(vb, it.it), st.stock + BOXU); p.stack.splice(k, 1); p.stackDirty = true; p.cd = 0.15; sfx('pop'); floatText(sx, sy, 2.2, vb.items[it.it][1] + ' +' + BOXU, '#b9f6ca'); break; } }
+    } }
   // 买桌子：站在空位光圈上
   if (S.tables < tableMax()) {
     const [tx, ty] = SPOTS[S.tables];
-    if (Math.abs(p.x - tx) < 1.2 && Math.abs(p.y - ty) < 0.6 && S.money >= tableCost()) { padT += dt; if (padT > 0.8) { padT = 0; buyTable(); p.target = null; hideHint(); } } else padT = 0;
-  } else padT = 0;
+    if (Math.abs(p.x - tx) < 1.2 && Math.abs(p.y - ty) < 0.6 && S.money >= tableCost()) { p.padT = (p.padT || 0) + dt; if (p.padT > 0.8) { p.padT = 0; buyTable(); p.target = null; hideHint(); } } else p.padT = 0;
+  } else p.padT = 0;
   // 进货：站在冰箱前的地垫上
   { const shopX = BIZ[0].px + 2.8, cp = cratePrice();   // 到超市门口买食材，一箱一箱搬回冰箱
     if (Math.hypot(p.x - shopX, p.y - 12.5) < 0.9 && p.stack.length < capacity()) {
-      shopT += dt;
-      if (shopT > 0.5) { shopT = 0;
+      p.shopT = (p.shopT || 0) + dt;
+      if (p.shopT > 0.5) { p.shopT = 0;
         if (S.money >= cp) { S.money -= cp; S.d.cost += cp; p.stack.push({ m: 'crate' }); p.stackDirty = true; hudDirty = true; sfx('pop'); floatText(shopX, 12.5, 1.7, '🥬 -💰' + fmt(cp), '#b9f6ca'); hideHint(); }
-        else if (S.stock <= 0 && !p.stack.some(it => it.m === 'crate')) { p.stack.push({ m: 'crate' }); p.stackDirty = true; toast(T('credit')); }
+        else if (S.stock <= 0 && !p.stack.some(it => it.m === 'crate')) { p.stack.push({ m: 'crate' }); p.stackDirty = true; toast(TK('credit')); }
       }
-    } else shopT = 0;
+    } else p.shopT = 0;
     if (p.cd <= 0 && S.stock < stockCap() && Math.hypot(p.x - FRIDGE.x, p.y - FRIDGE.y) < 1.0) { const i = p.stack.findIndex(it => it.m === 'crate');
       if (i >= 0) { p.stack.splice(i, 1); p.stackDirty = true; S.stock = Math.min(stockCap(), S.stock + CRATE); hudDirty = true; p.cd = 0.2; sfx('pop'); floatText(FRIDGE.x, FRIDGE.y, 1.6, '🥬 +' + CRATE, '#b9f6ca'); } } }
   p.cd -= dt;
@@ -1082,9 +1210,12 @@ function spawnPup() {
   const kind = pick(Object.keys(PUP)); let x, y, ok, n = 0;
   do { x = 0.8 + Math.random() * (W - 1.8); y = 2 + Math.random() * (H - 2.8); ok = !tables.some(t => Math.abs(x - t.x) < 1.5 && Math.abs(y - t.y) < 0.9) && Math.hypot(x - FRIDGE.x, y - FRIDGE.y) > 2; } while (!ok && ++n < 25);
   if (!ok) return;
+  addPup(kind, x, y, nextId++);
+}
+function addPup(kind, x, y, id) {
   const g = new THREE.Group(); g.position.set(x, 0, y);
   mk(cyl(0.42, 0.42, 0.02, 24), '#fff3b0', 0, 0.015, 0, g, { emissive: '#ffd60a', emissiveIntensity: 0.8, transparent: true, opacity: 0.85 }).castShadow = false;
-  const sp = emojiSprite(PUP[kind], 0.62); sp.position.y = 0.62; g.add(sp); dyn.add(g); pups.push({ kind, x, y, t: 16, g, sp, a: 0 });
+  const sp = emojiSprite(PUP[kind], 0.62); sp.position.y = 0.62; g.add(sp); dyn.add(g); pups.push({ id, kind, x, y, t: 16, g, sp, a: 0 });
 }
 function makeMouse() {
   const g = new THREE.Group();
@@ -1093,81 +1224,179 @@ function makeMouse() {
   mk(sph(0.025), '#f4acb7', 0, 0.14, 0.33, g); mk(cyl(0.015, 0.008, 0.34, 6), '#f4acb7', 0, 0.12, -0.36, g).rotation.x = 1.3;
   return g;
 }
-// ---- 产业经营：每家店都要亲自接待顾客 + 备货，或者花钱雇人 ----
-const SERVE = { market: '🛍️', teashop: '🧋', hotel: '🔑', park: '🎟️' }, WORK = { market: '🚚', teashop: '🫖', hotel: '🧹', park: '🎠' };
-const vqPos = (b, i) => [b.px + 1.0 + i * 0.62, 12.75];
-const workSpot = b => [b.px - 2.4, b.k === 'market' ? 13.1 : 12.65];
-const workHold = b => ({ market: 0.45, teashop: 0.8, hotel: 1.0, park: 1.5 })[b.k];
-function updBiz(b, dt) {
-  const s = S.biz[b.k]; if (s.lv <= 0) return;
-  const r = b.rt || (b.rt = { v: [], arrT: 1, clerkT: 3, pT: 0, goods: Math.ceil(b.gmax / 2), hold: 0, carry: false, mgrT: 4 });
-  const away = () => b.px + (Math.random() < 0.5 ? -1 : 1) * (10 + Math.random() * 4);
-  r.arrT -= dt;
-  if (r.arrT <= 0) {
-    r.arrT = (2.4 + Math.random() * 1.6) / (1 + 0.08 * s.lv);
-    if (r.v.filter(v => v.state !== 'go').length < 6) {
-      const v = { x: away(), y: 16.9, dir: 0, face: 0, stack: [], moving: true, look: randLook(), state: 'come', pat: 22 };
-      v.mesh = makePerson(v.look); dyn.add(v.mesh); r.v.push(v);
-    }
-  }
-  let qi = 0, head = null;
-  for (const v of r.v) {
-    if (v.state === 'go') { if (go(v, v.tx, 16.9, 2.2, dt)) { v.dead = true; rm(v.mesh); } continue; }
-    const [qx, qy] = vqPos(b, qi);
-    if (go(v, qx, qy, 2.2, dt)) {
-      v.dir = -1.57; v.pat -= dt;
-      if (v.pat <= 0) { v.state = 'go'; v.tx = away(); floatText(v.x, v.y, 2, '😤', '#ffcc80'); continue; }   // 等太久，没人接待就走了
-      if (qi === 0) head = v;
-    }
-    qi++;
-  }
-  r.v = r.v.filter(v => !v.dead);
-  const here = Math.hypot(player.x - b.px, player.y - PADY) < 1.1, full = s.cash >= bizCap(b) - 1;
-  const done = mul => { head.state = 'go'; head.tx = away(); r.goods--; s.cash = Math.min(bizCap(b), s.cash + b.inc * s.lv * 2.5 * (0.8 + S.rating * 0.08) * mul * incMul()); };
-  if (head && r.goods > 0 && here) { r.pT += dt; r.clerkT = 2; if (r.pT >= 0.6) { r.pT = 0; done(1); floatText(b.px, PADY, 1.7, SERVE[b.k], '#ffe066'); sfx('pop'); hideHint(); } }
-  else { r.pT = 0; if (head && r.goods > 0 && s.clerk && !full) { r.clerkT -= dt; if (r.clerkT <= 0) { r.clerkT = 3; done(0.8); } } }
-  // 备货：超市从货车搬货到收银台；奶茶店煮茶；酒店打扫房间；游乐场开动设备
-  const [wx, wy] = workSpot(b), atWork = Math.hypot(player.x - wx, player.y - wy) < 0.9;
+// ---- 产业店内经营：超市 / 奶茶店 / 酒店 / 游乐场 共用一套引擎 ----
+const VTHEME = { market: ['#f4f1de', '#e9c46a', '#f4a261'], teashop: ['#ffe5ec', '#ffb3c6', '#ff8fab'], hotel: ['#e9ecef', '#4a6fa5', '#577bb5'], park: ['#d8f3dc', '#74c69d', '#95d5b2'] };
+const stPos = (b, i) => [b.ox + 3.4 + (i % 4) * 4.3, b.oz + 4.6 + Math.floor(i / 4) * 3.9];
+const palPos = (b, i) => [b.ox + 2.2 + i * 2.3, b.oz + 1.0];
+const regPos = (b, r) => [b.ox + 6 + r * 5, b.oz + 12.2];
+const venueAt = (x, y) => y > 30 ? BIZ[Math.max(0, Math.min(BIZ.length - 1, Math.round((y - 44 - VH / 2) / 26)))] : null;
+function stationModel(b, i, g) {   // 每种产业的"货架"长得不一样
+  const c = b.items[i][2], tiers = [];
   if (b.k === 'market') {
-    if (r.carry) { if (here) { r.carry = false; r.goods = Math.min(b.gmax, r.goods + 8); sfx('serve'); floatText(b.px, PADY, 2.1, '📦 +8', '#b9f6ca'); hideHint(); } }
-    else if (atWork && r.goods < b.gmax) { r.hold += dt; if (r.hold >= workHold(b)) { r.hold = 0; r.carry = true; sfx('pop'); } } else r.hold = 0;
-  } else if (atWork && r.goods < b.gmax) {
-    r.hold += dt; if (r.hold >= workHold(b)) { r.hold = 0; r.goods = b.k === 'park' ? b.gmax : r.goods + 1; sfx('pop'); hideHint(); }
-  } else r.hold = 0;
-  if (s.mgr && S.hq) { r.mgrT -= dt; if (r.mgrT <= 0) { r.mgrT = 3.5; if (r.goods < b.gmax) r.goods++; } }
+    mk(rb(2.6, 1.55, 0.14, 0.03), '#fffaf0', 0, 0.78, -0.3, g); for (const x of [-1.3, 1.3]) mk(rb(0.1, 1.55, 0.74, 0.02), '#52796f', x, 0.78, 0, g);
+    for (let t = 0; t < 3; t++) { mk(rb(2.6, 0.06, 0.7, 0.02), '#52796f', 0, 0.3 + t * 0.48, 0, g); const tg = new THREE.Group(); g.add(tg); tiers.push(tg);
+      for (let k = 0; k < 6; k++) mk(sph(0.17), c, -1.05 + k * 0.42, 0.5 + t * 0.48, 0.05, tg); }
+  } else if (b.k === 'teashop') {
+    mk(rb(2.6, 0.85, 0.8, 0.06), '#fffaf0', 0, 0.43, 0, g); mk(rb(2.7, 0.08, 0.9, 0.03), c, 0, 0.88, 0, g);
+    mk(rb(0.9, 0.85, 0.5, 0.08), c, -0.75, 1.35, -0.1, g, { roughness: 0.35 }); mk(cyl(0.05, 0.05, 0.16, 8), '#dfe7ec', -0.75, 0.98, 0.2, g, { metalness: 0.7, roughness: 0.3 });
+    for (let t = 0; t < 3; t++) { const tg = new THREE.Group(); g.add(tg); tiers.push(tg); for (let k = 0; k < 2; k++) { mk(cyl(0.1, 0.075, 0.26, 12), c, 0.05 + t * 0.42, 1.05, -0.15 + k * 0.3, tg, { roughness: 0.3 }); mk(cyl(0.105, 0.105, 0.03, 12), '#ffffff', 0.05 + t * 0.42, 1.19, -0.15 + k * 0.3, tg); } }
+  } else if (b.k === 'hotel') {
+    mk(rb(2.7, 0.08, 1.5, 0.03), c, 0, 0.04, -0.1, g); mk(rb(2.7, 2.0, 0.14, 0.03), '#fffaf0', 0, 1.0, -0.75, g); mk(rb(0.8, 1.6, 0.06, 0.02), '#8a5a35', 0.85, 0.8, -0.66, g);
+    mk(rb(1.3, 0.34, 0.95, 0.08), '#ffffff', -0.5, 0.25, -0.15, g); mk(rb(1.3, 0.12, 0.6, 0.05), c, -0.5, 0.46, 0.0, g); mk(rb(0.5, 0.14, 0.3, 0.06), '#ffffff', -0.85, 0.5, -0.45, g);
+    for (let t = 0; t < 3; t++) { const tg = new THREE.Group(); g.add(tg); tiers.push(tg); mk(rb(0.42, 0.13, 0.3, 0.03), '#f1faee', 0.85, 0.14 + t * 0.14, 0.15, tg); }
+  } else {
+    mk(cyl(1.25, 1.35, 0.16, 24), c, 0, 0.08, 0, g); mk(cyl(0.09, 0.09, 1.7, 10), '#ffd166', 0, 0.95, 0, g);
+    const roof = new THREE.Mesh(G('vroof', () => new THREE.ConeGeometry(1.35, 0.7, 12)), M('#e85d75')); roof.position.y = 2.1; roof.castShadow = true; g.add(roof);
+    for (let t = 0; t < 3; t++) { const tg = new THREE.Group(); g.add(tg); tiers.push(tg); for (let k = 0; k < 2; k++) { const a = (t * 2 + k) * Math.PI / 3; mk(sph(0.14), '#fff3b0', Math.cos(a) * 1.0, 0.36, Math.sin(a) * 1.0, tg, { emissive: '#ffd60a', emissiveIntensity: 0.9 }); } }
+  }
+  const sp = emojiSprite(b.items[i][1], 0.62, true); sp.position.y = b.k === 'park' ? 2.9 : 2.25; g.add(sp);
+  return tiers;
+}
+function buildVenue(b) {
+  const g = new THREE.Group(); scene.add(g); const ox = b.ox, oz = b.oz, th = VTHEME[b.k];
+  mk(rb(VW + 0.4, 0.3, VH + 0.4, 0.04), '#b9b3a5', ox + VW / 2 - 0.1, -0.15, oz + VH / 2 - 0.1, g).castShadow = false;
+  flat(VW, VH, th[0], ox + VW / 2, 0.006, oz + VH / 2, g); flat(VW - 0.6, 1.5, '#d9d4c7', ox + VW / 2, 0.009, oz + 1.0, g);
+  mk(rb(0.25, 2.9, VH + 0.3, 0.03), th[1], ox - 0.125, 1.45, oz + VH / 2 - 0.15, g); mk(rb(VW + 0.05, 2.9, 0.25, 0.03), th[2], ox + VW / 2, 1.45, oz - 0.125, g);
+  mk(rb(0.34, 0.12, VH + 0.36, 0.03), '#fbf3e1', ox - 0.11, 2.92, oz + VH / 2 - 0.15, g); mk(rb(VW + 0.1, 0.12, 0.34, 0.03), '#fbf3e1', ox + VW / 2, 2.92, oz - 0.11, g);
+  hedge(ox + VW / 2, oz + VH + 0.14, VW + 0.5, 0.28, g); hedge(ox + VW + 0.14, oz + 6.2, 0.28, 12.6, g);
+  flat(1.3, 1.7, '#c8553d', ox + VW - 0.7, 0.012, oz + 13.6, g);
+  mk(cyl(0.55, 0.55, 0.03, 24), '#fff3b0', ox + VW - 1.0, 0.016, oz + 14.45, g, { emissive: '#ffd60a', emissiveIntensity: 0.6 }).castShadow = false;
+  const big = emojiSprite(b.e, 1.7, true); big.position.set(ox + VW / 2, 3.9, oz + 0.3); g.add(big);
+  b.regG = [0, 1, 2].map(r => { const q = new THREE.Group(), [rx, ry] = regPos(b, r); q.position.set(rx, 0, ry); g.add(q);
+    mk(rb(1.5, 0.82, 0.7, 0.05), '#457b9d', 0, 0.41, 0, q); mk(rb(1.58, 0.06, 0.78, 0.02), '#f1faee', 0, 0.85, 0, q); mk(rb(0.9, 0.03, 0.4, 0.01), '#22333b', -0.25, 0.89, 0, q);
+    mk(rb(0.34, 0.3, 0.08, 0.02), '#22333b', 0.5, 1.12, 0.1, q); mk(cyl(0.03, 0.03, 0.14, 6), '#22333b', 0.5, 0.95, 0.1, q); return q; });
+  b.palG = b.items.map((it, i) => { const q = new THREE.Group(), [px, py] = palPos(b, i); q.position.set(px, 0, py - 0.25); g.add(q);
+    mk(rb(1.5, 0.12, 0.9, 0.02), '#a86f42', 0, 0.06, 0, q); for (const [x, y, z] of [[-0.38, 0.28, 0], [0.38, 0.28, 0], [0, 0.6, 0]]) mk(rb(0.62, 0.32, 0.6, 0.03), it[2], x, y, z, q);
+    const sp = emojiSprite(it[1], 0.5, true); sp.position.set(0, 1.25, 0.1); q.add(sp); return q; });
+  b.stG = b.items.map((it, i) => { const q = new THREE.Group(), [sx, sy] = stPos(b, i); q.position.set(sx, 0, sy); g.add(q); q.userData.tiers = stationModel(b, i, q); return q; });
+  b.lockG = b.items.map((it, i) => { const [sx, sy] = stPos(b, i), m = mk(rb(2.7, 0.03, 1.0, 0.012), '#8d99a6', sx, 0.02, sy, g, { transparent: true, opacity: 0.35 }); m.castShadow = false; return m; });
+  b.stack.children.forEach((m, k) => { if (k) m.visible = false; });
+}
+BIZ.forEach(buildVenue);
+function vSync(b) {   // 按存档刷新店内：已解锁的货架、收银台、员工
+  const s = S.biz[b.k], own = s.lv > 0;
+  b.stG.forEach((q, i) => q.visible = own && s.st[i] > 0); b.palG.forEach((q, i) => q.visible = own && s.st[i] > 0); b.lockG.forEach((q, i) => q.visible = !(own && s.st[i] > 0));
+  const nReg = Math.max(1, s.ck); b.regG.forEach((q, r) => q.visible = r < nReg);
+  if (!own) { b.rt = null; b.obs = []; return; }
+  const r = b.rt || (b.rt = { st: b.items.map((it, i) => ({ stock: Math.max(4, Math.ceil(stCap(b, i) / 2)), occ: [], claim: null })), reg: [0, 1, 2].map(() => ({ q: [], p: 0, busy: false })), cust: [], stk: [], csh: [], spawnT: 2 });
+  const staff = (arr, n, x, y, look) => { while (arr.length < n) { const k = arr.length, w = { x: x(k), y: y(k), dir: Math.PI, face: Math.PI, stack: [], moving: false, task: null, look: Object.assign(randLook(), look) }; w.mesh = makePerson(w.look); dyn.add(w.mesh); arr.push(w); } };
+  const uni = { market: ['#2a9d8f', '#e63946'], teashop: ['#b56576', '#7b5ea7'], hotel: ['#f1faee', '#1d3557'], park: ['#f4a261', '#3a86ff'] }[b.k];
+  staff(r.stk, s.sk, k => b.ox + 3 + k * 1.2, () => b.oz + 2.4, { shirt: uni[0], pants: '#22333b', apron: true, apronC: '#ffd166' });
+  staff(r.csh, s.ck, k => regPos(b, k)[0], k => regPos(b, k)[1] + 0.85, { shirt: uni[1], pants: '#22333b', apron: b.k !== 'hotel', vip: false });
+  const R = 0.3, o = []; s.st.forEach((l, i) => { if (l > 0) { const [sx, sy] = stPos(b, i); o.push({ x: sx, y: sy - 0.05, hx: 1.35 + R, hy: 0.45 + R }); } });
+  for (let k = 0; k < nReg; k++) { const [rx, ry] = regPos(b, k); o.push({ x: rx, y: ry, hx: 0.78 + R, hy: 0.36 + R }); }
+  b.obs = o;
+}
+function vNext(b, c, nReg) {   // 顾客的下一步：去下一个货架，或去排队结账
+  const r = b.rt;
+  if (c.pi < c.plan.length) { const st = r.st[c.plan[c.pi]]; let u = Math.floor(Math.random() * b.users); for (let k = 0; k < b.users; k++) if (!st.occ[k]) { u = k; break; } st.occ[u] = c; c.spot = u; c.state = 'toSt'; }
+  else if (c.n > 0) { let best = 0; for (let k = 1; k < nReg; k++) if (r.reg[k].q.length < r.reg[best].q.length) best = k; c.reg = best; r.reg[best].q.push(c); c.state = 'q'; c.qt = 0; }
+  else c.state = 'out';
+}
+function vCust(b, c, dt, nReg) {
+  const r = b.rt, sp = 2.3;
+  if (c.state === 'in') { if (go(c, b.ox + VW - 1.6, b.oz + 13.4, sp, dt)) vNext(b, c, nReg); }
+  else if (c.state === 'toSt') { const [sx, sy] = stPos(b, c.plan[c.pi]); if (go(c, sx + (c.spot - (b.users - 1) / 2) * 0.75, sy + 0.95, sp, dt)) { c.dir = Math.PI; c.state = 'atSt'; c.t = 9; c.u = 0; } }
+  else if (c.state === 'atSt') {
+    const i = c.plan[c.pi], st = r.st[i]; let done = false;
+    if (c.u > 0 || st.stock > 0) { if (c.u === 0) st.stock--; c.u += dt; if (c.u >= b.useT) { c.n++; c.sum += itPrice(b, i); done = true; if (c.n === 1) { c.stack = [{ m: 'basket' }]; c.stackDirty = true; } } }
+    else { c.t -= dt; if (c.t <= 0) { c.sad = true; rate(-0.01); floatText(c.x, c.y, 2, '😕', '#ffcc80'); done = true; } }
+    if (done) { if (st.occ[c.spot] === c) st.occ[c.spot] = null; c.pi++; vNext(b, c, nReg); }
+  } else if (c.state === 'q') {
+    const g = r.reg[c.reg], k = g.q.indexOf(c), [rx, ry] = regPos(b, c.reg), arrived = go(c, rx - 1.0 - k * 0.62, ry + 0.05, sp, dt);
+    if (arrived) c.dir = 1.57; c.ready = arrived && k === 0;
+    if (!g.busy) { c.qt += dt; if (c.qt > 28) { g.q.splice(k, 1); c.state = 'out'; c.ready = false; c.sad = true; rate(-0.03); floatText(c.x, c.y, 2, TK('qLeave'), '#ffcc80'); } }
+  } else if (c.state === 'out') {
+    if (!c.o1) { if (go(c, b.ox + VW - 1.2, b.oz + 13.9, sp, dt)) c.o1 = true; } else if (go(c, b.ox + VW + 3.5, b.oz + 13.9, sp, dt)) { c.dead = true; rm(c.mesh); }
+  }
+}
+function vStocker(b, w, dt, spd) {   // 理货员：找最缺货的货架 → 去仓库取货 → 上架
+  const r = b.rt, s = S.biz[b.k], sp = 2.6 * spd;
+  if (w.idle > 0) { w.idle -= dt; w.moving = false; return; }
+  if (w.task == null) {
+    let best = -1, br = 0.6; s.st.forEach((l, i) => { if (l > 0 && r.st[i].claim == null) { const q = r.st[i].stock / stCap(b, i); if (q < br) { br = q; best = i; } } });
+    if (best < 0) { w.moving = false; return; } w.task = best; r.st[best].claim = w; w.ph = 0;
+  }
+  const i = w.task, st = r.st[i];
+  if (w.ph === 0) {
+    const [px, py] = palPos(b, i);
+    if (go(w, px, py + 0.75, sp, dt)) { w.dir = Math.PI; const n = Math.min(1 + s.cap, Math.ceil((stCap(b, i) - st.stock) / BOXU)), c = boxCost(b, i) * n;
+      if (n > 0 && S.money >= c) { S.money -= c; S.d.cost += c; hudDirty = true; w.n = n; w.stack = Array.from({ length: n }, () => ({ m: 'box', b: b.idx, it: i, c: b.items[i][2] })); w.stackDirty = true; w.ph = 1; }
+      else { st.claim = null; w.task = null; w.idle = 2; } }
+  } else { const [sx, sy] = stPos(b, i); if (go(w, sx, sy - 1.0, sp, dt)) { w.dir = 0; st.stock = Math.min(stCap(b, i), st.stock + BOXU * w.n); w.stack = []; w.stackDirty = true; st.claim = null; w.task = null; } }
+}
+function updVenue(b, dt) {
+  const s = S.biz[b.k], r = b.rt; if (s.lv <= 0 || !r) return;
+  const ps = plist(), open = []; s.st.forEach((l, i) => { if (l > 0) open.push(i); });
+  const nReg = Math.max(1, s.ck), spd = 1 + 0.18 * s.spd;
+  r.spawnT -= dt;
+  if (r.spawnT <= 0) {
+    r.spawnT = Math.max(0.9, 3.6 - 0.4 * s.ad) * (0.7 + Math.random() * 0.6) * (1.45 - S.rating * 0.13) / (0.55 + 0.15 * open.length);
+    if (r.cust.length < 16) {
+      const n = 1 + Math.floor(Math.random() * Math.min(3, open.length)), plan = []; while (plan.length < n) { const i = pick(open); if (plan.indexOf(i) < 0) plan.push(i); } plan.sort((a, c) => a - c);
+      const c = { id: nextId, look: seedLook(nextId++), x: b.ox + VW + 3.5, y: b.oz + 13.4, dir: -1.57, face: -1.57, stack: [], moving: true, plan, pi: 0, state: 'in', n: 0, sum: 0, t: 0, u: 0, qt: 0 };
+      c.mesh = makePerson(c.look); dyn.add(c.mesh); r.cust.push(c);
+    }
+  }
+  for (const c of r.cust) vCust(b, c, dt, nReg);
+  r.cust = r.cust.filter(c => !c.dead);
+  for (let k = 0; k < nReg; k++) {   // 收银：收银员自动结账，你站到收银台后面也能结，而且更快
+    const g = r.reg[k], [rx, ry] = regPos(b, k), head = g.q[0], byP = ps.some(q => Math.hypot(q.x - rx, q.y - (ry + 0.85)) < 0.8), staffed = k < s.ck;
+    g.busy = !!(head && head.ready && (byP || staffed));
+    if (!g.busy) { g.p = 0; continue; }
+    g.p += dt * ((staffed ? 0.75 * spd : 0) + (byP ? 2.2 : 0));
+    if (g.p >= 1) { g.p = 0; g.q.shift(); payout(rx, ry, 1.2, Math.max(1, Math.round(head.sum * (0.82 + S.rating * 0.07) * incMul()))); addXp(1); if (!head.sad) rate(0.01); head.state = 'out'; head.ready = false; if (byP) hideHint(); }
+  }
+  for (const w of r.stk) vStocker(b, w, dt, spd);
+  r.csh.forEach((w, k) => { w.order = r.reg[k].busy ? w : null; w.t = 1; });
+}
+// 本机玩家：走进店门 / 走出店门，以及快捷传送
+let tvT = 0, tvCd = 0;
+function warp(x, y) { const p = player; p.x = x; p.y = y; p.target = null; p.path = null; tvT = 0; tvCd = 1.2; CT.set(x, 0.4, y); placeCam(); sfx('pop'); placeSig = ''; }
+function travel(dt) {
+  const p = player, vb = venueAt(p.x, p.y); tvCd -= dt; let to = null;
+  if (vb) { if (Math.hypot(p.x - (vb.ox + VW - 1.0), p.y - (vb.oz + 14.45)) < 0.75) to = [vb.px, PADY + 1.3]; }
+  else for (const b of BIZ) if (vOwned(b) && Math.hypot(p.x - b.px, p.y - PADY) < 0.9) to = [b.ox + VW - 2.4, b.oz + 13.2];
+  if (to && tvCd <= 0) { tvT += dt; if (tvT >= 0.6) warp(to[0], to[1]); } else tvT = 0;
 }
 function updHQ(dt) {   // 每天可以来公司签一份合同
-  if (S.hq && S.contract !== S.day && Math.hypot(player.x - HQ.px, player.y - PADY) < 1.1) { hqT += dt; if (hqT >= 2) { hqT = 0; S.contract = S.day; toast(T('contract')); sfx('level'); hudDirty = true; } } else hqT = 0;
+  if (S.hq && S.contract !== S.day && plist().some(q => Math.hypot(q.x - HQ.px, q.y - PADY) < 1.1)) { hqT += dt; if (hqT >= 2) { hqT = 0; S.contract = S.day; toast(TK('contract')); sfx('level'); hudDirty = true; } } else hqT = 0;
+}
+function updBuffHud() {
+  const bt = Object.keys(buff).filter(k => buff[k] > 0).map(k => PUP[k] + ' ' + Math.ceil(buff[k]) + 's').join('  ');
+  if (bt !== buffTxt) { buffTxt = bt; const el = document.getElementById('buffs'); el.textContent = bt; el.style.display = bt ? 'block' : 'none'; }
 }
 function updExtras(dt) {
   for (const k in buff) if (buff[k] > 0) buff[k] -= dt;
-  const bt = Object.keys(buff).filter(k => buff[k] > 0).map(k => PUP[k] + ' ' + Math.ceil(buff[k]) + 's').join('  ');
-  if (bt !== buffTxt) { buffTxt = bt; const el = document.getElementById('buffs'); el.textContent = bt; el.style.display = bt ? 'block' : 'none'; }
+  updBuffHud();
   if (S.stock > 0) stockWarned = false;
   buyerT -= dt; if (S.up.buyer > 0 && buyerT <= 0 && S.stock < 15) { buyerT = 1.5; restock(true); }
   pupT -= dt; if (pupT <= 0) { pupT = 20 + Math.random() * 18; if (pups.length < 2) spawnPup(); }
   for (const u of pups) {
     u.t -= dt; u.a = Math.min(1, u.a + dt * 4);
-    if (Math.hypot(player.x - u.x, player.y - u.y) < 0.8) {
+    if (plist().some(q => Math.hypot(q.x - u.x, q.y - u.y) < 0.8)) {
       u.dead = true; sfx('power');
       if (u.kind === 'cash') { const n = 25 + 25 * S.level; addMoney(n); floatText(u.x, u.y, 1.2, '💼 +' + fmt(n), '#ffe066'); }
-      else { buff[u.kind] = u.kind === 'skate' ? 15 : 12; floatText(u.x, u.y, 1.2, T('pu_' + u.kind), '#b9f6ca'); }
+      else { buff[u.kind] = u.kind === 'skate' ? 15 : 12; floatText(u.x, u.y, 1.2, TK('pu_' + u.kind), '#b9f6ca'); }
     } else if (u.t <= 0) u.dead = true;
     if (u.dead) rm(u.g);
   }
   pups = pups.filter(u => !u.dead);
   if (!mouse) {
-    if (S.level >= 2) { mouseT -= dt; if (mouseT <= 0) { mouse = { x: DOOR.x - 0.4, y: DOOR.y, tx: 10, ty: 5.2, t: 18, dir: 0, g: makeMouse() }; dyn.add(mouse.g); toast(T('mouse')); sfx('alert'); } }
+    if (S.level >= 2) { mouseT -= dt; if (mouseT <= 0) { mouse = { x: DOOR.x - 0.4, y: DOOR.y, tx: 10, ty: 5.2, t: 18, dir: 0, g: makeMouse() }; dyn.add(mouse.g); toast(TK('mouse')); sfx('alert'); } }
   } else {
     const m = mouse; m.t -= dt;
     if (go(m, m.tx, m.ty, 2.9, dt)) { m.tx = 0.6 + Math.random() * (W - 1.2); m.ty = 1.8 + Math.random() * (H - 2.4); }
     let end = false;
-    if (Math.hypot(player.x - m.x, player.y - m.y) < 0.85) { const n = 10 + 12 * S.level; addMoney(n); rate(0.1); floatText(m.x, m.y, 1, T('mouseOk') + ' +' + fmt(n), '#b9f6ca'); sfx('serve'); end = true; }
-    else if (m.t <= 0) { rate(-0.2); toast(T('mouseBad')); sfx('angry'); end = true; }
+    if (plist().some(q => Math.hypot(q.x - m.x, q.y - m.y) < 0.85)) { const n = 10 + 12 * S.level; addMoney(n); rate(0.1); floatText(m.x, m.y, 1, TK('mouseOk') + ' +' + fmt(n), '#b9f6ca'); sfx('serve'); end = true; }
+    else if (m.t <= 0) { rate(-0.2); toast(TK('mouseBad')); sfx('angry'); end = true; }
     if (end) { rm(m.g); mouse = null; mouseT = 70 + Math.random() * 50; }
   }
-  for (const b of BIZ) updBiz(b, dt);
+  for (const b of BIZ) updVenue(b, dt);
   updHQ(dt);
+  updPeds(dt);
+}
+function updPeds(dt) {
   for (const p of peds) {
     if (p.wait > 0) { p.wait -= dt; p.moving = false; continue; }
     if (go(p, p.tx, p.ty, 1.5, dt)) {
@@ -1192,7 +1421,8 @@ function update(dt) {
   seatQueue();
   customers.forEach(c => updCustomer(c, dt)); customers = customers.filter(c => !c.dead);
   ST.forEach(st => updStation(st, dt));
-  workers.forEach(w => w.isPlayer ? updPlayer(dt) : updWaiter(w, dt));
+  workers.forEach(w => w.isPlayer ? updPlayer(dt) : updWaiter(w, dt)); travel(dt);
+  if (net.role === 'host' && net.peer && mate.mesh) { const k = Math.min(1, dt * 10); mate.x += (mate.tx - mate.x) * k; mate.y += (mate.ty - mate.y) * k; interact(mate, dt); }
   floats.forEach(f => f.t += dt); floats = floats.filter(f => f.t < 1.3);
   updExtras(dt);
 }
@@ -1215,14 +1445,16 @@ function syncPerson(p, dt, sit) {
   if (p.stackDirty) {
     p.stackDirty = false; while (u.tray.children.length) u.tray.remove(u.tray.children[0]);
     if (p.stack.length) mk(rb(0.5, 0.03, 0.4, 0.012), '#8a5a35', 0, 0, 0, u.tray);
-    let y = 0.015; p.stack.forEach(it => { const m = makeItem(it.m); m.position.y = y; u.tray.add(m); y += it.o ? (it.o.item.drink ? 0.27 : 0.19) : it.m === 'crate' ? 0.3 : 0.06; });
+    let y = 0.015; p.stack.forEach(it => { const m = makeItem(it.m, it.c); m.position.y = y; u.tray.add(m); y += it.o ? (it.o.item.drink ? 0.27 : 0.19) : it.m === 'crate' || it.m === 'box' ? 0.3 : 0.06; });
   }
 }
 let steamT = 0;
 function sync3D(dt) {
   const ev = Math.max(0, Math.min(1, (S.dayT / DAYLEN - 0.72) / 0.28)); sun.intensity = 2.3 - 1.2 * ev; sun.color.setRGB(1, 0.945 - 0.3 * ev, 0.84 - 0.5 * ev); hemi.intensity = 1.7 - 0.6 * ev;
   const k = Math.min(1, dt * 6); CT.x += (player.x - CT.x) * k; CT.z += (player.y - CT.z) * k; placeCam();
-  ST.forEach(st => syncPerson(st.chef, dt)); workers.forEach(w => syncPerson(w, dt)); peds.forEach(p => syncPerson(p, dt));
+  ST.forEach(st => syncPerson(st.chef, dt)); workers.forEach(w => syncPerson(w, dt)); peds.forEach(p => syncPerson(p, dt)); if (mateOn()) syncPerson(mate, dt);
+  for (const b of BIZ) if (b.rt) { const r = b.rt; r.cust.forEach(v => syncPerson(v, dt)); r.stk.forEach(v => syncPerson(v, dt)); r.csh.forEach(v => syncPerson(v, dt));
+    b.stG.forEach((q, i) => { if (q.visible) { const f = r.st[i].stock / stCap(b, i); q.userData.tiers.forEach((tg, t) => tg.visible = f > t * 0.33 + 0.01); } }); }
   customers.forEach(c => syncPerson(c, dt, c.kind !== 'rider' && (c.state === 'wait' || c.state === 'eat')));
   for (const st of ST) for (const o of st.slots) if (o && o.mesh) o.mesh.position.y = 0.81 + (o.claimed ? 0 : Math.abs(Math.sin(time * 5 + o.slot + st.i)) * 0.1);
   for (const t of tables) {
@@ -1233,7 +1465,7 @@ function sync3D(dt) {
   tpad.visible = S.tables < SPOTS.length;
   if (tpad.visible) { const [tx, ty] = SPOTS[S.tables], ok = S.tables < tableMax() && S.money >= tableCost(); tpad.position.set(tx, 0.02, ty); tpad.material.color.set(ok ? '#3fb950' : '#8d99a6'); tpad.material.opacity = ok ? 0.4 + Math.sin(time * 5) * 0.12 : 0.28; }
   crates.forEach((c, i) => c.visible = S.stock > [0, 0.3, 0.65][i] * stockCap());
-  for (const b of BIZ) { const s = S.biz[b.k]; b.stack.visible = s.lv > 0 && s.cash >= 1; if (b.stack.visible) b.stack.scale.setScalar(0.7 + 0.9 * s.cash / bizCap(b)); }
+  for (const b of BIZ) b.stack.visible = vOwned(b);
   for (const f of anim) f(time);
   for (const u of pups) { u.sp.position.y = 0.62 + Math.sin(time * 4 + u.x) * 0.08; u.g.scale.setScalar(Math.max(0.01, u.a)); u.g.visible = u.t > 3.5 || Math.sin(time * 16) > -0.2; }
   if (mouse) { mouse.g.position.set(mouse.x, Math.abs(Math.sin(time * 18)) * 0.04, mouse.y); mouse.g.rotation.y = mouse.dir; }
@@ -1302,37 +1534,41 @@ function drawOverlay(dt) {
   if (S.tables < SPOTS.length) {
     const [tx, ty] = SPOTS[S.tables], lock = S.tables >= tableMax(), ok = !lock && S.money >= tableCost();
     at(tx, ty, 0.05, () => { label(T('addTable'), -9, 14, ok ? '#d8ffd8' : '#eee'); label(lock ? T('needLv', { l: S.level + 1 }) : '💰' + fmt(tableCost()), 9, 14, ok ? '#fff' : '#ffb4a8');
-      if (padT > 0) { octx.strokeStyle = '#fff'; octx.lineWidth = 5; octx.beginPath(); octx.arc(0, -40, 13, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * padT / 0.8); octx.stroke(); } });
+      if (player.padT > 0) { octx.strokeStyle = '#fff'; octx.lineWidth = 5; octx.beginPath(); octx.arc(0, -40, 13, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * player.padT / 0.8); octx.stroke(); } });
   }
   // 冰箱 & 超市采购点
   const cap = stockCap(), low = S.stock < 8, shopX = BIZ[0].px + 2.8, cp = cratePrice(), nCr = player.stack.filter(it => it.m === 'crate').length;
   at(FRIDGE.x, FRIDGE.y, 1.5, () => { label('🥬 ' + T('fridge', { n: S.stock, c: cap }), -9, 13, low ? '#ffb4a8' : '#fff'); if (nCr) label(T('putIn'), 9, 12, '#b9f6ca'); else if (low) label(T('goShop'), 9, 12, '#ffd6a5'); });
-  at(shopX, 12.5, 0.9 + Math.sin(time * 4) * 0.04, () => { bubble('🥬', { bg: low ? '#ffe3e3' : '#eaffea', prog: shopT > 0 ? shopT / 0.5 : null }); label(T('shopBuy', { n: fmt(cp) }), 12, 12, S.money >= cp ? '#fff' : '#ffb4a8'); });
+  at(shopX, 12.5, 0.9 + Math.sin(time * 4) * 0.04, () => { bubble('🥬', { bg: low ? '#ffe3e3' : '#eaffea', prog: player.shopT > 0 ? player.shopT / 0.5 : null }); label(T('shopBuy', { n: fmt(cp) }), 12, 12, S.money >= cp ? '#fff' : '#ffb4a8'); });
   if (low && !nCr) edgeBubble(shopX, 12.5, '🥬', { bg: '#ffe3e3', prog: Math.max(0.001, S.stock / cap), col: '#e5383b' });
   if (nCr) edgeBubble(FRIDGE.x, FRIDGE.y, '🥬', { bg: '#eaffea' });
-  // 产业
-  const sale = (lv, cost) => S.level >= lv ? T('forSale') + ' 💰' + fmt(cost) : T('needLv', { l: lv });
-  for (const b of BIZ) {
+  // 产业：街上的店门 / 店内的货架、仓库、收银台
+  const hereV = venueAt(player.x, player.y), ringAt = (y, f) => { octx.strokeStyle = '#fff'; octx.lineWidth = 5; octx.beginPath(); octx.arc(0, y, 12, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.min(1, f)); octx.stroke(); };
+  BIZ.forEach((b, i) => {
     const s = S.biz[b.k];
-    if (s.lv > 0) {
-      const r = b.rt, full = s.cash >= bizCap(b) - 1;
-      at(b.px, PADY, 1.1, () => { label(T(b.k) + ' Lv.' + s.lv, -18, 13, '#fff'); label('💰' + fmt(s.cash) + (full ? ' ' + T('full') : ''), 0, 15, full ? '#ffe066' : '#fff', '#1d6b2c'); });
-      if (s.cash >= bizCap(b) * 0.5) edgeBubble(b.px, PADY, b.e, { bg: '#fff8d6', prog: s.cash / bizCap(b), col: '#f4a300' });
-      if (r) {
-        at(b.px, PADY, 2.3, () => { bubble(b.ge, { bg: r.goods ? '#fff' : '#ffe3e3', prog: Math.max(0.001, r.goods / b.gmax), col: r.goods > 2 ? '#3fb950' : '#e5383b' }); label(r.goods + '/' + b.gmax, -52, 11, r.goods ? '#fff' : '#ffb4a8'); });
-        const [wx, wy] = workSpot(b);
-        if (r.goods < b.gmax && !r.carry) at(wx, wy, 0.9 + Math.sin(time * 5) * 0.06, () => bubble(WORK[b.k], { bg: '#fff3cd', prog: r.hold > 0 ? r.hold / workHold(b) : null, col: '#f4a300', dim: r.goods > 2 }));
-        if (r.carry) at(player.x, player.y, 2.35, () => bubble('📦', { bg: '#fff3cd' }));
-        if (r.goods === 0 && r.v.some(v => v.state !== 'go')) edgeBubble(wx, wy, WORK[b.k], { bg: '#ffe3e3' });
-      }
-    } else if (b.k === 'market') at(b.px, PADY, 1.2, () => { label(T(b.k), -9, 15, '#fff'); label(sale(b.lv, b.cost), 10, 13, S.level >= b.lv ? '#b9f6ca' : '#ffd6a5'); });
-    else at(b.px, BY - 1.2, 2.9, () => { label(T(b.k), -9, 15, '#fff'); label(sale(b.lv, b.cost), 10, 13, S.level >= b.lv ? '#b9f6ca' : '#ffd6a5'); });
+    if (!hereV) {
+      if (s.lv > 0) at(b.px, PADY, 1.1, () => { label('🚪 ' + T('vEnter', { n: T(b.k) }), -4, 14, '#fff'); if (tvT > 0) ringAt(-40, tvT / 0.6); });
+      else at(b.px, b.k === 'market' ? PADY : BY - 1.2, b.k === 'market' ? 1.2 : 2.9, () => { label(T(b.k), -9, 15, '#fff'); label(vReady(i) ? T('forSale') + ' 💰' + fmt(b.cost) : '🔒 ' + T('vNeed', { n: T(i ? BIZ[i - 1].k : 'restN') }), 10, 12, vReady(i) ? '#b9f6ca' : '#ffd6a5'); });
+      return;
+    }
+    if (hereV !== b || !b.rt) return;
+    const r = b.rt, nReg = Math.max(1, s.ck);
+    s.st.forEach((l, k) => { const [sx, sy] = stPos(b, k);
+      if (l > 0) { const st = r.st[k], q = st.stock / stCap(b, k); at(sx, sy, 2.9, () => bubble(b.items[k][1], { prog: Math.max(0.001, q), col: q > 0.3 ? '#3fb950' : '#e5383b', bg: st.stock ? '#fff' : '#ffe3e3' })); }
+      else if (k === 0 || s.st[k - 1] > 0) at(sx, sy, 0.6, () => { label('🔒 ' + b.items[k][1], -9, 15, '#fff'); label('💰' + fmt(stCost(b, k)), 9, 13, S.money >= stCost(b, k) ? '#b9f6ca' : '#ffb4a8'); }); });
+    b.items.forEach((it, k) => { if (s.st[k] > 0) { const [px, py] = palPos(b, k); if (Math.abs(player.x - px) < 1.3 && player.y - b.oz < 3.2) at(px, py, 1.95, () => { label('📦 💰' + fmt(boxCost(b, k)), 0, 12, S.money >= boxCost(b, k) ? '#fff' : '#ffb4a8'); if (player.vT > 0) ringAt(-22, player.vT / 0.3); }); } });
+    for (let k = 0; k < nReg; k++) { const g = r.reg[k], [rx, ry] = regPos(b, k);
+      if (g.busy) at(rx, ry, 1.7, () => bubble('🧾', { prog: Math.max(0.001, g.p) })); else if (g.q.length && k >= s.ck) at(rx, ry + 0.85, 0.6 + Math.sin(time * 5) * 0.05, () => bubble('🧾', { bg: '#ffe3e3' })); }
+    at(b.ox + VW - 1.0, b.oz + 14.45, 0.9, () => { label('🚪 ' + T('vExit'), 0, 13, '#fff'); if (tvT > 0) ringAt(-26, tvT / 0.6); });
+  });
+  if (!hereV) {
+    const hok = vDone(BIZ[BIZ.length - 1]);
+    if (S.hq) at(HQ.px, PADY, 1.1, () => { const ok = S.contract === S.day; label(T('hq'), -18, 13, '#fff'); label(ok ? T('signed') : '💼 ' + T('sign'), 0, 14, ok ? '#b9f6ca' : '#ffe066'); if (hqT > 0) ringAt(-44, hqT / 2); });
+    else at(HQ.px, BY - 1.2, 2.9, () => { label(T('hq'), -9, 15, '#fff'); label(hok ? T('forSale') + ' 💰' + fmt(HQ.cost) : '🔒 ' + T('vNeed', { n: T('park') }), 10, 12, hok ? '#b9f6ca' : '#ffd6a5'); });
   }
-  if (S.hq) at(HQ.px, PADY, 1.1, () => { const ok = S.contract === S.day; label(T('hq'), -18, 13, '#fff'); label(ok ? T('signed') : '💼 ' + T('sign'), 0, 14, ok ? '#b9f6ca' : '#ffe066');
-    if (hqT > 0) { octx.strokeStyle = '#fff'; octx.lineWidth = 5; octx.beginPath(); octx.arc(0, -44, 12, -Math.PI / 2, -Math.PI / 2 + Math.PI * hqT); octx.stroke(); } });
-  else at(HQ.px, BY - 1.2, 2.9, () => { label(T('hq'), -9, 15, '#fff'); label(sale(HQ.lv, HQ.cost), 10, 13, S.level >= HQ.lv ? '#b9f6ca' : '#ffd6a5'); });
+  if (mateOn()) at(mate.x, mate.y, 2.05, () => label('👥', 0, 13, '#fff'));
   if (player.stack.length) at(player.x, player.y, 2.05, () => label(player.stack.length + '/' + capacity(), 0, 12, player.stack.length >= capacity() ? '#ffb4a8' : '#fff'));
-  for (const f of floats) at(f.x, f.y, f.z + f.t * 0.7, () => { octx.globalAlpha = Math.max(0, 1 - f.t / 1.3); label(f.text, 0, 16, f.color); });
+  for (const f of floats) at(f.x, f.y, f.z + f.t * 0.7, () => { octx.globalAlpha = Math.max(0, 1 - f.t / 1.3); label(loc(f.text), 0, 16, f.color); });
   for (const c of coins) {
     c.t += dt; if (c.t < 0) continue;
     const k = Math.min(1, c.t / 0.55), e = k * k, x = c.x + (cw - 70 - c.x) * e, y = c.y + (34 - c.y) * e - Math.sin(k * Math.PI) * 46;
@@ -1348,13 +1584,21 @@ function drawOverlay(dt) {
 
 // ================= 输入 =================
 function setTarget(x, y) {   // 目标点若落在障碍内，挪到最近的边
-  for (const t of OBS) {
+  const vb0 = venueAt(player.x, player.y);
+  if (vb0) { x = Math.max(vb0.ox + 0.4, Math.min(vb0.ox + VW - 0.4, x)); y = Math.max(vb0.oz + 1.6, Math.min(vb0.oz + VH - 0.4, y)); }
+  for (const t of vb0 ? vb0.obs : OBS) {
     const dx = x - t.x, dy = y - t.y;
     if (Math.abs(dx) < t.hx + 0.04 && Math.abs(dy) < t.hy + 0.04) { if (t.hx - Math.abs(dx) < t.hy - Math.abs(dy)) x = t.x + Math.sign(dx || 1) * (t.hx + 0.06); else y = t.y + Math.sign(dy || 1) * (t.hy + 0.06); }
   }
+  if (vb0) {   // 店内：沿货架之间的横向通道走，从东侧或西侧的纵向过道换行
+    const cy = [2.7, 6.55, 10.4, 13.7].map(v => vb0.oz + v), nearC = v => cy.reduce((a, c) => Math.abs(c - v) < Math.abs(a - v) ? c : a);
+    const q = player, c0 = nearC(q.y), c1 = nearC(y), xw = vb0.ox + 1.0, xe = vb0.ox + 19.6, pth = [];
+    if (c0 !== c1) { const X = Math.abs(q.x - xw) + Math.abs(x - xw) < Math.abs(q.x - xe) + Math.abs(x - xe) ? xw : xe; pth.push({ x: q.x, y: c0 }, { x: X, y: c0 }, { x: X, y: c1 }, { x, y: c1 }); }
+    pth.push({ x, y }); q.target = pth.shift(); q.path = pth; return;
+  }
   // 餐厅内外之间自动经过最近的出口
   const inside = (ax, ay) => ax > 0 && ax < W && ay < H + 0.1, p = player, path = [];
-  if (inside(p.x, p.y) !== inside(x, y)) {
+  if (!vb0 && inside(p.x, p.y) !== inside(x, y)) {
     let best = null, bd = 1e9;
     for (const [a, b] of [[[6.75, 11.4], [6.75, 12.8]], [[13.3, 11.4], [13.3, 12.8]], [[19.3, DOOR.y], [20.9, DOOR.y]]]) {
       const d = Math.hypot(p.x - a[0], p.y - a[1]) + Math.hypot(x - b[0], y - b[1]) + Math.hypot(p.x - b[0], p.y - b[1]) + Math.hypot(x - a[0], y - a[1]);
@@ -1388,14 +1632,31 @@ addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
 // ================= HUD =================
 const $ = id => document.getElementById(id);
 const tq = []; let tBusy = false, hintHidden = false;
-function nextToast() { const m = tq.shift(), t = $('toast'); if (!m) { tBusy = false; t.style.opacity = 0; return; } tBusy = true; t.textContent = m; t.style.opacity = 1; setTimeout(nextToast, tq.length > 1 ? 1300 : 2300); }
-function toast(msg) { tq.push(msg); if (!tBusy) nextToast(); }
+function nextToast() { const m = tq.shift(), t = $('toast'); if (!m) { tBusy = false; t.style.opacity = 0; return; } tBusy = true; t.textContent = loc(m); t.style.opacity = 1; setTimeout(nextToast, tq.length > 1 ? 1300 : 2300); }
+function toast(msg) { tq.push(msg); if (!tBusy) nextToast(); if (net.role === 'host' && net.peer && net.ev.length < 80) net.ev.push(['t', msg]); }
 function hideHint() { if (!hintHidden) { hintHidden = true; setTimeout(() => $('hint').style.opacity = 0, 8000); } }
+let plT = 0, placeSig = '';
+function placeList() {   // 地点快捷栏：点一下直接过去
+  const a = [{ id: 'rest', e: '🍜', x: 9, y: 6.2 }, { id: 'shop', e: '🥬', x: BIZ[0].px + 2.8, y: 13.4 }];
+  for (const b of BIZ) if (vOwned(b)) a.push({ id: b.k, e: b.e, x: b.ox + VW - 2.4, y: b.oz + 13.2 });
+  if (S.hq) a.push({ id: 'hq', e: '🏢', x: HQ.px, y: PADY + 1.3 }); return a;
+}
+function buildPlaces() {
+  const el = $('places'); el.innerHTML = '';
+  for (const pl of placeList()) { const btn = document.createElement('button'); btn.className = 'pl'; btn.id = 'pl_' + pl.id; btn.innerHTML = pl.e + '<span class="dot"></span>'; btn.onclick = () => warp(pl.x, pl.y); el.appendChild(btn); }
+  placeSig = '';
+}
+function updPlaces() {   // 哪里需要你：缺货、排长队、食材不足
+  const a = { shop: S.stock < 8, hq: !!S.hq && S.contract !== S.day, rest: tables.some(t => t.cash > 200) };
+  for (const b of BIZ) if (vOwned(b) && b.rt) { const s = S.biz[b.k]; a[b.k] = b.rt.st.some((x, i) => s.st[i] > 0 && x.stock <= 0) || b.rt.reg.some((g, k) => k < Math.max(1, s.ck) && g.q.length >= 3 && !g.busy); }
+  const hv = venueAt(player.x, player.y), cur = hv ? hv.k : 'rest', sig = JSON.stringify(a) + cur; if (sig === placeSig) return; placeSig = sig;
+  for (const el of $('places').children) { const id = el.id.slice(3); el.classList.toggle('al', !!a[id]); el.classList.toggle('on', id === cur); }
+}
 function canBuyAny() {
   return Object.keys(UP).some(k => S.up[k] < UP[k].cost.length && S.money >= UP[k].cost[S.up[k]]) ||
     ITEMS.some((it, i) => i < unlocked() && S.skill[it.m] < 8 && S.money >= skillCost(it)) ||
     (S.tables < tableMax() && S.money >= tableCost()) ||
-    BIZ.some(b => S.level >= b.lv && S.biz[b.k].lv < BIZMAX && S.money >= bizCost(b));
+    BIZ.some((b, i) => vOwned(b) ? S.biz[b.k].st.some((l, k) => l < 5 && (l > 0 || k === 0 || S.biz[b.k].st[k - 1] > 0) && S.money >= stCost(b, k)) || Object.keys(VUP).some(n => S.biz[b.k][n] < VUP[n][1] && S.money >= vupCost(b, n)) : vReady(i) && S.money >= b.cost);
 }
 function renderHud() {
   $('money').textContent = '💰 ' + fmt(S.money);
@@ -1413,39 +1674,52 @@ function renderHud() {
   $('upDot').style.display = canBuyAny() ? 'block' : 'none';
   if ($('panel').classList.contains('open')) renderPanel();
 }
+let panelTab = null;
 function renderPanel() {
   const list = $('list'), sc = list.scrollTop; list.innerHTML = '';
+  const hv = venueAt(player.x, player.y); if (!panelTab) panelTab = hv && vOwned(hv) ? hv.k : 'rest';
   const sec = t => { const d = document.createElement('div'); d.className = 'sec'; d.textContent = t; list.appendChild(d); };
-  const row = (ic, nm, lv, ds, btn, cost, fn) => {
+  const row = (ic, nm, lv, ds, btn, cost, act) => {
     const r = document.createElement('div'); r.className = 'row';
     r.innerHTML = '<div class="ic">' + ic + '</div><div class="tx"><div class="nm">' + nm + ' <span style="color:#c08a3e;font-size:12px">' + lv + '</span></div><div class="ds">' + ds + '</div></div>';
     const b = document.createElement('button'); b.textContent = btn; b.disabled = cost == null || S.money < cost;
-    b.onclick = () => { if (cost == null || S.money < cost) return; addMoney(-cost); fn(); sfx('buy'); syncWorld(false); save(); renderHud(); };
+    b.onclick = () => { if (b.disabled) return; if (net.role === 'guest') { netAct(['buy', ...act]); b.disabled = true; } else { doBuy(act); renderHud(); } };
     r.appendChild(b); list.appendChild(r);
   };
-  sec(T('secChef'));
-  ITEMS.slice(0, unlocked()).forEach(it => { const lv = S.skill[it.m], full = lv >= 8, c = skillCost(it);
-    row(it.e, T('chefOf', { n: T(it.m) }), 'Lv.' + lv + '/8', T('chefDs') + ' (💰' + Math.round(price(it)) + ')', full ? T('max') : '💰' + fmt(c), full ? null : c, () => S.skill[it.m]++); });
-  sec(T('secStaff'));
-  { const lock = S.tables >= tableMax(), all = S.tables >= SPOTS.length, [nm, ds] = T('tableRow'), r0 = list.children.length;
-    row('🪑', nm, S.tables + '/' + tableMax(), ds, all ? T('max') : lock ? T('needLv', { l: S.level + 1 }) : '💰' + fmt(tableCost()), lock ? null : tableCost(), () => {});
-    const b = list.children[r0].querySelector('button'); b.onclick = () => { if (buyTable()) renderHud(); }; }
-  for (const k of Object.keys(UP)) { const u = UP[k], lv = S.up[k], max = u.cost.length, full = lv >= max, [nm, ds] = T(k);
-    row(u.ic, nm, 'Lv.' + lv + '/' + max, ds, full ? T('max') : '💰' + fmt(u.cost[lv]), full ? null : u.cost[lv], () => S.up[k]++); }
-  sec(T('secBiz'));
-  for (const b of BIZ) { const s = S.biz[b.k], lock = S.level < b.lv, full = s.lv >= BIZMAX, c = bizCost(b), nl = Math.min(BIZMAX, s.lv + 1);
-    let ds = lock ? T('bizLocked', { l: b.lv }) : T('bizDs', { n: fmt(Math.round(b.inc * nl * 2.5 * (0.8 + S.rating * 0.08))) });
-    if (b.k === 'market') ds += ' · ' + T('perk');
-    row(b.e, T(b.k), 'Lv.' + s.lv + '/' + BIZMAX, ds, lock ? T('needLv', { l: b.lv }) : full ? T('max') : '💰' + fmt(c), lock || full ? null : c, () => { s.lv++; if (s.lv === 1) toast(T('bizNew', { n: T(b.k) })); });
-    if (s.lv > 0) {
-      const cc = Math.round(b.cost * 0.5), mc = Math.round(b.cost * 1.5);
-      row('🧑‍💼', T(b.k) + ' · ' + T('clerkN'), s.clerk ? '✓' : '', T('clerkD', { n: fmt(b.inc * s.lv * 40) }), s.clerk ? T('hired') : '💰' + fmt(cc), s.clerk ? null : cc, () => { s.clerk = 1; });
-      row('👔', T(b.k) + ' · ' + T('mgrN'), s.mgr ? '✓' : '', T('mgrD', { n: fmt(b.inc * s.lv * 80) }), s.mgr ? T('hired') : !S.hq ? T('needHq') : '💰' + fmt(mc), s.mgr || !S.hq ? null : mc, () => { s.mgr = 1; });
-    } }
-  { const lock = S.level < HQ.lv; row('🏢', T('hq'), S.hq ? '✓' : '', T('hqD'), lock ? T('needLv', { l: HQ.lv }) : S.hq ? T('max') : '💰' + fmt(HQ.cost), lock || S.hq ? null : HQ.cost, () => { S.hq = 1; toast(T('hqNew')); }); }
+  const tabs = document.createElement('div'); tabs.className = 'tabs'; list.appendChild(tabs);
+  const tab = (id, e) => { const t = document.createElement('button'); t.className = 'tab' + (panelTab === id ? ' on' : ''); t.textContent = e; t.onclick = () => { panelTab = id; renderPanel(); list.scrollTop = 0; }; tabs.appendChild(t); };
+  tab('rest', '🍜'); let nextShown = false; BIZ.forEach(b => { if (vOwned(b)) tab(b.k, b.e); else if (!nextShown) { nextShown = true; tab(b.k, '🔒' + b.e); } });
+  if (panelTab === 'rest') {
+    sec('🍜 ' + T('restN') + '  ' + (S.tables + unlocked()) + '/' + (SPOTS.length + ITEMS.length));
+    sec(T('secChef'));
+    ITEMS.slice(0, unlocked()).forEach(it => { const lv = S.skill[it.m], full = lv >= 8, c = skillCost(it);
+      row(it.e, T('chefOf', { n: T(it.m) }), 'Lv.' + lv + '/8', T('chefDs') + ' (💰' + Math.round(price(it)) + ')', full ? T('max') : '💰' + fmt(c), full ? null : c, ['skill', it.m]); });
+    sec(T('secStaff'));
+    { const lock = S.tables >= tableMax(), all = S.tables >= SPOTS.length, [nm, ds] = T('tableRow');
+      row('🪑', nm, S.tables + '/' + tableMax(), ds, all ? T('max') : lock ? T('needLv', { l: S.level + 1 }) : '💰' + fmt(tableCost()), lock ? null : tableCost(), ['table']); }
+    for (const k of Object.keys(UP)) { const u = UP[k], lv = S.up[k], max = u.cost.length, full = lv >= max, [nm, ds] = T(k);
+      row(u.ic, nm, 'Lv.' + lv + '/' + max, ds, full ? T('max') : '💰' + fmt(u.cost[lv]), full ? null : u.cost[lv], ['up', k]); }
+  } else {
+    const i = BIZ.findIndex(b => b.k === panelTab), b = BIZ[i], s = S.biz[b.k];
+    if (!vOwned(b)) {
+      const ok = vReady(i), pa = i ? vProg(BIZ[i - 1]) : S.tables + unlocked(), pb = i ? BIZ[i - 1].items.length : SPOTS.length + ITEMS.length;
+      sec(b.e + ' ' + T(b.k));
+      row(b.e, T('vBuy', { n: T(b.k) }), '', ok ? T('vBuyD') : T('vNeed', { n: T(i ? BIZ[i - 1].k : 'restN') }) + '  ' + pa + '/' + pb, ok ? '💰' + fmt(b.cost) : '🔒', ok ? b.cost : null, ['biz', b.k]);
+      b.items.forEach(it => row(it[1], T(it[0]), '', '💰' + fmt(it[3] * b.mul), '🔒', null, []));
+    } else {
+      sec(b.e + ' ' + T(b.k) + '  ' + vProg(b) + '/' + b.items.length);
+      b.items.forEach((it, k) => { const l = s.st[k], c = stCost(b, k), can = l > 0 || k === 0 || s.st[k - 1] > 0, full = l >= 5;
+        row(it[1], T(it[0]), l ? 'Lv.' + l + '/5' : '', l ? '💰' + fmt(itPrice(b, k)) + ' · ' + T('vCap', { n: stCap(b, k) }) : T('vLocked'), full ? T('max') : !can ? '🔒' : '💰' + fmt(c), full || !can ? null : c, ['vst', b.k, k]); });
+      sec(T('secVStaff'));
+      for (const n of Object.keys(VUP)) { const lv = s[n], max = VUP[n][1], full = lv >= max, c = vupCost(b, n);
+        const role = n === 'sk' || n === 'ck' ? T('r_' + n + '_' + b.k) : T('v_' + n);
+        row(VUP[n][0], role, 'Lv.' + lv + '/' + max, T((n === 'sk' || n === 'ck' ? 'r_' + n + 'D_' + b.k : 'v_' + n + 'D'), { n: fmt((n === 'sk' ? 60 : 80) * b.mul) }), full ? T('max') : '💰' + fmt(c), full ? null : c, ['vup', b.k, n]); }
+      if (i === BIZ.length - 1) { const ok = vDone(b); sec('🏢 ' + T('hq')); row('🏢', T('hq'), S.hq ? '✓' : '', T('hqD'), !ok ? '🔒' : S.hq ? T('max') : '💰' + fmt(HQ.cost), !ok || S.hq ? null : HQ.cost, ['hq']); }
+    }
+  }
   list.scrollTop = sc;
 }
-$('upBtn').onclick = () => { $('panel').classList.add('open'); renderPanel(); };
+$('upBtn').onclick = () => { panelTab = null; $('panel').classList.add('open'); renderPanel(); };
 $('close').onclick = () => $('panel').classList.remove('open');
 $('panel').onclick = e => { if (e.target === $('panel')) $('panel').classList.remove('open'); };
 $('reset').onclick = () => { if (confirm(T('resetAsk'))) { tq.length = 0; $('dayBox').classList.remove('open'); paused = false; S = fresh(); init(); save(); hudDirty = true; $('panel').classList.remove('open'); } };
@@ -1453,14 +1727,17 @@ function applyLang() {
   document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang; document.title = T('title');
   $('langBtn').textContent = '🌐 ' + LANGS[lang]; $('upTxt').textContent = T('upgrade');
   $('hint').innerHTML = T('hint1') + '<br>' + T('hint2'); $('rush').textContent = T('rush');
-  $('panelTitle').textContent = T('panel'); $('reset').textContent = T('reset');
-  drawMenu(); drawSign(); hudDirty = true;
+  $('panelTitle').textContent = T('panel'); $('reset').textContent = T('reset'); $('netTitle').textContent = '👥 ' + T('coop');
+  drawMenu(); drawSign(); hudDirty = true; netUi();
 }
 $('langBtn').onclick = () => {
   const ks = Object.keys(LANGS); lang = ks[(ks.indexOf(lang) + 1) % ks.length];
   try { localStorage.setItem('shiguang-lang', lang); } catch (e) {}
   applyLang();
 };
+$('netBtn').onclick = () => { $('netBox').classList.add('open'); netUi(); };
+$('netClose').onclick = () => $('netBox').classList.remove('open');
+$('netBox').onclick = e => { if (e.target === $('netBox')) $('netBox').classList.remove('open'); };
 $('sndBtn').textContent = AU.on ? '🔊' : '🔇';
 $('sndBtn').onclick = () => {
   AU.on = !AU.on; $('sndBtn').textContent = AU.on ? '🔊' : '🔇'; if (AU.master) AU.master.gain.value = AU.on ? 1 : 0;
@@ -1469,28 +1746,218 @@ $('sndBtn').onclick = () => {
 
 function clockStr() { const m = Math.floor((8 + 14 * S.dayT / DAYLEN) * 6) * 10; return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); }
 function endDay() {   // 每天打烊结算：发工资、交房租
-  const w = wages(), r = rent(), rev = S.d.rev, cost = S.d.cost, net = rev - cost - w - r, day = S.day;
+  const w = wages(), r = rent(), rev = S.d.rev, cost = S.d.cost, prof = rev - cost - w - r, day = S.day;
   S.money -= w + r; S.day++; S.dayT = 0; S.d = { rev: 0, cost: 0 }; hudDirty = true;
-  if (S.money < 0) { rate(-0.3); toast(T('debt')); }
+  if (S.money < 0) { rate(-0.3); toast(TK('debt')); }
+  showDay(day, rev, cost, w, r, prof);
+  if (net.role === 'host' && net.peer) net.ev.push(['d', day, rev, cost, w, r, prof]);
+  paused = true; sfx('level'); save();
+}
+function showDay(day, rev, cost, w, r, prof) {
   const line = (k, v, cls, exp) => { const neg = exp || v < 0; return '<div class="' + (cls || '') + '"><span>' + T(k) + '</span><span class="' + (neg ? 'neg' : 'pos') + '">' + (neg ? '-' : '+') + '💰' + fmt(Math.abs(v)) + '</span></div>'; };
   $('dayTitle').textContent = '📅 ' + T('dayEnd', { n: day });
-  $('dayRows').innerHTML = line('rev', rev) + line('cost', cost, '', 1) + line('wage', w, '', 1) + line('rent', r, '', 1) + line('net', net, 'net');
-  $('dayBtn').textContent = T('nextDay'); $('dayBox').classList.add('open'); paused = true; sfx('level'); save();
+  $('dayRows').innerHTML = line('rev', rev) + line('cost', cost, '', 1) + line('wage', w, '', 1) + line('rent', r, '', 1) + line('net', prof, 'net');
+  $('dayBtn').textContent = T('nextDay'); $('dayBox').classList.add('open');
 }
-$('dayBtn').onclick = () => { $('dayBox').classList.remove('open'); paused = false; };
+$('dayBtn').onclick = () => { if (net.role === 'guest') { netAct(['next']); return; } $('dayBox').classList.remove('open'); paused = false; };
+// ================= 双人联机（房主运算，经公共中转服务同步）=================
+const NETURLS = ['wss://broker.emqx.io:8084/mqtt', 'wss://broker.hivemq.com:8884/mqtt', 'wss://test.mosquitto.org:8081/mqtt'];
+const KINDS = ['normal', 'vip', 'critic', 'hurry', 'rider'], CST = ['q', 'in', 'wait', 'eat', 'out'], OST = ['queue', 'cook', 'ready', 'carry'], SEATST = ['free', 'taken', 'dirty'], PUPK = ['skate', 'cash', 'clock', 'fire'];
+function q2(v) { return Math.round(v * 100) / 100; }
+function mqttConnect(url, clientId, onMsg, onState) {   // 极简 MQTT 3.1.1 客户端（WebSocket）
+  const ws = new WebSocket(url, 'mqtt'); ws.binaryType = 'arraybuffer';
+  const enc = new TextEncoder(), dec = new TextDecoder();
+  let buf = new Uint8Array(0), ping = 0, open = false, pid = 1;
+  const str = t => { const b = enc.encode(t); return [b.length >> 8, b.length & 255, ...b]; };
+  const pkt = (type, body) => { const len = []; let n = body.length; do { let d = n % 128; n = Math.floor(n / 128); if (n > 0) d |= 128; len.push(d); } while (n > 0); const out = new Uint8Array(1 + len.length + body.length); out[0] = type; out.set(len, 1); out.set(body, 1 + len.length); ws.send(out); };
+  ws.onopen = () => pkt(0x10, [...str('MQTT'), 4, 2, 0, 30, ...str(clientId)]);
+  ws.onmessage = e => {
+    const d = new Uint8Array(e.data), nb = new Uint8Array(buf.length + d.length); nb.set(buf); nb.set(d, buf.length); buf = nb;
+    for (;;) {
+      if (buf.length < 2) return; let mul = 1, len = 0, i = 1, b;
+      do { if (i >= buf.length) return; b = buf[i++]; len += (b & 127) * mul; mul *= 128; } while (b & 128);
+      if (buf.length < i + len) return;
+      const type = buf[0] >> 4, body = buf.subarray(i, i + len); buf = buf.slice(i + len);
+      if (type === 2) { open = body[1] === 0; if (open) ping = setInterval(() => ws.readyState === 1 && ws.send(new Uint8Array([0xC0, 0])), 20000); onState(open ? 'open' : 'closed'); }
+      else if (type === 3) { const tl = (body[0] << 8) | body[1]; try { onMsg(dec.decode(body.subarray(2, 2 + tl)), dec.decode(body.subarray(2 + tl))); } catch (err) { console.error(err); } }
+    }
+  };
+  ws.onclose = () => { clearInterval(ping); const was = open; open = false; onState(was ? 'lost' : 'closed'); };
+  ws.onerror = () => {};
+  return {
+    sub: topic => pkt(0x82, [0, pid++, ...str(topic), 0]),
+    pub: (topic, payload) => { if (!open || ws.readyState !== 1 || ws.bufferedAmount > 300000) return false; const t = str(topic), q = enc.encode(payload), body = new Uint8Array(t.length + q.length); body.set(t); body.set(q, t.length); pkt(0x30, body); return true; },
+    close: () => { try { ws.close(); } catch (e) {} }, get open() { return open; },
+  };
+}
+function netConnect(bi, done) {   // 连接第 bi 个中转服务并订阅房间
+  let fin = false; const finish = ok => { if (!fin) { fin = true; done(ok); } };
+  const mq = mqttConnect(NETURLS[bi], 'sg' + Math.random().toString(36).slice(2, 12), netMsg, st => {
+    if (st === 'open') { net.mq = mq; mq.sub(net.topic + (net.role === 'host' ? '/g' : '/h')); net.st = 'open'; netUi(); finish(true); }
+    else if (st === 'lost') { if (net.mq === mq && net.role) { net.st = 'retry'; netUi(); setTimeout(() => { if (net.role && net.mq === mq) netConnect(bi, () => {}); }, 2500); } }
+    else finish(false);
+  });
+  setTimeout(() => { if (!mq.open) { mq.close(); finish(false); } }, 7000);
+}
+function netHost() {
+  if (net.role) return; net.role = 'host'; net.peer = false; net.st = 'wait'; netUi();
+  const tryB = bi => {
+    if (bi >= NETURLS.length) { net.role = null; net.st = 'fail'; netUi(); return; }
+    net.code = String(bi + 1) + String(Math.floor(1000 + Math.random() * 9000)); net.topic = 'sgxg/v1/' + net.code;
+    netConnect(bi, ok => { if (!ok && net.role === 'host' && !net.mq) tryB(bi + 1); });
+  };
+  tryB(0);
+}
+function netJoin(code) {
+  code = String(code).replace(/\D/g, ''); const bi = Number(code[0]) - 1;
+  if (code.length !== 5 || !NETURLS[bi]) { net.st = 'bad'; netUi(); return; }
+  net.role = 'guest'; net.peer = false; net.code = code; net.topic = 'sgxg/v1/' + code; net.st = 'wait'; netUi();
+  tq.length = 0; S = fresh(); init(); mate.mesh = makePerson(mate.look); dyn.add(mate.mesh); mate.tx = mate.x; mate.ty = mate.y;
+  $('reset').style.display = 'none'; hudDirty = true;
+  netConnect(bi, ok => { if (!ok) { net.st = 'fail'; netUi(); setTimeout(() => location.reload(), 2500); } });
+}
+function netLeave() { if (net.role === 'guest') { location.reload(); return; } if (net.mq) net.mq.close(); net.mq = null; net.role = null; net.peer = false; rm(mate.mesh); mate.mesh = null; net.st = ''; netUi(); }
+function netAct(a) { if (net.acts.length < 30) net.acts.push(a); }
+const stackCode = q => q.stack.map(it => it.o ? ITEMS.indexOf(it.o.item) : it.m === 'crate' ? 21 : it.m === 'basket' ? 22 : it.m === 'box' ? 100 + it.b * 10 + it.it : 20);
+const worldSig = () => [S.level, S.tables, S.up.waiter, S.up.takeout, S.hq, JSON.stringify(S.biz)].join('|');
+function netSnap() {   // 房主：把店里当前的样子打包
+  const pe = q => [q2(q.x), q2(q.y), q2(q.dir), q.moving ? 1 : 0, stackCode(q)];
+  const seatIdx = t => t.takeout ? -1 : tables.indexOf(t.table) * 2 + t.table.seats.indexOf(t);
+  const sn = { v: 1, n: ++net.seq,
+    m: [rushT > 0 ? 1 : 0, combo, Math.ceil(Math.max(0, buff.skate)), Math.ceil(Math.max(0, buff.clock)), Math.ceil(Math.max(0, buff.fire)), paused ? 1 : 0, STAND.cash, q2(hqT), Math.floor(S.money), S.stock, q2(S.dayT)],
+    p: [pe(player), [stackCode(mate), q2(mate.padT || 0), q2(mate.shopT || 0)]],
+    w: workers.filter(w => !w.isPlayer).map(pe),
+    c: customers.map(c => [c.id, q2(c.x), q2(c.y), q2(c.dir), CST.indexOf(c.state) + (c.moving ? 8 : 0), KINDS.indexOf(c.kind), ITEMS.indexOf(c.item), c.state === 'wait' ? Math.round(100 * c.pat / c.patMax) : 0, c.order && c.state === 'wait' ? OST.indexOf(c.order.state) : 0, c.seat ? seatIdx(c.seat) : -2]),
+    tb: tables.map(t => [t.cash, ...t.seats.map(x => SEATST.indexOf(x.state) + (x.claimed ? 4 : 0))]),
+    st: ST.map(st => [st.cur && st.t > 0 ? Math.round(99 * (1 - st.t / st.total)) : -1, st.starved ? 1 : 0, ...st.slots.map(o => o ? (o.claimed ? 2 : 1) : 0)]),
+    pu: pups.map(u => [u.id, PUPK.indexOf(u.kind), q2(u.x), q2(u.y), q2(u.t)]),
+    mo: mouse ? [q2(mouse.x), q2(mouse.y), q2(mouse.t), q2(mouse.dir)] : 0,
+    vn: BIZ.map(b => { const r = b.rt; if (!r || !vOwned(b)) return 0; const near = venueAt(mate.x, mate.y) === b;   // 只发伙伴所在那家店的顾客
+      return [r.st.map(x => x.stock), r.reg.map(g => Math.round(g.p * 9) + (g.busy ? 10 : 0) + g.q.length * 100), r.stk.map(pe), near ? r.cust.map(c => [c.id, q2(c.x), q2(c.y), q2(c.dir), (c.moving ? 1 : 0) + (c.n > 0 ? 2 : 0)]) : 0]; }),
+    ev: net.ev.splice(0) };
+  const sig = worldSig(); if (sig !== net.sig || net.seq % 4 === 1) { sn.S = S; net.sig = sig; }
+  return sn;
+}
+function netEnt(e, a) {   // 伙伴一侧：更新一个人物的目标位置和手上的东西
+  e.tx = a[0]; e.ty = a[1]; e.dir = a[2]; e.moving = !!a[3];
+  if (a[4]) { const sc = a[4].join(); if (sc !== e.sc) { e.sc = sc; e.stack = a[4].map(c => c < 20 ? { o: { item: ITEMS[c] }, m: ITEMS[c].m } : c >= 100 ? { m: 'box', b: Math.floor((c - 100) / 10), it: (c - 100) % 10, c: BIZ[Math.floor((c - 100) / 10)].items[(c - 100) % 10][2] } : { m: c === 21 ? 'crate' : c === 22 ? 'basket' : 'dirty' }); e.stackDirty = true; } }
+}
+function netApply(sn) {   // 伙伴一侧：按房主发来的数据重建画面
+  if (sn.S) {
+    const sig0 = worldSig(); S = sn.S;
+    if (tables.length > S.tables || ST.length > unlocked() || workers.length > 2 + S.up.waiter) { init(); mate.mesh = makePerson(mate.look); dyn.add(mate.mesh); }
+    else if (worldSig() !== sig0 || !ST.length) { syncWorld(false); applyTier(false); }
+    hudDirty = true;
+  }
+  const m = sn.m, rushOn = !!m[0];
+  if (rushOn !== rushT > 0) { rushT = rushOn ? 9 : 0; $('rush').style.display = rushOn ? 'block' : 'none'; }
+  if (combo !== m[1]) { combo = m[1]; hudDirty = true; }
+  buff.skate = m[2]; buff.clock = m[3]; buff.fire = m[4];
+  if (!m[5] && paused) { paused = false; $('dayBox').classList.remove('open'); }
+  STAND.cash = m[6]; hqT = m[7]; if (S.money !== m[8] || S.stock !== m[9]) { S.money = m[8]; S.stock = m[9]; hudDirty = true; } S.dayT = m[10];
+  netEnt(mate, sn.p[0]); netEnt(player, [player.x, player.y, player.dir, player.moving, sn.p[1][0]]); player.tx = null; player.padT = sn.p[1][1]; player.shopT = sn.p[1][2];
+  sn.w.forEach((a, i) => { const w = workers[i + 1]; if (w) { if (w.tx == null) { w.x = a[0]; w.y = a[1]; } netEnt(w, a); } });
+  // 客人
+  const seen = new Set();
+  for (const a of sn.c) {
+    let c = net.cm.get(a[0]); const kind = KINDS[a[5]];
+    if (!c) { c = { id: a[0], x: a[1], y: a[2], dir: a[3], face: a[3], stack: [], kind, vip: kind === 'vip', look: custLook(a[0], kind) }; c.mesh = makePerson(c.look); dyn.add(c.mesh); net.cm.set(c.id, c); customers.push(c); }
+    c.tx = a[1]; c.ty = a[2]; c.dir = a[3]; c.moving = !!(a[4] & 8); c.state = CST[a[4] & 7]; c.item = ITEMS[a[6]]; c.pat = a[7]; c.patMax = 100; c.order = { state: OST[a[8]] };
+    const si = a[9], seat = si === -1 ? STAND.seat : si >= 0 && tables[si >> 1] ? tables[si >> 1].seats[si & 1] : null;
+    if (c.state === 'eat' && !c.food && seat) { c.food = makeItem(c.item.m); if (seat.takeout) c.food.position.set(STAND.x, 0.86, 2.0); else c.food.position.set(seat.table.x + Math.sign(seat.side) * 0.27, 0.735, seat.table.y); dyn.add(c.food); }
+    else if (c.state !== 'eat' && c.food) { rm(c.food); c.food = null; }
+    seen.add(c.id);
+  }
+  customers = customers.filter(c => { if (seen.has(c.id)) return true; rm(c.mesh); rm(c.food); net.cm.delete(c.id); return false; });
+  // 餐桌、脏盘子
+  sn.tb.forEach((a, i) => { const t = tables[i]; if (!t) return; t.cash = a[0];
+    t.seats.forEach((x, j) => { x.state = SEATST[a[1 + j] & 3]; x.claimed = !!(a[1 + j] & 4);
+      if (x.state === 'dirty' && !x.plate) { x.plate = makeItem('dirty'); x.plate.position.set(t.x + Math.sign(x.side) * 0.27, 0.735, t.y); dyn.add(x.plate); }
+      else if (x.state !== 'dirty' && x.plate) { rm(x.plate); x.plate = null; } }); });
+  // 厨师岗位、出餐台
+  sn.st.forEach((a, i) => { const st = ST[i]; if (!st) return; st.cur = a[0] >= 0 ? st : null; st.total = 100; st.t = a[0] >= 0 ? 100 - a[0] : 0; st.starved = !!a[1]; st.chef.order = st.cur; st.chef.t = st.t;
+    for (let k = 0; k < 2; k++) { const code = a[2 + k], o = st.slots[k];
+      if (!code && o) { rm(o.mesh); st.slots[k] = null; }
+      else if (code) { const x = o || (st.slots[k] = { st, slot: k, item: st.item, state: 'ready' }); x.claimed = code === 2; if (!x.mesh) { x.mesh = makeItem(st.item.m); x.mesh.position.set(slotX(x), 0.81, 0.82); dyn.add(x.mesh); } } } });
+  // 道具、老鼠
+  const ps = new Set(sn.pu.map(a => a[0]));
+  for (const a of sn.pu) { let u = pups.find(u => u.id === a[0]); if (!u) { addPup(PUPK[a[1]], a[2], a[3], a[0]); u = pups[pups.length - 1]; } u.t = a[4]; u.a = 1; }
+  pups = pups.filter(u => ps.has(u.id) || (rm(u.g), false));
+  if (sn.mo) { if (!mouse) { mouse = { g: makeMouse() }; dyn.add(mouse.g); } mouse.x = sn.mo[0]; mouse.y = sn.mo[1]; mouse.t = sn.mo[2]; mouse.dir = sn.mo[3]; } else if (mouse) { rm(mouse.g); mouse = null; }
+  // 产业店内
+  (sn.vn || []).forEach((a, i) => { const b = BIZ[i], r = b.rt; if (!a || !r) return;
+    a[0].forEach((v, k) => { if (r.st[k]) r.st[k].stock = v; });
+    a[1].forEach((v, k) => { const g = r.reg[k]; g.p = (v % 10) / 9; g.busy = v % 100 >= 10; g.q.length = Math.floor(v / 100); });
+    a[2].forEach((x, k) => { const w = r.stk[k]; if (w) { if (w.tx == null) { w.x = x[0]; w.y = x[1]; } netEnt(w, x); } });
+    const list = a[3] || [], ids = new Set(list.map(x => x[0]));
+    for (const x of list) { let c = r.cust.find(c => c.id === x[0]); if (!c) { c = { id: x[0], x: x[1], y: x[2], face: x[3], stack: [], look: seedLook(x[0]) }; c.mesh = makePerson(c.look); dyn.add(c.mesh); r.cust.push(c); }
+      c.tx = x[1]; c.ty = x[2]; c.dir = x[3]; c.moving = !!(x[4] & 1); const hb = !!(x[4] & 2); if (hb !== !!c.hb) { c.hb = hb; c.stack = hb ? [{ m: 'basket' }] : []; c.stackDirty = true; } }
+    r.cust = r.cust.filter(c => ids.has(c.id) || (rm(c.mesh), false)); });
+  // 事件：提示、飘字、音效、金币、日结
+  for (const e of sn.ev || []) {
+    if (e[0] === 't') toast(e[1]); else if (e[0] === 'f') floats.push({ x: e[1], y: e[2], z: e[3], text: e[4], color: e[5], t: 0 }); else if (e[0] === 's') sfx(e[1]);
+    else if (e[0] === 'c') { const [px, py] = proj(e[1], e[2], e[3]); for (let i = 0; i < 6; i++) coins.push({ x: px + (Math.random() - 0.5) * 34, y: py + (Math.random() - 0.5) * 22, t: -i * 0.06 }); }
+    else if (e[0] === 'd') { showDay(e[1], e[2], e[3], e[4], e[5], e[6]); paused = true; }
+  }
+}
+function netMsg(topic, payload) {
+  let d; try { d = JSON.parse(payload); } catch (e) { return; } if (!d || d.v !== 1) return;
+  if (net.role === 'host' && topic === net.topic + '/g') {
+    net.rx = performance.now();
+    if (!net.peer || !mate.mesh) { net.peer = true; net.sig = ''; net.ev.length = 0; mate.mesh = makePerson(mate.look); dyn.add(mate.mesh); mate.x = d.p[0]; mate.y = d.p[1]; mate.stack = []; mate.stackDirty = true; toast(TK('mateJoin')); sfx('level'); netUi(); }
+    mate.tx = d.p[0]; mate.ty = d.p[1]; mate.dir = d.p[2]; mate.moving = !!d.p[3];
+    for (const a of d.a || []) { if (a[0] === 'buy') doBuy(a.slice(1)); else if (a[0] === 'next' && paused) $('dayBtn').click(); }
+  } else if (net.role === 'guest' && topic === net.topic + '/h') {
+    net.rx = performance.now(); if (!net.peer) { net.peer = true; netUi(); $('netBox').classList.remove('open'); }
+    netApply(d);
+  }
+}
+function netTick(dt) {   // 每帧调用：定时发送
+  if (!net.role) return; net.acc += dt; const now = performance.now();
+  if (net.peer && now - net.rx > 7000) {
+    net.peer = false; netUi();
+    if (net.role === 'host') { rm(mate.mesh); mate.mesh = null; mate.stack = []; net.ev.length = 0; toast(TK('mateLeft')); } else toast(TK('netLost'));
+  }
+  if (!net.mq || !net.mq.open) return;
+  if (net.role === 'host') { if (net.peer && net.acc >= 0.125) { net.acc = 0; net.mq.pub(net.topic + '/h', JSON.stringify(netSnap())); } }
+  else if (net.acc >= 0.1) { net.acc = 0; net.mq.pub(net.topic + '/g', JSON.stringify({ v: 1, p: [q2(player.x), q2(player.y), q2(player.dir), player.moving ? 1 : 0], a: net.acts.splice(0) })); }
+}
+function guestTick(dt) {   // 伙伴一侧不运算店铺，只移动自己并平滑显示其他人
+  time += dt; movePlayer(player, dt); travel(dt);
+  const k = Math.min(1, dt * 10), L = e => { if (e.tx != null) { e.x += (e.tx - e.x) * k; e.y += (e.ty - e.y) * k; } };
+  L(mate); workers.forEach(w => { if (!w.isPlayer) L(w); }); customers.forEach(L); for (const b of BIZ) if (b.rt) { b.rt.cust.forEach(L); b.rt.stk.forEach(L); }
+  floats.forEach(f => f.t += dt); floats = floats.filter(f => f.t < 1.3);
+  updPeds(dt); updBuffHud();
+  if (!paused) S.dayT = Math.min(DAYLEN, S.dayT + dt);
+  const ck = clockStr(); if (ck !== lastClock) { lastClock = ck; hudDirty = true; }
+}
+function netUi() {
+  const box = $('netBody'); if (!box) return;
+  const st = net.st, role = net.role;
+  $('netBtn').textContent = role ? (net.peer ? '👥✓' : '👥…') : '👥';
+  let h = '<div class="nt">' + T('netHint') + '</div>';
+  if (!role) h += '<button class="btn" id="nHost">' + T('createRoom') + '</button><div class="nrow"><input id="nCode" inputmode="numeric" maxlength="5" placeholder="' + T('codePh') + '"><button class="btn" id="nJoin">' + T('joinRoom') + '</button></div>' + (st === 'fail' ? '<div class="nerr">' + T('netFail') + '</div>' : st === 'bad' ? '<div class="nerr">' + T('badCode') + '</div>' : '');
+  else h += (role === 'host' ? '<div class="ncode">' + T('roomCode') + '<b>' + (net.mq ? net.code : '…') + '</b></div>' : '') + '<div class="nst">' + (net.peer ? T('connected') : st === 'fail' ? T('netFail') : role === 'host' && net.mq ? T('waiting') : T('connecting')) + '</div><button class="btn" id="nLeave" style="background:#8d99ae;box-shadow:0 4px 0 #5d6873">' + T('leave') + '</button>';
+  box.innerHTML = h;
+  if ($('nHost')) $('nHost').onclick = netHost;
+  if ($('nJoin')) $('nJoin').onclick = () => netJoin($('nCode').value);
+  if ($('nLeave')) $('nLeave').onclick = netLeave;
+}
+
 // ================= 主循环 =================
 init(); applyLang();
 let last = performance.now();
 function frame(now) {
   const dt = Math.min(0.1, (now - last) / 1000); last = now;
-  if (!paused) update(dt); sync3D(dt); renderer.render(scene, cam); drawOverlay(dt);
+  if (net.role === 'guest') guestTick(dt); else if (!paused) update(dt);
+  netTick(dt); sync3D(dt); if ((plT -= dt) <= 0) { plT = 0.4; updPlaces(); } renderer.render(scene, cam); drawOverlay(dt);
   if (hudDirty) { hudDirty = false; renderHud(); }
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
 setInterval(save, 5000); addEventListener('pagehide', save);
 window.__game = { get S() { return S; }, player, get tables() { return tables; }, get customers() { return customers; }, get ST() { return ST; }, get workers() { return workers; },
-  SINKS, nearSink, STAND, FRIDGE, BIZ, HQ, PADY, workSpot, cratePrice, wages, rent, endDay, buff, get pups() { return pups; }, get mouse() { return mouse; }, get combo() { return combo; }, step: update, setTarget, addXp, buyTable, tableMax, tableCost, unitCost, stockCap };
+  SINKS, nearSink, STAND, FRIDGE, BIZ, HQ, PADY, cratePrice, venueAt, stPos, palPos, regPos, stCap, vReady, warp, wages, rent, endDay, buff, get pups() { return pups; }, get mouse() { return mouse; }, get combo() { return combo; }, step: update, setTarget, addXp, net, mate, netHost, netJoin, netLeave, buyTable, tableMax, tableCost, unitCost, stockCap };
 })();
 </script>
 </body>
