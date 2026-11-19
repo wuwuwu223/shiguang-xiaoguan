@@ -7,7 +7,7 @@
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; height: 100%; overflow: hidden; background: #24424b;
-    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-family: "Helvetica Neue", Arial, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
     user-select: none; -webkit-user-select: none; }
   canvas { position: fixed; inset: 0; display: block; width: 100vw; height: 100vh; touch-action: none; }
   #ov { pointer-events: none; }
@@ -30,18 +30,19 @@
   .pill { background: #fff; border-radius: 20px; padding: 6px 14px; font-weight: 800; font-size: 17px; color: #2a6b3a;
     box-shadow: 0 2px 6px rgba(0,0,0,.3); }
   #rating { color: #a05a00; font-size: 14px; }
-  #btns { right: 12px; bottom: 16px; display: flex; flex-direction: column; gap: 10px; }
+  #btns { right: 12px; bottom: 16px; display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
   .btn { pointer-events: auto; border: none; border-radius: 16px; padding: 10px 14px; font-size: 15px; font-weight: 800;
     color: #fff; background: #ff7a45; box-shadow: 0 4px 0 #b84d22, 0 6px 10px rgba(0,0,0,.3); cursor: pointer; position: relative; }
+  #langBtn { background: #3a969e; box-shadow: 0 4px 0 #245f65, 0 6px 10px rgba(0,0,0,.3); font-size: 13px; padding: 8px 12px; }
   .btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #b84d22; }
   .btn .dot { position: absolute; top: -6px; right: -6px; width: 18px; height: 18px; border-radius: 50%; background: #e5383b;
     border: 2px solid #fff; display: none; }
   #hint { left: 50%; bottom: 18px; transform: translateX(-50%); background: rgba(0,0,0,.6); color: #fff; padding: 8px 14px;
     border-radius: 14px; font-size: 13px; width: max-content; max-width: 62vw; text-align: center; transition: opacity .6s; line-height: 1.5; }
   #toast { left: 50%; top: 150px; transform: translateX(-50%); background: #ffc93c; color: #5a3600; font-weight: 800;
-    padding: 10px 18px; border-radius: 16px; opacity: 0; transition: opacity .4s; box-shadow: 0 3px 8px rgba(0,0,0,.3); white-space: nowrap; }
+    padding: 10px 18px; border-radius: 16px; opacity: 0; transition: opacity .4s; box-shadow: 0 3px 8px rgba(0,0,0,.3); width: max-content; max-width: 90vw; text-align: center; }
   #rush { left: 50%; top: 200px; transform: translateX(-50%); background: #e5383b; color: #fff; font-weight: 800;
-    padding: 6px 16px; border-radius: 14px; display: none; white-space: nowrap; box-shadow: 0 3px 8px rgba(0,0,0,.3); }
+    padding: 6px 16px; border-radius: 14px; display: none; width: max-content; max-width: 90vw; text-align: center; box-shadow: 0 3px 8px rgba(0,0,0,.3); }
   #panel { position: fixed; inset: 0; background: rgba(0,0,0,.5); display: none; align-items: center; justify-content: center; }
   #panel.open { display: flex; }
   #card { background: #fff7ea; width: min(430px, 92vw); max-height: 84vh; border-radius: 20px; padding: 14px;
@@ -72,16 +73,16 @@
   <div id="money" class="pill">💰 0</div>
   <div id="rating" class="pill">⭐ 3.0</div>
 </div>
-<div id="btns" class="hud"><button class="btn" id="upBtn">⬆️ 升级<span class="dot" id="upDot"></span></button></div>
-<div id="hint" class="hud">拖动屏幕 / WASD 移动<br>出餐台取菜 → 送到客人桌 → 收脏盘子送去水槽 → 走过钞票收钱</div>
+<div id="btns" class="hud"><button class="btn" id="langBtn"></button><button class="btn" id="upBtn">⬆️ <span id="upTxt"></span><span class="dot" id="upDot"></span></button></div>
+<div id="hint" class="hud"></div>
 <div id="toast" class="hud"></div>
-<div id="rush" class="hud">🔥 用餐高峰！收入 ×1.5</div>
+<div id="rush" class="hud"></div>
 
 <div id="panel">
   <div id="card">
-    <h2><span>🏮 小馆升级</span><button id="close">✕</button></h2>
+    <h2><span id="panelTitle"></span><button id="close">✕</button></h2>
     <div id="list"></div>
-    <button id="reset">重置存档</button>
+    <button id="reset"></button>
   </div>
 </div>
 
@@ -89,33 +90,72 @@
 <script>
 (() => {
 'use strict';
+// ================= 多语言 =================
+const LANGS = { zh: '中文', en: 'English', vi: 'Tiếng Việt' };
+const TXT = {
+  zh: { title: '食光小馆', upgrade: '升级', hint1: '拖动屏幕 / WASD 移动', hint2: '出餐台取菜 → 送到客人桌 → 收脏盘子送去水槽 → 走过钞票收钱',
+    rush: '🔥 用餐高峰！收入 ×1.5', panel: '🏮 小馆升级', reset: '重置存档', resetAsk: '确定要重置存档、从头开始吗？', board: '今日菜单',
+    m_serve: '服务 {n} 位客人', m_earn: '赚取 💰{n}', m_wash: '清洗 {n} 个盘子', m_happy: '让 {n} 位客人满意 😍', m_vip: '接待 {n} 位 VIP 👑',
+    done: '📋 任务完成！奖励 💰{n}', reward: '奖励 💰{n}', levelUp: '⭐ 升到 {l} 级！奖励 💰{n}', angry: '😡 等太久了', tip: '😍 小费+30%',
+    gone: '客人走了…', newTable: '新桌子！', addTable: '＋ 新桌子', rating: '口碑', unlock: '解锁 {e} {n}（单价 {p}）',
+    barOpen: '开设饮品吧，售卖 {e} {n}（单价 {p}）', barNew: '新饮品 {e} {n}（单价 {p}）', barFull: '饮品已全部解锁', max: '已满级',
+    waiter: ['雇佣服务员', '自动上菜、收盘子'], cook: ['雇佣厨师', '同时做更多的菜'], menu: ['新菜品', '解锁更贵的菜'], bar: ['饮品吧', ''],
+    cap: ['托盘容量', '你一次能多端一份'], speed: ['移动速度', '所有人走得更快'], cookSpd: ['烹饪速度', '做菜时间缩短'], pat: ['舒适座椅', '客人耐心 +15%'],
+    tipUp: ['菜品定价', '每单收入 +20%'], ad: ['宣传推广', '客人来得更频繁'],
+    ramen: '拉面', dumpling: '饺子', curry: '咖喱饭', sushi: '寿司', hotpot: '火锅', tea: '奶茶', juice: '果汁', coffee: '咖啡' },
+  en: { title: 'Mealtime Bistro', upgrade: 'Upgrades', hint1: 'Drag the screen / WASD to move', hint2: 'Grab food at the counter → serve the table → take dirty plates to the sink → walk over cash to collect',
+    rush: '🔥 Rush hour! Income ×1.5', panel: '🏮 Bistro Upgrades', reset: 'Reset save', resetAsk: 'Reset your save and start over?', board: 'MENU',
+    m_serve: 'Serve {n} guests', m_earn: 'Earn 💰{n}', m_wash: 'Wash {n} plates', m_happy: 'Delight {n} guests 😍', m_vip: 'Serve {n} VIP 👑',
+    done: '📋 Quest complete! Reward 💰{n}', reward: 'Reward 💰{n}', levelUp: '⭐ Level {l}! Reward 💰{n}', angry: '😡 Too slow!', tip: '😍 Tip +30%',
+    gone: 'Guest left…', newTable: 'New table!', addTable: '＋ New table', rating: 'Rating', unlock: 'Unlock {e} {n} (price {p})',
+    barOpen: 'Open a drink bar selling {e} {n} (price {p})', barNew: 'New drink {e} {n} (price {p})', barFull: 'All drinks unlocked', max: 'MAX',
+    waiter: ['Hire Waiter', 'Serves food and clears plates'], cook: ['Hire Chef', 'Cook more dishes at once'], menu: ['New Dish', 'Unlock pricier dishes'], bar: ['Drink Bar', ''],
+    cap: ['Tray Size', 'Carry one more item'], speed: ['Move Speed', 'Everyone walks faster'], cookSpd: ['Cooking Speed', 'Shorter cooking time'], pat: ['Comfy Seats', 'Guest patience +15%'],
+    tipUp: ['Pricing', 'Income per order +20%'], ad: ['Advertising', 'Guests arrive more often'],
+    ramen: 'Ramen', dumpling: 'Dumplings', curry: 'Curry Rice', sushi: 'Sushi', hotpot: 'Hot Pot', tea: 'Bubble Tea', juice: 'Juice', coffee: 'Coffee' },
+  vi: { title: 'Quán Ăn Nhỏ', upgrade: 'Nâng cấp', hint1: 'Kéo màn hình / WASD để di chuyển', hint2: 'Lấy món ở quầy → mang đến bàn khách → mang đĩa bẩn ra bồn rửa → đi qua tiền để thu',
+    rush: '🔥 Giờ cao điểm! Thu nhập ×1.5', panel: '🏮 Nâng cấp quán', reset: 'Xóa dữ liệu lưu', resetAsk: 'Bạn có chắc muốn xóa dữ liệu và chơi lại từ đầu?', board: 'THỰC ĐƠN',
+    m_serve: 'Phục vụ {n} khách', m_earn: 'Kiếm 💰{n}', m_wash: 'Rửa {n} cái đĩa', m_happy: 'Làm hài lòng {n} khách 😍', m_vip: 'Đón {n} khách VIP 👑',
+    done: '📋 Hoàn thành nhiệm vụ! Thưởng 💰{n}', reward: 'Thưởng 💰{n}', levelUp: '⭐ Lên cấp {l}! Thưởng 💰{n}', angry: '😡 Chờ lâu quá', tip: '😍 Tip +30%',
+    gone: 'Khách đã bỏ đi…', newTable: 'Bàn mới!', addTable: '＋ Bàn mới', rating: 'Uy tín', unlock: 'Mở khóa {e} {n} (giá {p})',
+    barOpen: 'Mở quầy đồ uống, bán {e} {n} (giá {p})', barNew: 'Đồ uống mới {e} {n} (giá {p})', barFull: 'Đã mở hết đồ uống', max: 'Tối đa',
+    waiter: ['Thuê phục vụ', 'Tự động mang món, dọn đĩa'], cook: ['Thuê đầu bếp', 'Nấu nhiều món cùng lúc'], menu: ['Món mới', 'Mở khóa món đắt hơn'], bar: ['Quầy đồ uống', ''],
+    cap: ['Sức chứa khay', 'Bạn bưng thêm được một món'], speed: ['Tốc độ di chuyển', 'Mọi người đi nhanh hơn'], cookSpd: ['Tốc độ nấu', 'Rút ngắn thời gian nấu'], pat: ['Ghế êm ái', 'Khách kiên nhẫn hơn 15%'],
+    tipUp: ['Giá món ăn', 'Thu nhập mỗi đơn +20%'], ad: ['Quảng cáo', 'Khách đến thường xuyên hơn'],
+    ramen: 'Mì ramen', dumpling: 'Sủi cảo', curry: 'Cơm cà ri', sushi: 'Sushi', hotpot: 'Lẩu', tea: 'Trà sữa', juice: 'Nước ép', coffee: 'Cà phê' },
+};
+let lang = 'zh';
+try { lang = localStorage.getItem('shiguang-lang') || ''; } catch (e) { lang = ''; }
+if (!TXT[lang]) { const n = (navigator.language || 'zh').toLowerCase(); lang = n.startsWith('vi') ? 'vi' : n.startsWith('zh') ? 'zh' : 'en'; }
+function T(key, v) { let s = TXT[lang][key]; if (v) for (const k in v) s = s.replace('{' + k + '}', v[k]); return s; }
+
 // ================= 配置 =================
 const W = 10, H = 9, DOOR = { x: 10, y: 4.3 };
 const DISHES = [
-  { e: '🍜', n: '拉面',   p: 10, t: 3.0, m: 'ramen' },
-  { e: '🥟', n: '饺子',   p: 18, t: 3.5, m: 'dumpling' },
-  { e: '🍛', n: '咖喱饭', p: 30, t: 4.0, m: 'curry' },
-  { e: '🍣', n: '寿司',   p: 50, t: 4.5, m: 'sushi' },
-  { e: '🍲', n: '火锅',   p: 85, t: 5.5, m: 'hotpot' },
+  { e: '🍜', p: 10, t: 3.0, m: 'ramen' },
+  { e: '🥟', p: 18, t: 3.5, m: 'dumpling' },
+  { e: '🍛', p: 30, t: 4.0, m: 'curry' },
+  { e: '🍣', p: 50, t: 4.5, m: 'sushi' },
+  { e: '🍲', p: 85, t: 5.5, m: 'hotpot' },
 ];
 const DRINKS = [
-  { e: '🧋', n: '奶茶', p: 14, t: 2.5, m: 'tea' },
-  { e: '🍹', n: '果汁', p: 26, t: 2.8, m: 'juice' },
-  { e: '☕', n: '咖啡', p: 42, t: 3.2, m: 'coffee' },
+  { e: '🧋', p: 14, t: 2.5, m: 'tea' },
+  { e: '🍹', p: 26, t: 2.8, m: 'juice' },
+  { e: '☕', p: 42, t: 3.2, m: 'coffee' },
 ];
 const SPOTS = [[5,5.2],[2.2,5.2],[5,3.0],[7.8,3.0],[2.2,3.0],[7.8,5.4],[5,7.5],[2.2,7.5],[7.8,7.7]];
 const TABLE_COST = [0,100,300,800,2000,5000,12000,30000,70000];
 const UP = {
-  waiter:  { ic: '🤵', nm: '雇佣服务员', ds: '自动上菜、收盘子',     cost: [150,600,2000,6000,15000] },
-  cook:    { ic: '👨‍🍳', nm: '雇佣厨师',   ds: '同时做更多的菜',       cost: [250,1000,3500] },
-  menu:    { ic: '📖', nm: '新菜品',     ds: '解锁更贵的菜',         cost: [120,500,1800,6000] },
-  bar:     { ic: '🧋', nm: '饮品吧',     ds: '',                     cost: [400,1500,5000] },
-  cap:     { ic: '🍽️', nm: '托盘容量',   ds: '你一次能多端一份',     cost: [90,300,900,2700] },
-  speed:   { ic: '👟', nm: '移动速度',   ds: '所有人走得更快',       cost: [80,200,500,1200,3000] },
-  cookSpd: { ic: '🔥', nm: '烹饪速度',   ds: '做菜时间缩短',         cost: [100,250,600,1500,4000] },
-  pat:     { ic: '🛋️', nm: '舒适座椅',   ds: '客人耐心 +15%',        cost: [70,180,450,1100,2800] },
-  tip:     { ic: '💵', nm: '菜品定价',   ds: '每单收入 +20%',        cost: [60,110,200,350,630,1100,2000,3600,6500,12000] },
-  ad:      { ic: '📣', nm: '宣传推广',   ds: '客人来得更频繁',       cost: [100,300,900,2500,7000] },
+  waiter:  { ic: '🤵', cost: [150,600,2000,6000,15000] },
+  cook:    { ic: '👨‍🍳', cost: [250,1000,3500] },
+  menu:    { ic: '📖', cost: [120,500,1800,6000] },
+  bar:     { ic: '🧋', cost: [400,1500,5000] },
+  cap:     { ic: '🍽️', cost: [90,300,900,2700] },
+  speed:   { ic: '👟', cost: [80,200,500,1200,3000] },
+  cookSpd: { ic: '🔥', cost: [100,250,600,1500,4000] },
+  pat:     { ic: '🛋️', cost: [70,180,450,1100,2800] },
+  tip:     { ic: '💵', cost: [60,110,200,350,630,1100,2000,3600,6500,12000] },
+  ad:      { ic: '📣', cost: [100,300,900,2500,7000] },
 };
 const EAT = 4.5, SAVE_KEY = 'shiguang-xiaoguan-v2';
 const KIT = { slots: new Array(5).fill(null), slotX: i => 1.0 + i * 0.85 };
@@ -360,7 +400,7 @@ const menuTex = new THREE.CanvasTexture(menuCv); menuTex.colorSpace = THREE.SRGB
 })();
 function drawMenu() {
   const c = menuCv.getContext('2d'); c.fillStyle = '#33261a'; c.fillRect(0, 0, 320, 200);
-  c.fillStyle = '#ffe8b0'; c.font = '800 34px "PingFang SC",sans-serif'; c.textAlign = 'center'; c.fillText('今日菜单', 160, 46);
+  c.fillStyle = '#ffe8b0'; c.font = '800 34px "Helvetica Neue",Arial,"PingFang SC",sans-serif'; c.textAlign = 'center'; c.fillText(T('board'), 160, 46);
   c.font = '44px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
   const items = DISHES.slice(0, S.up.menu + 1).concat(DRINKS.slice(0, S.up.bar));
   items.forEach((d, i) => c.fillText(d.e, 46 + (i % 5) * 57, 108 + Math.floor(i / 5) * 62));
@@ -420,7 +460,6 @@ function init() {
 }
 
 // ================= 任务 =================
-const MTXT = { serve: '服务 {n} 位客人', earn: '赚取 💰{n}', wash: '清洗 {n} 个盘子', happy: '让 {n} 位客人满意 😍', vip: '接待 {n} 位 VIP 👑' };
 function newMission() {
   const n = S.missionN, type = ['serve', 'earn', 'wash', 'happy', 'vip'][n % 5];
   const goal = { serve: 5 + 3 * n, earn: Math.round(80 * Math.pow(1.5, n) / 10) * 10, wash: 4 + 2 * n, happy: 3 + 2 * n, vip: 1 + Math.floor(n / 5) }[type];
@@ -429,7 +468,7 @@ function newMission() {
 function progress(type, v) {
   const m = S.mission; if (!m || m.type !== type) return;
   m.prog += v; hudDirty = true;
-  if (m.prog >= m.goal) { toast('📋 任务完成！奖励 💰' + fmt(m.reward)); S.money += m.reward; S.missionN++; addXp(2); newMission(); }
+  if (m.prog >= m.goal) { toast(T('done', { n: fmt(m.reward) })); S.money += m.reward; S.missionN++; addXp(2); newMission(); }
 }
 
 // ================= 逻辑 =================
@@ -443,7 +482,7 @@ function floatText(x, y, z, text, color) { floats.push({ x, y, z, text, color: c
 function addMoney(n) { S.money += n; if (n > 0) progress('earn', n); hudDirty = true; }
 function addXp(n) {
   S.xp += n;
-  while (S.xp >= xpNeed()) { S.xp -= xpNeed(); S.level++; const b = 40 * S.level; S.money += b; toast('⭐ 升到 ' + S.level + ' 级！奖励 💰' + fmt(b)); }
+  while (S.xp >= xpNeed()) { S.xp -= xpNeed(); S.level++; const b = 40 * S.level; S.money += b; toast(T('levelUp', { l: S.level, n: fmt(b) })); }
   hudDirty = true;
 }
 function rate(d) { S.rating = Math.max(0, Math.min(5, S.rating + d)); hudDirty = true; }
@@ -482,7 +521,7 @@ function updCustomer(c, dt) {
     c.pat -= dt;
     if (c.pat <= 0) {
       killOrder(c.order); c.seat.state = 'free'; rate(-0.15);
-      floatText(c.x, c.y, 2.1, '😡 等太久了', '#ff8a80'); leave(c);
+      floatText(c.x, c.y, 2.1, T('angry'), '#ff8a80'); leave(c);
     }
   } else if (c.state === 'eat') {
     c.t -= dt;
@@ -500,7 +539,7 @@ function serve(o) {
   c.state = 'eat'; c.t = EAT; c.happy = c.pat / c.patMax > 0.5;
   c.food = makeItem(o.item.m); c.food.position.set(s.table.x + Math.sign(s.side) * 0.27, 0.735, s.table.y); dyn.add(c.food);
   rate(c.happy ? 0.05 : 0.015); progress('serve', 1);
-  if (c.happy) { progress('happy', 1); floatText(c.x, c.y, 2.1, '😍 小费+30%', '#ffe066'); }
+  if (c.happy) { progress('happy', 1); floatText(c.x, c.y, 2.1, T('tip'), '#ffe066'); }
   if (c.vip) progress('vip', 1);
 }
 function toSlot(st, o) {
@@ -582,7 +621,7 @@ function updPlayer(dt) {
 
   // 交互
   const n0 = p.stack.length; p.stack = p.stack.filter(it => !(it.o && it.o.dead));
-  if (p.stack.length !== n0) { p.stackDirty = true; floatText(p.x, p.y, 2, '客人走了…', '#ff8a80'); }
+  if (p.stack.length !== n0) { p.stackDirty = true; floatText(p.x, p.y, 2, T('gone'), '#ff8a80'); }
   for (const t of tables) if (t.cash > 0 && Math.abs(p.x - t.x) < 1.75 && Math.abs(p.y - t.y) < 1.1) collect(t);
   p.cd -= dt;
   if (p.cd <= 0) {
@@ -604,7 +643,7 @@ function updPlayer(dt) {
       padT += dt;
       if (padT > 0.8) {
         padT = 0; addMoney(-cost); addTable(S.tables); S.tables++; save();
-        floatText(px, py, 1.6, '新桌子！', '#b9f6ca'); p.y = py + 0.7; p.target = null;
+        floatText(px, py, 1.6, T('newTable'), '#b9f6ca'); p.y = py + 0.7; p.target = null;
       }
     } else padT = 0;
   }
@@ -664,7 +703,7 @@ function sync3D(dt) {
 const EMO = '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
 function at(x, y, z, fn) { const [px, py] = proj(x, y, z); octx.save(); octx.translate(px, py); octx.scale(K, K); fn(); octx.restore(); }
 function label(text, y, size, fill, stroke) {
-  octx.font = '800 ' + size + 'px "PingFang SC",sans-serif'; octx.textAlign = 'center'; octx.textBaseline = 'middle';
+  octx.font = '800 ' + size + 'px "Helvetica Neue",Arial,"PingFang SC",sans-serif'; octx.textAlign = 'center'; octx.textBaseline = 'middle';
   octx.lineWidth = 3.5; octx.lineJoin = 'round'; octx.strokeStyle = stroke || 'rgba(0,0,0,.65)'; octx.strokeText(text, 0, y);
   octx.fillStyle = fill || '#fff'; octx.fillText(text, 0, y);
 }
@@ -699,7 +738,7 @@ function drawOverlay() {
   if (player.stack.some(it => !it.o)) at(SINK.x, 0.6, 1.3 + Math.sin(time * 5) * 0.05, () => bubble('🚰', { bg: '#e0f4ff' }));
   if (S.tables < SPOTS.length) {
     const [x, y] = SPOTS[S.tables], ok = S.money >= TABLE_COST[S.tables];
-    at(x, y, 0.05, () => { label('＋ 新桌子', -9, 14, ok ? '#d8ffd8' : '#eee'); label('💰' + fmt(TABLE_COST[S.tables]), 9, 14, ok ? '#fff' : '#ffb4a8');
+    at(x, y, 0.05, () => { label(T('addTable'), -9, 14, ok ? '#d8ffd8' : '#eee'); label('💰' + fmt(TABLE_COST[S.tables]), 9, 14, ok ? '#fff' : '#ffb4a8');
       if (padT > 0) { octx.strokeStyle = '#fff'; octx.lineWidth = 5; octx.beginPath(); octx.arc(0, -40, 13, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * padT / 0.8); octx.stroke(); } });
   }
   if (player.stack.length) at(player.x, player.y, 2.05, () => label(player.stack.length + '/' + capacity(), 0, 12, player.stack.length >= capacity() ? '#ffb4a8' : '#fff'));
@@ -746,12 +785,12 @@ function hideHint() { if (!hintHidden) { hintHidden = true; setTimeout(() => $('
 const canBuyAny = () => Object.keys(UP).some(k => S.up[k] < UP[k].cost.length && S.money >= UP[k].cost[S.up[k]]);
 function renderHud() {
   $('money').textContent = '💰 ' + fmt(S.money);
-  $('rating').textContent = '⭐ 口碑 ' + S.rating.toFixed(1);
+  $('rating').textContent = '⭐ ' + T('rating') + ' ' + S.rating.toFixed(1);
   $('star').textContent = S.level;
   $('xpBar').style.width = (S.xp / xpNeed() * 100) + '%'; $('xpText').textContent = S.xp + '/' + xpNeed();
   const m = S.mission;
   if (m) {
-    $('mText').innerHTML = '📋 ' + MTXT[m.type].replace('{n}', fmt(m.goal)) + '　<b>' + fmt(Math.min(m.prog, m.goal)) + '/' + fmt(m.goal) + '</b><br>奖励 💰' + fmt(m.reward);
+    $('mText').innerHTML = '📋 ' + T('m_' + m.type, { n: fmt(m.goal) }) + ' <b>' + fmt(Math.min(m.prog, m.goal)) + '/' + fmt(m.goal) + '</b><br>' + T('reward', { n: fmt(m.reward) });
     $('mBar').style.width = Math.min(100, m.prog / m.goal * 100) + '%';
   }
   $('upDot').style.display = canBuyAny() ? 'block' : 'none';
@@ -762,13 +801,13 @@ function renderPanel() {
   for (const k of Object.keys(UP)) {
     const u = UP[k], lv = S.up[k], max = u.cost.length, full = lv >= max;
     const row = document.createElement('div'); row.className = 'row';
-    let ds = u.ds;
-    if (k === 'menu' && !full) ds = '解锁 ' + DISHES[lv + 1].e + ' ' + DISHES[lv + 1].n + '（单价 ' + DISHES[lv + 1].p + '）';
-    if (k === 'bar') ds = full ? '饮品已全部解锁' : (lv ? '新饮品 ' : '开设饮品吧，售卖 ') + DRINKS[lv].e + ' ' + DRINKS[lv].n + '（单价 ' + DRINKS[lv].p + '）';
-    row.innerHTML = '<div class="ic">' + u.ic + '</div><div class="tx"><div class="nm">' + u.nm +
+    const [nm, ds0] = T(k === 'tip' ? 'tipUp' : k); let ds = ds0;
+    if (k === 'menu' && !full) ds = T('unlock', { e: DISHES[lv + 1].e, n: T(DISHES[lv + 1].m), p: DISHES[lv + 1].p });
+    if (k === 'bar') ds = full ? T('barFull') : T(lv ? 'barNew' : 'barOpen', { e: DRINKS[lv].e, n: T(DRINKS[lv].m), p: DRINKS[lv].p });
+    row.innerHTML = '<div class="ic">' + u.ic + '</div><div class="tx"><div class="nm">' + nm +
       ' <span style="color:#c08a3e;font-size:12px">Lv.' + lv + '/' + max + '</span></div><div class="ds">' + ds + '</div></div>';
     const b = document.createElement('button');
-    b.textContent = full ? '已满级' : '💰' + fmt(u.cost[lv]); b.disabled = full || S.money < u.cost[lv];
+    b.textContent = full ? T('max') : '💰' + fmt(u.cost[lv]); b.disabled = full || S.money < u.cost[lv];
     b.onclick = () => { if (S.money < u.cost[lv]) return; addMoney(-u.cost[lv]); S.up[k]++; syncStaff(); save(); renderHud(); };
     row.appendChild(b); list.appendChild(row);
   }
@@ -777,10 +816,22 @@ function renderPanel() {
 $('upBtn').onclick = () => { $('panel').classList.add('open'); renderPanel(); };
 $('close').onclick = () => $('panel').classList.remove('open');
 $('panel').onclick = e => { if (e.target === $('panel')) $('panel').classList.remove('open'); };
-$('reset').onclick = () => { if (confirm('确定要重置存档、从头开始吗？')) { S = fresh(); init(); save(); hudDirty = true; $('panel').classList.remove('open'); } };
+$('reset').onclick = () => { if (confirm(T('resetAsk'))) { S = fresh(); init(); save(); hudDirty = true; $('panel').classList.remove('open'); } };
 
+function applyLang() {
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang; document.title = T('title');
+  $('langBtn').textContent = '🌐 ' + LANGS[lang]; $('upTxt').textContent = T('upgrade');
+  $('hint').innerHTML = T('hint1') + '<br>' + T('hint2'); $('rush').textContent = T('rush');
+  $('panelTitle').textContent = T('panel'); $('reset').textContent = T('reset');
+  drawMenu(); hudDirty = true;
+}
+$('langBtn').onclick = () => {
+  const ks = Object.keys(LANGS); lang = ks[(ks.indexOf(lang) + 1) % ks.length];
+  try { localStorage.setItem('shiguang-lang', lang); } catch (e) {}
+  applyLang();
+};
 // ================= 主循环 =================
-init();
+init(); applyLang();
 let last = performance.now();
 function frame(now) {
   const dt = Math.min(0.1, (now - last) / 1000); last = now;
