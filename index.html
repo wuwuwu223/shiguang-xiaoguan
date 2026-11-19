@@ -397,7 +397,7 @@ sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
 Object.assign(sun.shadow.camera, { left: -24, right: 24, top: 24, bottom: -24, near: 1, far: 60 });
 sun.shadow.bias = -0.0005; sun.shadow.normalBias = 0.04; sun.shadow.radius = 3;
 scene.add(sun, sun.target);
-const dyn = new THREE.Group(); scene.add(dyn);
+const dyn = new THREE.Group(), RS = new THREE.Group(), DS = new THREE.Group(); scene.add(dyn, RS, DS);   // 动态物体 / 餐厅静态场景 / 街区静态场景
 function placeCam() {
   cam.position.set(CT.x + 14, 15, CT.z + 14); cam.updateMatrixWorld();
   sun.position.set(CT.x + 4, 16, CT.z + 9); sun.target.position.copy(CT);
@@ -418,9 +418,12 @@ function proj(x, y, z = 0) { _v.set(x, z, y).project(cam); return [(_v.x + 1) / 
 // ---- 几何/材质缓存 ----
 const GC = new Map(), MC = new Map();
 function G(key, make) { let g = GC.get(key); if (!g) GC.set(key, g = make()); return g; }
-const sph = r => G('s' + r, () => new THREE.SphereGeometry(r, 18, 12));
-const cyl = (rt, rb, h, seg = 20) => G('c' + [rt, rb, h, seg], () => new THREE.CylinderGeometry(rt, rb, h, seg));
-const cap = (r, l) => G('k' + [r, l], () => new THREE.CapsuleGeometry(r, l, 5, 12));
+const sph = r => G('s' + r, () => new THREE.SphereGeometry(r, r < 0.09 ? 8 : r < 0.2 ? 12 : r < 0.5 ? 16 : 20, r < 0.09 ? 6 : r < 0.2 ? 8 : r < 0.5 ? 10 : 12));
+const cyl = (rt, rb, h, seg) => { if (!seg) seg = Math.max(rt, rb) < 0.1 ? 8 : Math.max(rt, rb) < 0.35 ? 14 : 20; return G('c' + [rt, rb, h, seg], () => new THREE.CylinderGeometry(rt, rb, h, seg)); };
+const cap = (r, l) => G('k' + [r, l], () => new THREE.CapsuleGeometry(r, l, r < 0.12 ? 3 : 4, r < 0.12 ? 8 : 12));
+const box = (w, h, d) => G('x' + [w, h, d], () => new THREE.BoxGeometry(w, h, d));
+const cone = (r, h) => G('n' + [r, h], () => new THREE.ConeGeometry(r, h, 8));
+const torus = (r, t) => G('t' + [r, t], () => new THREE.TorusGeometry(r, t, 6, 12));
 const rb = (w, h, d, r = 0.04) => G('b' + [w, h, d, r], () => {
   const b = Math.min(r, h / 2 - 0.001, w / 2 - 0.001, d / 2 - 0.001), hw = w / 2 - b, hd = d / 2 - b, c = Math.min(b, hw, hd) * 0.9;
   const s = new THREE.Shape();
@@ -428,7 +431,7 @@ const rb = (w, h, d, r = 0.04) => G('b' + [w, h, d, r], () => {
   s.lineTo(hw, hd - c); s.quadraticCurveTo(hw, hd, hw - c, hd);
   s.lineTo(-hw + c, hd); s.quadraticCurveTo(-hw, hd, -hw, hd - c);
   s.lineTo(-hw, -hd + c); s.quadraticCurveTo(-hw, -hd, -hw + c, -hd);
-  const g = new THREE.ExtrudeGeometry(s, { depth: h - 2 * b, bevelEnabled: true, bevelThickness: b, bevelSize: b, bevelSegments: 2, curveSegments: 4 });
+  const g = new THREE.ExtrudeGeometry(s, { depth: h - 2 * b, bevelEnabled: true, bevelThickness: b, bevelSize: b, bevelSegments: 1, curveSegments: Math.max(w, d) > 2 ? 3 : 2 });
   g.translate(0, 0, -(h - 2 * b) / 2); g.rotateX(Math.PI / 2); return g;
 });
 function M(c, o) {
@@ -441,11 +444,63 @@ function mk(geo, c, x, y, z, parent, o) {
   if (geo.userData.big == null) { geo.computeBoundingSphere(); geo.userData.big = geo.boundingSphere.radius >= 0.11; }   // 很小的零件不投影，省一半阴影绘制
   m.castShadow = geo.userData.big; m.receiveShadow = true; parent.add(m); return m;
 }
+let flatRoot = scene;
 function flat(w, d, c, x, y, z, parent) {
   const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), M(c, { roughness: 0.95 })); m.rotation.x = -Math.PI / 2; m.position.set(x, y, z);
-  m.receiveShadow = true; (parent || scene).add(m); return m;
+  m.receiveShadow = true; (parent || flatRoot).add(m); return m;
 }
 const rm = m => { if (m && m.parent) m.parent.remove(m); };
+
+// ================= 合并网格：把许多带颜色的小零件合成一整块，大幅减少每帧的绘制次数 =================
+const VM = {   // 合并后的网格用顶点颜色，全场共用三种材质：普通 / 光滑 / 金属
+  d: new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.78 }),
+  g: new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.35 }),
+  m: new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.3, metalness: 0.55 }),
+};
+const _bm = new THREE.Matrix4(), _bn = new THREE.Matrix3(), _bc = new THREE.Color();
+class PB {
+  constructor() { this.e = []; this.nv = 0; this.ni = 0; }
+  addM(geo, r, g, b, m) { const n = geo.attributes.position.count; this.e.push([geo, r, g, b, m.elements.slice(), m.determinant() < 0]); this.nv += n; this.ni += geo.index ? geo.index.count : n; return this; }
+  build() {
+    const P = new Float32Array(this.nv * 3), N = new Float32Array(this.nv * 3), C = new Float32Array(this.nv * 3), I = this.nv > 65535 ? new Uint32Array(this.ni) : new Uint16Array(this.ni);
+    let vo = 0, io = 0;
+    for (const [geo, r, g, b, e, flip] of this.e) {
+      const pa = geo.attributes.position.array, na = geo.attributes.normal.array, n = geo.attributes.position.count;
+      _bn.getNormalMatrix(_bm.fromArray(e)); const q = _bn.elements;
+      for (let k = 0; k < n; k++) {
+        const x = pa[k * 3], y = pa[k * 3 + 1], z = pa[k * 3 + 2], o = (vo + k) * 3;
+        P[o] = e[0] * x + e[4] * y + e[8] * z + e[12]; P[o + 1] = e[1] * x + e[5] * y + e[9] * z + e[13]; P[o + 2] = e[2] * x + e[6] * y + e[10] * z + e[14];
+        const nx = na[k * 3], ny = na[k * 3 + 1], nz = na[k * 3 + 2], ax = q[0] * nx + q[3] * ny + q[6] * nz, ay = q[1] * nx + q[4] * ny + q[7] * nz, az = q[2] * nx + q[5] * ny + q[8] * nz, l = Math.hypot(ax, ay, az) || 1;
+        N[o] = ax / l; N[o + 1] = ay / l; N[o + 2] = az / l; C[o] = r; C[o + 1] = g; C[o + 2] = b;
+      }
+      const ix = geo.index ? geo.index.array : null, m = ix ? ix.length : n;
+      for (let k = 0; k < m; k += 3) { const a = ix ? ix[k] : k, b2 = ix ? ix[k + 1] : k + 1, c = ix ? ix[k + 2] : k + 2; I[io++] = vo + a; I[io++] = vo + (flip ? c : b2); I[io++] = vo + (flip ? b2 : c); }
+      vo += n;
+    }
+    const out = new THREE.BufferGeometry();
+    out.setAttribute('position', new THREE.BufferAttribute(P, 3)); out.setAttribute('normal', new THREE.BufferAttribute(N, 3)); out.setAttribute('color', new THREE.BufferAttribute(C, 3));
+    out.setIndex(new THREE.BufferAttribute(I, 1)); out.computeBoundingSphere(); return out;
+  }
+}
+function mergeAll(root) {   // 把一个临时组里的全部零件合成一个几何体
+  root.updateMatrixWorld(true); const pb = new PB();
+  root.traverse(o => { if (o.isMesh) pb.addM(o.geometry, o.material.color.r, o.material.color.g, o.material.color.b, o.matrixWorld); });
+  return pb.build();
+}
+function bake(root) {   // 把一组不会单独运动的零件烘焙成几块整体；发光、带贴图、半透明、被标记为动态的保持原样
+  root.updateMatrixWorld(true);
+  const inv = new THREE.Matrix4().copy(root.matrixWorld).invert(), B = {}, kill = [], m4 = new THREE.Matrix4();
+  root.traverse(o => {
+    if (!o.isMesh || o.userData.keep || !o.visible) return; const m = o.material;
+    if (!m.isMeshStandardMaterial || m.map || m.transparent || m.vertexColors || m.emissive.getHex() !== 0) return;
+    for (let a = o.parent; a && a !== root; a = a.parent) if (a.userData.dyn || !a.visible) return;
+    const key = (m.metalness > 0.3 ? 'm' : m.roughness < 0.5 ? 'g' : 'd') + (o.castShadow ? 1 : 0);
+    (B[key] || (B[key] = new PB())).addM(o.geometry, m.color.r, m.color.g, m.color.b, m4.multiplyMatrices(inv, o.matrixWorld)); kill.push(o);
+  });
+  for (const key in B) { const me = new THREE.Mesh(B[key].build(), VM[key[0]]); me.castShadow = key[1] === '1'; me.receiveShadow = true; me.userData.keep = true; root.add(me); }
+  for (const o of kill) o.parent.remove(o);
+  return root;
+}
 const ETEX = new Map();
 function emojiSprite(e, size, depth) {
   let t = ETEX.get(e);
@@ -455,7 +510,13 @@ function emojiSprite(e, size, depth) {
 }
 
 // ================= 模型 =================
-function makeItem(kind, col) {
+const ITEMG = new Map();
+function makeItem(kind, col) {   // 每种物品合并成一个网格并缓存
+  const key = kind + (col || ''); let geo = ITEMG.get(key);
+  if (!geo) ITEMG.set(key, geo = mergeAll(itemGroup(kind, col)));
+  const m = new THREE.Mesh(geo, VM.d); m.castShadow = true; m.receiveShadow = true; return m;
+}
+function itemGroup(kind, col) {
   const g = new THREE.Group();
   const plate = () => { mk(cyl(0.2, 0.13, 0.035), '#ffffff', 0, 0.018, 0, g, { roughness: 0.3 }); };
   if (kind === 'ramen') {
@@ -513,65 +574,145 @@ function makeItem(kind, col) {
   return g;
 }
 
-const HAIRS = ['#2b1d12', '#6b3f1d', '#c98a3a', '#151515', '#8a2f2f', '#e0b860', '#5a3a6e'];
-const SHIRTS = ['#5b8def', '#e85d75', '#58b368', '#b07cd8', '#f2a541', '#3fb7b0', '#ef7d57', '#f4f1de'];
-const PANTS = ['#3b4a5a', '#2f3e46', '#6d597a', '#4a5759', '#1d3557'];
-const SKINS = ['#f6c9a0', '#e8b088', '#c98e62', '#fbd8b8'];
+// ---------- 人物外观 ----------
+const HAIRS = ['#2b1d12', '#6b3f1d', '#c98a3a', '#151515', '#8a2f2f', '#e0b860', '#5a3a6e', '#3a2a22', '#d98c5f'];
+const SHIRTS = ['#5b8def', '#e85d75', '#58b368', '#b07cd8', '#f2a541', '#3fb7b0', '#ef7d57', '#f4f1de', '#ff8fab', '#7bdff2', '#c9e265', '#9d8189'];
+const PANTS = ['#3b4a5a', '#2f3e46', '#6d597a', '#4a5759', '#1d3557', '#8d6e63', '#c9ada7'];
+const SKINS = ['#f6c9a0', '#e8b088', '#c98e62', '#fbd8b8', '#a8714a'];
+const SHOES = ['#ffffff', '#2b2b2b', '#8a5a35', '#e5383b', '#3a86ff'];
+const STYLES = ['short', 'short', 'bob', 'long', 'bun', 'pony', 'twin', 'spiky', 'curly', 'buzz'];
+const OUTFITS = ['tee', 'tee', 'stripe', 'shirt', 'hoodie', 'jacket', 'dress', 'dress'];
 let nextId = 1;
+function rollLook(r) {   // r() 给出 0~1 的随机数：发型、衣服、鞋、配饰、身高、大人还是小孩
+  const pk = a => a[Math.floor(r() * a.length)];
+  const L = { shirt: pk(SHIRTS), hair: pk(HAIRS), skin: pk(SKINS), pants: pk(PANTS), style: pk(STYLES), outfit: pk(OUTFITS), shoe: pk(SHOES), shirt2: pk(SHIRTS),
+    sleeve: r() < 0.5 ? 'short' : 'long', bottom: 'pants', acc: r() < 0.12 ? 'glasses' : '', hat: '', hatC: pk(SHIRTS), size: 0.95 + r() * 0.11 };
+  const h = r(); if (h < 0.08) L.hat = 'cap'; else if (h < 0.13) L.hat = 'beanie';
+  if (L.outfit === 'dress') { L.bottom = 'skirt'; L.sleeve = 'short'; if (L.style === 'buzz' || L.style === 'spiky') L.style = 'long'; }
+  else if (r() < 0.22) L.bottom = 'shorts';
+  if (r() < 0.1) { L.kid = 1; L.size = 0.74 + r() * 0.06; }
+  return L;
+}
 function seedLook(id) {   // 由编号决定外观，联机双方看到的客人一致
   let a = Math.imul(id, 2654435761) >>> 0;
-  const r = () => { a = (a + 0x6D2B79F5) >>> 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }, pk = arr => arr[Math.floor(r() * arr.length)];
-  return { shirt: pk(SHIRTS), hair: pk(HAIRS), skin: pk(SKINS), pants: pk(PANTS), style: pk(['short', 'bun', 'long', 'pony', 'short']) };
+  return rollLook(() => { a = (a + 0x6D2B79F5) >>> 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; });
 }
-const custLook = (id, kind) => Object.assign(seedLook(id), kind === 'vip' ? { vip: true, shirt: '#3d2c6b', pants: '#1c1433' } : kind === 'critic' ? { beret: true, shirt: '#22333b' } : kind === 'hurry' ? { band: true } : kind === 'rider' ? { shirt: '#ffb703', pants: '#22333b', helmet: true, style: 'short' } : {});
-const randLook = () => ({ shirt: pick(SHIRTS), hair: pick(HAIRS), skin: pick(SKINS), pants: pick(PANTS), style: pick(['short', 'bun', 'long', 'pony', 'short']) });
+const randLook = () => rollLook(Math.random);
+const staffLook = o => Object.assign(randLook(), { kid: 0, size: 0.98 + Math.random() * 0.05, bottom: 'pants', hat: '', outfit: 'tee', sleeve: 'long', shoe: '#2b2b2b' }, o);
+const custLook = (id, kind) => Object.assign(seedLook(id),
+  kind === 'vip' ? { vip: true, outfit: 'suit', shirt: '#3d2c6b', pants: '#1c1433', bottom: 'pants', sleeve: 'long', kid: 0, size: 1.04, hat: '', shoe: '#2b2b2b' } :
+  kind === 'critic' ? { beret: true, outfit: 'jacket', shirt: '#22333b', acc: 'glasses', bottom: 'pants', sleeve: 'long', kid: 0, size: 1 } :
+  kind === 'hurry' ? { band: true, outfit: 'sport', bottom: 'shorts', sleeve: 'short', kid: 0, size: 1, hat: '' } :
+  kind === 'rider' ? { helmet: true, outfit: 'rider', shirt: '#ffb703', pants: '#22333b', bottom: 'pants', sleeve: 'long', kid: 0, size: 1, style: 'short', shoe: '#2b2b2b' } : {});
 
-function makePerson(L) {
-  const g = new THREE.Group(), u = g.userData;
-  u.legs = [-1, 1].map(s => {
-    const p = new THREE.Group(); p.position.set(s * 0.1, 0.37, 0); g.add(p);
-    mk(cap(0.085, 0.2), L.pants || '#3b4a5a', 0, -0.17, 0, p);
-    mk(rb(0.16, 0.09, 0.24, 0.04), '#ffffff', 0, -0.325, 0.035, p); return p;
-  });
-  mk(cap(0.21, 0.22), L.shirt, 0, 0.63, 0, g);
-  if (L.apron) { mk(rb(0.3, 0.34, 0.06, 0.025), L.apronC || '#ffffff', 0, 0.56, 0.18, g); mk(rb(0.12, 0.05, 0.05, 0.02), '#e5383b', 0, 0.86, 0.2, g); }
-  u.arms = [-1, 1].map(s => {
-    const p = new THREE.Group(); p.position.set(s * 0.265, 0.82, 0); p.rotation.z = s * 0.18; g.add(p);
-    mk(cap(0.065, 0.2), L.shirt, 0, -0.13, 0, p); mk(sph(0.075), L.skin, 0, -0.3, 0, p); return p;
-  });
-  const h = u.head = new THREE.Group(); h.position.y = 1.2; g.add(h);
-  mk(sph(0.27), L.skin, 0, 0, 0, h);
-  const hairG = G('hair', () => new THREE.SphereGeometry(0.29, 20, 10, 0, Math.PI * 2, 0, 1.72));
-  const hair = new THREE.Mesh(hairG, M(L.hair)); hair.rotation.x = -0.42; hair.castShadow = true; h.add(hair);
-  if (L.style === 'bun') mk(sph(0.12), L.hair, 0, 0.29, -0.08, h);
-  if (L.style === 'long') mk(cap(0.2, 0.26), L.hair, 0, -0.13, -0.13, h);
-  if (L.style === 'pony') { mk(sph(0.1), L.hair, 0, 0.08, -0.32, h); mk(cap(0.06, 0.2), L.hair, 0, -0.1, -0.36, h); }
+// ---------- 人物建模：每个人由 7 块合并网格组成（腿×2、躯干、手臂×2、脸、头发/帽子），零件按外观缓存 ----------
+const PARTG = new Map(), HAIRG = new THREE.SphereGeometry(0.29, 14, 8, 0, Math.PI * 2, 0, 1.72), DOMEG = new THREE.SphereGeometry(0.298, 14, 7, 0, Math.PI * 2, 0, 1.5);
+const BLOBG = new THREE.CircleGeometry(0.3, 16).rotateX(-Math.PI / 2), BLOBM = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.2, depthWrite: false });
+const shade = (c, k) => '#' + _bc.set(c).offsetHSL(0, 0, k).getHexString();
+function part(key, fn) {
+  let geo = PARTG.get(key);
+  if (!geo) { const t = new THREE.Group(); fn(t); PARTG.set(key, geo = mergeAll(t)); }
+  const m = new THREE.Mesh(geo, VM.d); m.castShadow = true; m.receiveShadow = true; return m;
+}
+function legParts(t, bottom, pants, skin, shoe) {
+  if (bottom === 'pants') mk(cap(0.085, 0.2), pants, 0, -0.17, 0, t);
+  else { mk(cap(0.074, 0.22), skin, 0, -0.17, 0, t); if (bottom === 'shorts') mk(cap(0.092, 0.05), pants, 0, -0.075, 0, t); mk(cyl(0.079, 0.079, 0.055, 10), '#ffffff', 0, -0.255, 0, t); }
+  mk(sph(0.1), shoe, 0, -0.318, 0.04, t).scale.set(0.84, 0.52, 1.32);
+}
+function armParts(t, sleeve, c, skin, cuff) {
+  if (sleeve === 'short') { mk(cap(0.072, 0.05), c, 0, -0.06, 0, t); mk(cap(0.057, 0.14), skin, 0, -0.18, 0, t); }
+  else { mk(cap(0.065, 0.2), c, 0, -0.13, 0, t); if (cuff) mk(cyl(0.07, 0.07, 0.04, 10), '#ffffff', 0, -0.235, 0, t); }
+  mk(sph(0.074), skin, 0, -0.3, 0, t);
+}
+function torsoParts(t, o, c1, c2) {
+  const dk = shade(c1, -0.1);
+  if (o === 'dress') {   // 连衣裙：上身 + 喇叭裙摆 + 腰带
+    mk(cap(0.195, 0.1), c1, 0, 0.73, 0, t); mk(cyl(0.17, 0.33, 0.42, 14), c1, 0, 0.45, 0, t); mk(cyl(0.2, 0.2, 0.045, 14), c2, 0, 0.645, 0, t); mk(cyl(0.335, 0.335, 0.03, 14), shade(c1, 0.1), 0, 0.245, 0, t); return;
+  }
+  mk(cap(0.21, 0.22), c1, 0, 0.63, 0, t);
+  if (o !== 'apron' && o !== 'chef') mk(cyl(0.204, 0.19, 0.05, 14), '#3b4a5a', 0, 0.375, 0, t);   // 腰带
+  if (o === 'stripe') for (const y of [0.56, 0.64, 0.72]) mk(cyl(0.214, 0.214, 0.036, 14), c2, 0, y, 0, t);
+  else if (o === 'shirt') { for (const s of [-1, 1]) mk(box(0.09, 0.035, 0.07), '#ffffff', s * 0.055, 0.895, 0.15, t).rotation.set(0.5, 0, -s * 0.45); for (const y of [0.78, 0.67, 0.56]) mk(sph(0.017), dk, 0, y, 0.209, t); }
+  else if (o === 'hoodie') { mk(sph(0.17), dk, 0, 0.92, -0.15, t).scale.set(1.2, 0.75, 0.8); mk(box(0.2, 0.09, 0.04), dk, 0, 0.5, 0.198, t); for (const s of [-1, 1]) mk(cyl(0.009, 0.009, 0.12, 5), '#ffffff', s * 0.04, 0.8, 0.203, t); }
+  else if (o === 'jacket') { mk(box(0.1, 0.4, 0.03), '#fffaf0', 0, 0.65, 0.199, t); for (const s of [-1, 1]) mk(box(0.05, 0.14, 0.03), dk, s * 0.07, 0.84, 0.2, t).rotation.z = -s * 0.35; }
+  else if (o === 'suit') { mk(box(0.1, 0.24, 0.03), '#ffffff', 0, 0.78, 0.196, t); mk(box(0.04, 0.2, 0.02), '#ffc93c', 0, 0.76, 0.215, t); for (const s of [-1, 1]) mk(box(0.06, 0.2, 0.03), shade(c1, 0.1), s * 0.075, 0.8, 0.203, t).rotation.z = -s * 0.3; mk(box(0.05, 0.02, 0.02), '#ffffff', -0.11, 0.74, 0.2, t); }
+  else if (o === 'apron') {   // 围裙：前片 + 口袋 + 腰带 + 领结 + 胸牌
+    const a = c2 || '#ffffff'; mk(rb(0.3, 0.36, 0.05, 0.02), a, 0, 0.55, 0.185, t); mk(box(0.14, 0.09, 0.02), shade(a, -0.08), 0, 0.5, 0.215, t); mk(cyl(0.214, 0.214, 0.03, 14), a, 0, 0.62, 0, t);
+    for (const s of [-1, 1]) mk(sph(0.032), '#e5383b', s * 0.03, 0.875, 0.2, t).scale.set(1.2, 0.8, 0.6); mk(box(0.06, 0.03, 0.015), '#ffe9a8', 0.09, 0.745, 0.212, t);
+  } else if (o === 'chef') {   // 厨师服：双排扣 + 红领巾 + 半身围裙
+    for (const s of [-1, 1]) for (const y of [0.78, 0.68, 0.58]) mk(sph(0.018), '#3b4a5a', s * 0.05, y, 0.207, t);
+    mk(sph(0.085), '#e5383b', 0, 0.9, 0.13, t).scale.set(1.4, 0.5, 0.9); mk(rb(0.3, 0.2, 0.05, 0.02), '#eef2f4', 0, 0.44, 0.18, t); mk(cyl(0.214, 0.214, 0.03, 14), '#eef2f4', 0, 0.535, 0, t);
+  } else if (o === 'rider') { mk(cyl(0.214, 0.214, 0.04, 14), '#ffffff', 0, 0.6, 0, t); mk(box(0.34, 0.34, 0.26), '#e5383b', 0, 0.68, -0.33, t); mk(box(0.36, 0.05, 0.28), '#ffffff', 0, 0.86, -0.33, t); }   // 反光条 + 保温箱
+  else if (o === 'sport') { mk(box(0.13, 0.11, 0.02), '#ffffff', 0, 0.7, 0.205, t); mk(cyl(0.214, 0.214, 0.03, 14), '#ffffff', 0, 0.54, 0, t); }
+  else if (o === 'vest') { mk(cyl(0.216, 0.216, 0.2, 14), c2, 0, 0.66, 0, t); mk(box(0.07, 0.3, 0.03), c1, 0, 0.66, 0.2, t); mk(box(0.06, 0.03, 0.015), '#ffe9a8', 0.1, 0.76, 0.215, t); }
+}
+function faceParts(t, skin, glasses) {
+  mk(sph(0.27), skin, 0, 0, 0, t).scale.set(1, 0.97, 0.98);
   for (const s of [-1, 1]) {
-    mk(sph(0.034), '#2b2b2b', s * 0.1, 0.0, 0.248, h, { roughness: 0.2 }).scale.y = 1.25;
-    mk(sph(0.045), '#ff9aa2', s * 0.17, -0.08, 0.2, h).scale.z = 0.3;
+    mk(sph(0.055), skin, s * 0.262, -0.02, 0, t);                                   // 耳朵
+    mk(sph(0.037), '#2b2b2b', s * 0.1, 0, 0.246, t).scale.set(1, 1.3, 0.6);         // 眼睛
+    mk(sph(0.013), '#ffffff', s * 0.1 + 0.013, 0.02, 0.268, t);                     // 高光
+    mk(sph(0.045), '#ff9aa2', s * 0.172, -0.085, 0.198, t).scale.z = 0.3;           // 腮红
+    if (glasses) mk(torus(0.058, 0.011), '#333333', s * 0.1, 0, 0.262, t);
   }
-  if (L.chef) { mk(cyl(0.19, 0.17, 0.16), '#ffffff', 0, 0.3, -0.02, h); mk(sph(0.23), '#ffffff', 0, 0.44, -0.02, h).scale.y = 0.6; }
-  if (L.visor) { mk(cyl(0.275, 0.275, 0.07, 20), L.apronC, 0, 0.14, 0, h); mk(rb(0.3, 0.03, 0.18, 0.012), L.apronC, 0, 0.12, 0.28, h); }
-  if (L.vip) { mk(cyl(0.15, 0.12, 0.1, 6), '#ffc93c', 0, 0.3, 0, h, { metalness: 0.7, roughness: 0.25 }); mk(sph(0.04), '#e5383b', 0, 0.33, 0.13, h, { roughness: 0.2 }); }
-  if (L.helmet) { const hm = new THREE.Mesh(hairG, M('#ffd166', { roughness: 0.35 })); hm.scale.setScalar(1.09); hm.rotation.x = -0.25; hm.castShadow = true; h.add(hm); mk(rb(0.3, 0.04, 0.16, 0.015), '#22333b', 0, 0.1, 0.25, h); }
-  if (L.beret) { const b = mk(sph(0.22), '#9d0208', 0.05, 0.26, -0.02, h); b.scale.y = 0.38; b.rotation.z = -0.2; }
-  if (L.band) mk(cyl(0.262, 0.262, 0.07, 20), '#e5383b', 0, 0.13, 0, h);
-  if (L.player) {
-    u.marker = new THREE.Mesh(G('cone', () => new THREE.ConeGeometry(0.13, 0.22, 4)), M('#ffc93c', { emissive: '#a86b00' }));
-    u.marker.rotation.x = Math.PI; g.add(u.marker);
-  }
+  mk(sph(0.03), '#b5525c', 0, -0.108, 0.25, t).scale.set(1.3, 0.55, 0.5);           // 嘴
+  if (glasses) mk(box(0.06, 0.014, 0.014), '#333333', 0, 0.005, 0.27, t);
+}
+function hairParts(t, hair, style, covered) {
+  const capM = k => { const m = new THREE.Mesh(HAIRG, M(hair)); m.rotation.x = -0.42; if (k) m.scale.setScalar(k); t.add(m); };
+  if (style === 'curly') for (const [x, y, z] of [[0, 0.2, 0], [0.17, 0.14, 0.05], [-0.17, 0.14, 0.05], [0.13, 0.12, -0.16], [-0.13, 0.12, -0.16], [0, 0.1, -0.22], [0.22, 0.02, -0.08], [-0.22, 0.02, -0.08], [0, 0.19, 0.15], [0.13, 0.17, 0.13], [-0.13, 0.17, 0.13]]) mk(sph(0.125), hair, x, y, z, t);
+  else capM(style === 'buzz' ? 0.975 : 0);
+  if (style !== 'buzz' && style !== 'curly' && !covered) mk(sph(0.2), hair, 0, 0.165, 0.185, t).scale.set(1.22, 0.42, 0.55);   // 刘海
+  if (style === 'bob') { for (const s of [-1, 1]) mk(sph(0.13), hair, s * 0.215, -0.1, -0.02, t).scale.set(0.75, 1.35, 1.1); mk(sph(0.24), hair, 0, -0.08, -0.1, t).scale.set(1.05, 1, 0.75); }
+  else if (style === 'long') { mk(cap(0.2, 0.26), hair, 0, -0.13, -0.13, t); for (const s of [-1, 1]) mk(cap(0.06, 0.24), hair, s * 0.235, -0.16, 0.02, t); }
+  else if (style === 'bun' && !covered) mk(sph(0.125), hair, 0, 0.3, -0.07, t);
+  else if (style === 'pony') { mk(sph(0.1), hair, 0, 0.08, -0.32, t); mk(cap(0.06, 0.2), hair, 0, -0.1, -0.37, t).rotation.x = 0.25; }
+  else if (style === 'twin') for (const s of [-1, 1]) { mk(sph(0.085), hair, s * 0.27, 0.02, -0.08, t); mk(cap(0.065, 0.18), hair, s * 0.31, -0.17, -0.08, t).rotation.z = s * 0.25; }
+  else if (style === 'spiky' && !covered) for (const [x, y, z] of [[-0.12, 0.25, 0.06], [0, 0.3, 0], [0.12, 0.25, 0.06], [0, 0.25, -0.13], [-0.11, 0.23, -0.14], [0.11, 0.23, -0.14]]) mk(cone(0.08, 0.18), hair, x, y, z, t).rotation.set(z * 2.2, 0, -x * 2.2);
+}
+function hatParts(t, hat, hc) {   // 帽子和头饰
+  if (hat === 'toque') { mk(cyl(0.19, 0.17, 0.16, 14), '#ffffff', 0, 0.3, -0.02, t); mk(sph(0.23), '#ffffff', 0, 0.44, -0.02, t).scale.y = 0.6; mk(cyl(0.192, 0.192, 0.04, 14), '#dfe7ec', 0, 0.24, -0.02, t); }
+  else if (hat === 'visor') { mk(cyl(0.275, 0.275, 0.07, 16), hc, 0, 0.14, 0, t); mk(rb(0.3, 0.03, 0.18, 0.012), hc, 0, 0.12, 0.28, t); }
+  else if (hat === 'crown') { mk(cyl(0.15, 0.12, 0.1, 6), '#ffc93c', 0, 0.3, 0, t); mk(sph(0.04), '#e5383b', 0, 0.33, 0.13, t); for (let i = 0; i < 6; i++) mk(sph(0.03), '#ffe066', Math.cos(i * 1.047 + 0.52) * 0.14, 0.37, Math.sin(i * 1.047 + 0.52) * 0.14, t); }
+  else if (hat === 'helmet') { const m = new THREE.Mesh(HAIRG, M('#ffd166')); m.scale.setScalar(1.09); m.rotation.x = -0.25; t.add(m); mk(rb(0.3, 0.04, 0.16, 0.015), '#22333b', 0, 0.1, 0.25, t); mk(box(0.06, 0.03, 0.5), '#e5383b', 0, 0.3, -0.03, t).rotation.x = -0.25; }
+  else if (hat === 'beret') { const b = mk(sph(0.22), '#9d0208', 0.05, 0.26, -0.02, t); b.scale.y = 0.38; b.rotation.z = -0.2; mk(cyl(0.012, 0.012, 0.05, 5), '#9d0208', 0.03, 0.35, -0.02, t); }
+  else if (hat === 'band') mk(cyl(0.264, 0.264, 0.07, 16), '#e5383b', 0, 0.13, 0, t);
+  else if (hat === 'cap') { const m = new THREE.Mesh(DOMEG, M(hc)); m.rotation.x = -0.2; m.position.y = 0.01; t.add(m); mk(cyl(0.2, 0.2, 0.025, 14), shade(hc, -0.12), 0, 0.105, 0.25, t).scale.set(1, 1, 0.85); mk(sph(0.025), shade(hc, -0.12), 0, 0.3, -0.06, t); }
+  else if (hat === 'beanie') { const m = new THREE.Mesh(DOMEG, M(hc)); m.rotation.x = -0.32; m.position.y = 0.012; t.add(m); const r = mk(cyl(0.287, 0.287, 0.075, 16), shade(hc, 0.14), 0, 0.1, -0.03, t); r.rotation.x = -0.32; mk(sph(0.07), '#ffffff', 0, 0.31, -0.12, t); }
+}
+function makePerson(L) {
+  const g = new THREE.Group(), u = g.userData, sk = L.skin, size = L.size || 1;
+  const outfit = L.chef ? 'chef' : L.apron ? 'apron' : L.outfit || 'tee', hat = L.chef ? 'toque' : L.visor ? 'visor' : L.vip ? 'crown' : L.helmet ? 'helmet' : L.beret ? 'beret' : L.band ? 'band' : L.hat || '';
+  const fixedHat = hat === 'toque' || hat === 'crown' || hat === 'helmet' || hat === 'beret' || hat === 'band', hc = fixedHat ? '' : L.visor ? L.apronC || '#ffffff' : L.hatC || L.shirt;
+  const c2 = outfit === 'apron' ? L.apronC || '#ffffff' : outfit === 'vest' ? L.shirt2 || '#ffffff' : '#ffffff', bottom = L.bottom || 'pants', shoe = L.shoe || '#ffffff', covered = hat === 'cap' || hat === 'beanie' || hat === 'helmet';
+  const longs = outfit === 'chef' || outfit === 'suit' || outfit === 'rider' || outfit === 'hoodie' || outfit === 'jacket', sleeve = longs ? 'long' : outfit === 'sport' ? 'short' : L.sleeve || 'long', cuff = outfit === 'suit' || outfit === 'chef';
+  const pants = L.pants || '#3b4a5a', style = L.style || 'short';
+  u.legs = [-1, 1].map(s => { const p = new THREE.Group(); p.position.set(s * 0.1, 0.37, 0); g.add(p); p.add(part('leg|' + [bottom, bottom === 'skirt' ? '' : pants, bottom === 'pants' ? '' : sk, shoe], t => legParts(t, bottom, pants, sk, shoe))); return p; });
+  u.body = new THREE.Group(); u.body.position.y = 0.37; g.add(u.body);   // 躯干绕胯部前倾
+  { const tm = part('torso|' + [outfit, L.shirt, c2], t => torsoParts(t, outfit, L.shirt, c2)); tm.position.y = -0.37; u.body.add(tm); }
+  u.arms = [-1, 1].map(s => { const p = new THREE.Group(); p.position.set(s * 0.265, 0.82, 0); p.rotation.z = s * 0.18; g.add(p); p.add(part('arm|' + [sleeve, L.shirt, sk, cuff], t => armParts(t, sleeve, L.shirt, sk, cuff))); return p; });
+  const h = u.head = new THREE.Group(); h.position.y = 1.2; g.add(h);
+  h.add(part('face|' + [sk, L.acc === 'glasses' ? 1 : 0], t => faceParts(t, sk, L.acc === 'glasses')));
+  h.add(part('hair|' + [L.hair, style, covered ? 1 : 0], t => hairParts(t, L.hair, style, covered)));
+  if (hat) h.add(part('hat|' + [hat, hc], t => hatParts(t, hat, hc)));
+  if (L.kid) h.scale.setScalar(1.14);   // 小孩头大身子小
+  if (L.player) { u.marker = new THREE.Mesh(G('cone', () => new THREE.ConeGeometry(0.13, 0.22, 4)), M('#ffc93c', { emissive: '#a86b00' })); u.marker.rotation.x = Math.PI; g.add(u.marker); }
+  u.blob = new THREE.Mesh(BLOBG, BLOBM); u.blob.position.y = 0.014; u.blob.visible = false; g.add(u.blob);   // 低画质时代替真实阴影
   u.tray = new THREE.Group(); u.tray.position.set(0, 0.74, 0.42); g.add(u.tray);
+  u.size = size; g.scale.setScalar(size);
   return g;
 }
 
 function hedge(x, z, lx, lz, parent) {
   mk(rb(lx, 0.2, lz, 0.04), '#a86f42', x, 0.1, z, parent); mk(rb(Math.max(0.1, lx - 0.06), 0.18, Math.max(0.1, lz - 0.06), 0.07), '#52b788', x, 0.27, z, parent);
   const n = Math.max(1, Math.round(Math.max(lx, lz) / 0.9));
-  for (let i = 0; i < n; i++) { const f = (i + 0.5) / n - 0.5; mk(sph(0.14), i % 2 ? '#40916c' : '#74c69d', x + (lx > lz ? f * lx : 0), 0.36, z + (lz > lx ? f * lz : 0), parent); }
+  for (let i = 0; i < n; i++) { const f = (i + 0.5) / n - 0.5, bx = x + (lx > lz ? f * lx : 0), bz = z + (lz > lx ? f * lz : 0);
+    mk(sph(0.14), i % 2 ? '#40916c' : '#74c69d', bx, 0.36, bz, parent);
+    if (i % 3 !== 1) for (const [dx, dz] of [[0.07, 0.05], [-0.06, -0.04]]) mk(sph(0.045), ['#ff8fab', '#ffd166', '#ffffff', '#e85d75'][(i + (dx > 0 ? 1 : 0)) % 4], bx + dx, 0.47, bz + dz, parent); }   // 小花
 }
 function tree(x, z, s = 1) {
-  mk(cyl(0.12 * s, 0.16 * s, 1.1 * s, 8), '#8a5a35', x, 0.55 * s, z, scene);
-  mk(sph(0.7), '#52b788', x, 1.5 * s, z, scene).scale.setScalar(s); mk(sph(0.5), '#40916c', x + 0.35 * s, 1.95 * s, z - 0.1, scene).scale.setScalar(s); mk(sph(0.45), '#74c69d', x - 0.3 * s, 2.0 * s, z + 0.15, scene).scale.setScalar(s);
+  mk(cyl(0.12 * s, 0.16 * s, 1.1 * s, 8), '#8a5a35', x, 0.55 * s, z, DS);
+  mk(sph(0.7), '#52b788', x, 1.5 * s, z, DS).scale.setScalar(s); mk(sph(0.5), '#40916c', x + 0.35 * s, 1.95 * s, z - 0.1, DS).scale.setScalar(s); mk(sph(0.45), '#74c69d', x - 0.3 * s, 2.0 * s, z + 0.15, DS).scale.setScalar(s);
 }
 
 // ---- 餐厅 ----
@@ -598,19 +739,50 @@ function drawSign() {
   signTex.needsUpdate = true;
 }
 (function buildRestaurant() {
-  const s = scene;
+  const s = RS;
   mk(rb(W + 0.4, 0.3, H + 0.4, 0.04), '#c9a77c', W / 2 - 0.1, -0.15, H / 2 - 0.1, s);
-  const tc = document.createElement('canvas'); tc.width = tc.height = 128; const t2 = tc.getContext('2d');
-  const tex = new THREE.CanvasTexture(tc); tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(W / 2, H / 2); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
-  floorDraw = (a, b) => { t2.fillStyle = a; t2.fillRect(0, 0, 128, 128); t2.fillStyle = b; t2.fillRect(0, 0, 64, 64); t2.fillRect(64, 64, 64, 64);
-    t2.strokeStyle = 'rgba(120,90,50,.22)'; t2.lineWidth = 2; for (const [x, y] of [[0, 0], [64, 0], [0, 64], [64, 64]]) t2.strokeRect(x, y, 64, 64); tex.needsUpdate = true; };
+  const tc = document.createElement('canvas'); tc.width = tc.height = 256; const t2 = tc.getContext('2d');
+  const tex = new THREE.CanvasTexture(tc); tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(W / 4, H / 4); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
+  floorDraw = (a, b) => {   // 木地板：两种色调交错的长条木板
+    const ca = new THREE.Color(a), cb = new THREE.Color(b), c = new THREE.Color(); let sd = 7; const rnd = () => (sd = sd * 16807 % 2147483647) / 2147483647;
+    for (let r = 0; r < 8; r++) {
+      let x = -rnd() * 90;
+      while (x < 256) { const w = 70 + rnd() * 60; c.copy(ca).lerp(cb, rnd()).offsetHSL(0, 0, (rnd() - 0.5) * 0.04); t2.fillStyle = c.getStyle(); t2.fillRect(x, r * 32, w + 1, 32); t2.fillStyle = 'rgba(90,60,30,.22)'; t2.fillRect(x, r * 32, 1.5, 32); x += w; }
+      t2.fillStyle = 'rgba(90,60,30,.26)'; t2.fillRect(0, r * 32, 256, 1.5);
+    }
+    tex.needsUpdate = true;
+  };
   floorDraw('#f7e9cc', '#eed9b0');
   const fl = new THREE.Mesh(new THREE.PlaneGeometry(W, H), new THREE.MeshStandardMaterial({ map: tex, roughness: 0.6 }));
   fl.rotation.x = -Math.PI / 2; fl.position.set(W / 2, 0.005, H / 2); fl.receiveShadow = true; s.add(fl);
-  // 三个用餐区的地面
-  [['#d8a878', 0.45], ['#8c2f39', 0.3], ['#95d5b2', 0.5]].forEach(([c, o], z) => {
-    const x0 = [0.8, 7.38, 13.96][z]; const m = mk(rb(5.5, 0.012, 7.2, 0.006), c, x0 + 2.64, 0.012, 6.6, s, { transparent: true, opacity: o }); m.castShadow = false;
-  });
+  // 分区地面：红丝绒区铺菱格地毯，花园区铺石板
+  const zoneTex = (draw, rx, ry) => { const c = document.createElement('canvas'); c.width = c.height = 128; draw(c.getContext('2d')); const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rx, ry); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t; };
+  const zonePlane = (z, t) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(5.5, 7.2), new THREE.MeshStandardMaterial({ map: t, roughness: 0.9 })); m.rotation.x = -Math.PI / 2; m.position.set([0.8, 7.38, 13.96][z] + 2.64, 0.012, 6.6); m.receiveShadow = true; s.add(m); };
+  zonePlane(1, zoneTex(x => { x.fillStyle = '#8c2f39'; x.fillRect(0, 0, 128, 128); x.strokeStyle = 'rgba(233,196,106,.55)'; x.lineWidth = 3; x.beginPath(); for (const o of [-128, 0, 128]) { x.moveTo(o, 0); x.lineTo(o + 128, 128); x.moveTo(o + 128, 0); x.lineTo(o, 128); } x.stroke();
+    x.fillStyle = 'rgba(233,196,106,.7)'; for (const [a, b] of [[0, 0], [64, 64], [128, 0], [0, 128], [128, 128]]) { x.beginPath(); x.arc(a, b, 7, 0, 7); x.fill(); } }, 5.5, 7.2));
+  zonePlane(2, zoneTex(x => { x.fillStyle = '#7fbf8e'; x.fillRect(0, 0, 128, 128); let sd = 3; const rnd = () => (sd = sd * 16807 % 2147483647) / 2147483647;
+    for (let r = 0; r < 4; r++) for (let k = -1; k < 3; k++) { const g = 205 + Math.floor(rnd() * 30); x.fillStyle = 'rgb(' + g + ',' + (g + 6) + ',' + (g - 10) + ')'; const px = k * 64 + (r % 2 ? 32 : 0) + 3, py = r * 32 + 3; x.fillRect(px + 4, py, 50, 26); x.fillRect(px, py + 4, 58, 18); x.beginPath(); for (const [a, b] of [[px + 5, py + 5], [px + 53, py + 5], [px + 5, py + 21], [px + 53, py + 21]]) { x.moveTo(a, b); x.arc(a, b, 5, 0, 7); } x.fill(); } }, 2.75, 3.6));
+  for (const z of [1, 2]) { const x0 = [0.8, 7.38, 13.96][z] + 2.64, c = z === 1 ? '#e9c46a' : '#f1faee';   // 镶边
+    mk(rb(5.62, 0.02, 0.07, 0.008), c, x0, 0.016, 3.0, s).castShadow = false; mk(rb(5.62, 0.02, 0.07, 0.008), c, x0, 0.016, 10.2, s).castShadow = false;
+    mk(rb(0.07, 0.02, 7.2, 0.008), c, x0 - 2.78, 0.016, 6.6, s).castShadow = false; mk(rb(0.07, 0.02, 7.2, 0.008), c, x0 + 2.78, 0.016, 6.6, s).castShadow = false; }
+  // 后厨墙面：白瓷砖 + 挂着的锅和勺
+  { const t = zoneTex(x => { x.fillStyle = '#fbfbf6'; x.fillRect(0, 0, 128, 128); x.strokeStyle = '#cfd8dc'; x.lineWidth = 5; x.strokeRect(0, 0, 128, 128); x.strokeRect(0, 0, 64, 64); x.strokeRect(64, 64, 64, 64); }, 20, 1);
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(18.4, 0.92), new THREE.MeshStandardMaterial({ map: t, roughness: 0.35 })); m.position.set(10, 1.26, 0.006); m.receiveShadow = true; s.add(m);
+    mk(rb(18.5, 0.05, 0.06, 0.015), '#8f5a35', 10, 1.74, 0.03, s);
+    for (let i = 0; i < 10; i++) { const x = (i < 5 ? 2.2 + i * 1.6 : 11.4 + (i - 5) * 1.6) + 0.8; if (x > 18.2) continue;
+      mk(cyl(0.012, 0.012, 0.18, 5), '#8d99a6', x, 1.62, 0.04, s, { metalness: 0.7, roughness: 0.3 });
+      if (i % 2) { mk(cyl(0.14, 0.12, 0.05, 12), '#3b4a5a', x, 1.42, 0.06, s, { metalness: 0.6, roughness: 0.35 }).rotation.x = Math.PI / 2; mk(cyl(0.018, 0.018, 0.22, 6), '#3b4a5a', x, 1.22, 0.06, s, { metalness: 0.6, roughness: 0.35 }); }
+      else { mk(sph(0.07), '#cfd8dc', x, 1.3, 0.06, s, { metalness: 0.7, roughness: 0.3 }).scale.set(1, 0.8, 0.5); mk(cyl(0.012, 0.012, 0.26, 5), '#cfd8dc', x, 1.44, 0.05, s, { metalness: 0.7, roughness: 0.3 }); } }
+  }
+  // 左墙挂画
+  mk(rb(0.06, 0.72, 1.06, 0.02), '#e9c46a', 0.03, 1.72, 1.0, s); mk(rb(0.07, 0.58, 0.92, 0.01), '#8ecae6', 0.035, 1.72, 1.0, s); mk(rb(0.075, 0.2, 0.92, 0.01), '#74c69d', 0.035, 1.53, 1.0, s);
+  mk(cyl(0.09, 0.09, 0.08, 14), '#ffd166', 0.035, 1.86, 1.2, s).rotation.z = Math.PI / 2;
+  // 门口：排队围栏 + 立式招牌
+  for (let i = 0; i < 5; i++) { const z = 5.25 + i * 1.2;
+    mk(cyl(0.14, 0.16, 0.04, 12), '#e9c46a', W + 1.3, 0.02, z, s, { metalness: 0.6, roughness: 0.3 }); mk(cyl(0.035, 0.045, 0.86, 8), '#e9c46a', W + 1.3, 0.45, z, s, { metalness: 0.6, roughness: 0.3 }); mk(sph(0.07), '#e9c46a', W + 1.3, 0.92, z, s, { metalness: 0.6, roughness: 0.3 });
+    if (i < 4) mk(cyl(0.022, 0.022, 1.2, 6), '#c1121f', W + 1.3, 0.74, z + 0.6, s).rotation.x = Math.PI / 2; }
+  for (const k of [-1, 1]) mk(rb(0.56, 0.8, 0.04, 0.015), '#3b2a1a', W + 1.45, 0.4, 3.9 + k * 0.14, s).rotation.x = -k * 0.3;
+  mk(rb(0.44, 0.5, 0.02, 0.01), '#fff3d6', W + 1.45, 0.46, 4.075, s).rotation.x = -0.3; mk(rb(0.3, 0.05, 0.02, 0.008), '#e5383b', W + 1.45, 0.6, 4.07, s).rotation.x = -0.3; mk(rb(0.24, 0.04, 0.02, 0.008), '#52b788', W + 1.45, 0.47, 4.115, s).rotation.x = -0.3;
   mk(rb(1.0, 0.04, 1.5, 0.015), '#c8553d', W - 0.55, 0.02, DOOR.y, s); mk(rb(0.7, 0.045, 1.2, 0.015), '#e07a5f', W - 0.55, 0.022, DOOR.y, s);
   // 墙
   wall(rb(0.25, 2.9, H + 0.3, 0.03), 0, -0.125, 1.45, H / 2 - 0.15); wall(rb(W + 0.05, 2.9, 0.25, 0.03), 1, W / 2, 1.45, -0.125);
@@ -669,6 +841,8 @@ function drawSign() {
   for (let i = 0; i < 5; i++) mk(rb(0.6, 0.05, 0.23, 0.015), i % 2 ? '#fffaf0' : '#e5383b', STAND.x + 0.15, 2.02, 1.74 + i * 0.23, standG);
   STAND.stack = new THREE.Group(); STAND.stack.position.set(STAND.x, 0.85, 2.55); STAND.stack.visible = false; standG.add(STAND.stack);
   for (let k = 0; k < 3; k++) { mk(rb(0.24, 0.045, 0.13, 0.012), '#58b368', 0, 0.022 + k * 0.047, 0, STAND.stack); mk(rb(0.06, 0.047, 0.135, 0.01), '#f1faee', 0, 0.022 + k * 0.047, 0, STAND.stack); }
+  crates.forEach(c => { c.userData.dyn = true; bake(c); }); STAND.stack.userData.dyn = true; bake(STAND.stack);
+  bake(standG); bake(standHedge); bake(RS);
 })();
 const TIERS = [
   { lv: 1,  w: ['#3a969e', '#43a6ae', '#2a6f76'], f: ['#f7e9cc', '#eed9b0'] },
@@ -688,11 +862,11 @@ function applyTier(announce) {
 const anim = [];
 const fountain = new THREE.Group(); scene.add(fountain);
 (function buildDistrict() {
-  const s = scene;
-  flat(400, 400, '#8fc97a', 0, -0.02, 0);
-  flat(92, 1.3, '#d9d4c7', 3.5, -0.012, 12.25); flat(92, 3.4, '#59636e', 3.5, -0.008, 14.6); flat(92, 1.4, '#d9d4c7', 3.5, -0.012, 17.0);
+  const s = DS; flatRoot = DS;
+  flat(400, 400, '#8fc97a', 0, -0.02, 60, scene).userData.keep = true;
+  flat(112, 1.3, '#d9d4c7', 3.5, -0.012, 12.25); flat(112, 3.4, '#59636e', 3.5, -0.008, 14.6); flat(112, 1.4, '#d9d4c7', 3.5, -0.012, 17.0);
   flat(0.9, 21, '#d9d4c7', 20.75, -0.012, 1.4); flat(2.6, 21, '#59636e', 22.5, -0.009, 1.4); flat(0.4, 21, '#d9d4c7', 24.0, -0.012, 1.4);
-  for (let x = -41; x < 49; x += 2.4) flat(1.2, 0.14, '#f1e9c9', x, -0.004, 14.6);
+  for (let x = -51; x < 59; x += 2.4) flat(1.2, 0.14, '#f1e9c9', x, -0.004, 14.6);
   for (let z = -8; z < 12; z += 2.4) flat(0.14, 1.2, '#f1e9c9', 22.5, -0.004, z);
   for (let x = -36; x <= 44; x += 8) {
     mk(cyl(0.05, 0.07, 2.6, 8), '#3b4a5a', x, 1.3, 17.45, s); mk(sph(0.17), '#fff3b0', x, 2.7, 17.45, s, { emissive: '#ffd60a', emissiveIntensity: 1 }); mk(cyl(0.2, 0.12, 0.08), '#3b4a5a', x, 2.86, 17.45, s);
@@ -756,6 +930,7 @@ const fountain = new THREE.Group(); scene.add(fountain);
       for (let i = 0; i < 4; i++) mk(rb(5.4, 0.06, 0.06, 0.02), '#f1faee', 0, 0, 0, wh).rotation.z = i * Math.PI / 4;
       const cabs = []; ['#e63946', '#ffd166', '#52b788', '#5b8def', '#b07cd8', '#f4a261', '#3fb7b0', '#e85d75'].forEach((c, i) => cabs.push(mk(rb(0.55, 0.5, 0.45, 0.1), c, Math.cos(i * Math.PI / 4) * 2.7, Math.sin(i * Math.PI / 4) * 2.7, 0, wh)));
       mk(cyl(0.08, 0.1, 4.0, 8), '#8d99ae', wx - 0.95, 1.85, wz + 0.25, g).rotation.z = -0.26; mk(cyl(0.08, 0.1, 4.0, 8), '#8d99ae', wx + 0.95, 1.85, wz + 0.25, g).rotation.z = 0.26; mk(sph(0.22), '#ffd166', wx, 3.7, wz + 0.1, g);
+      wh.userData.dyn = true; cabs.forEach(c => c.userData.keep = true); bake(wh);
       anim.push(t => { wh.rotation.z = t * 0.25; cabs.forEach(c => c.rotation.z = -wh.rotation.z); });
       // 旋转木马
       const kx = b.x1 - 3.3, kz = 7.6; mk(cyl(1.7, 1.8, 0.2, 24), '#ffd6de', kx, 0.1, kz, g);
@@ -763,6 +938,7 @@ const fountain = new THREE.Group(); scene.add(fountain);
       mk(cyl(0.14, 0.14, 2.5, 10), '#ffd166', 0, 1.35, 0, spin);
       const roof = new THREE.Mesh(G('roof', () => new THREE.ConeGeometry(2.0, 1.0, 12)), M('#e85d75')); roof.position.y = 3.05; roof.castShadow = true; spin.add(roof); mk(sph(0.14), '#ffd166', 0, 3.6, 0, spin);
       ['#ffffff', '#ffd166', '#8ecae6', '#ffffff', '#f4acb7', '#b7e4c7'].forEach((c, i) => { const a = i * Math.PI / 3; mk(cyl(0.03, 0.03, 2.3, 6), '#e9c46a', Math.cos(a) * 1.2, 1.35, Math.sin(a) * 1.2, spin); const h = mk(cap(0.14, 0.3), c, Math.cos(a) * 1.2, 0.9 + (i % 2) * 0.25, Math.sin(a) * 1.2, spin); h.rotation.z = Math.PI / 2; h.rotation.y = -a; });
+      spin.userData.dyn = true; bake(spin);
       anim.push(t => { spin.rotation.y = t * 0.7; });
       mk(rb(1.4, 1.6, 1.2, 0.06), '#8ecae6', cx + 2.6, 0.8, BY - 1.0, g); mk(rb(1.7, 0.2, 1.5, 0.05), '#e63946', cx + 2.6, 1.7, BY - 1.0, g);
       [['#e63946', 0], ['#ffd166', 0.3], ['#5b8def', -0.25]].forEach(([c, dx]) => { mk(sph(0.2), c, cx - 3 + dx, 2.3 + Math.abs(dx), BY - 0.6, g); });
@@ -788,7 +964,88 @@ const fountain = new THREE.Group(); scene.add(fountain);
     const sp = emojiSprite('🏢', 1.6, true); sp.position.set(cx, 9.6, cz); g.add(sp);
     mk(cyl(0.55, 0.55, 0.03, 24), '#fff3b0', HQ.px, 0.015, PADY, g, { emissive: '#ffd60a', emissiveIntensity: 0.6 }).castShadow = false;
   }
+  // ---- 街景细节 ----
+  let sd = 11; const rnd = () => (sd = sd * 16807 % 2147483647) / 2147483647, rp = a => a[Math.floor(rnd() * a.length)];
+  { // 人行道地砖
+    const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d'); x.fillStyle = '#ddd8cc'; x.fillRect(0, 0, 64, 64); x.fillStyle = '#d2cdc0'; x.fillRect(0, 0, 32, 32); x.fillRect(32, 32, 32, 32);
+    x.strokeStyle = 'rgba(120,110,95,.35)'; x.lineWidth = 2; for (const [a, b] of [[0, 0], [32, 0], [0, 32], [32, 32]]) x.strokeRect(a, b, 32, 32);
+    const walk = (w, d, px, pz) => { const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(w / 1.3, d / 1.3); t.colorSpace = THREE.SRGBColorSpace;
+      const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), new THREE.MeshStandardMaterial({ map: t, roughness: 0.95 })); m.rotation.x = -Math.PI / 2; m.position.set(px, -0.0105, pz); m.receiveShadow = true; s.add(m); };
+    walk(112, 1.3, 3.5, 12.25); walk(112, 1.4, 3.5, 17.0); walk(0.9, 21, 20.75, 1.4);
+  }
+  for (const cx of [6.75, 13.3, -6.5, 26.7, 37, -18.7]) for (let i = 0; i < 6; i++) flat(0.34, 3.0, '#f4f4f4', cx + (i - 2.5) * 0.62, -0.0035, 14.6);   // 斑马线
+  // 远处的小镇：房屋和公寓楼在餐厅和店铺的北面，形成天际线
+  const PYR = G('pyr', () => new THREE.ConeGeometry(0.7071, 1, 4).rotateY(Math.PI / 4));
+  const house = (x, z, w, d, h, wc, rc) => {
+    mk(rb(w, h, d, 0.06), wc, x, h / 2, z, s);
+    const r = new THREE.Mesh(PYR, M(rc)); r.scale.set(w + 0.5, 1.3, d + 0.5); r.position.set(x, h + 0.65, z); r.castShadow = true; r.receiveShadow = true; s.add(r);
+    mk(box(0.55, 1.0, 0.08), '#8a5a35', x - w * 0.22, 0.5, z + d / 2 + 0.02, s);
+    mk(box(0.66, 0.66, 0.06), '#ffffff', x + w * 0.22, h * 0.58, z + d / 2 + 0.02, s); mk(box(0.52, 0.52, 0.07), '#a8dadc', x + w * 0.22, h * 0.58, z + d / 2 + 0.03, s);
+    mk(box(0.06, 0.66, 0.66), '#ffffff', x + w / 2 + 0.02, h * 0.58, z, s); mk(box(0.07, 0.52, 0.52), '#a8dadc', x + w / 2 + 0.03, h * 0.58, z, s);
+    mk(box(0.3, 0.7, 0.3), shade(rc, -0.1), x + w * 0.25, h + 0.85, z - d * 0.15, s);
+  };
+  const tower = (x, z, w, d, h, wc) => {
+    mk(rb(w, h, d, 0.06), wc, x, h / 2, z, s); mk(rb(w + 0.3, 0.25, d + 0.3, 0.05), shade(wc, -0.15), x, h + 0.12, z, s);
+    for (let f = 0; f < Math.floor((h - 0.6) / 1.3); f++) {
+      for (let k = 0; k < 3; k++) mk(box(0.6, 0.7, 0.06), (f * 3 + k) % 4 ? '#a8dadc' : '#ffe9a8', x + (k - 1) * w * 0.3, 1.0 + f * 1.3, z + d / 2 + 0.02, s);
+      for (let k = 0; k < 2; k++) mk(box(0.06, 0.7, 0.6), (f + k) % 3 ? '#a8dadc' : '#ffe9a8', x + w / 2 + 0.02, 1.0 + f * 1.3, z + (k - 0.5) * d * 0.45, s);
+    }
+  };
+  const WC = ['#f4f1de', '#ffe5d9', '#d8e2dc', '#fff1c1', '#e8f1f5', '#f6d6ad'], RC = ['#c8553d', '#577590', '#8a5a35', '#6d597a', '#40916c'];
+  for (let x = -38, i = 0; x < 47; i++) {
+    const w = 3 + rnd() * 1.6; if (x + w > 20 && x < 24.6) { x = 24.9; continue; }
+    if (i % 5 === 3) tower(x + w / 2, -7.2 - rnd() * 1.5, w, 3.2, 5.5 + rnd() * 3, rp(WC)); else house(x + w / 2, -6 - rnd() * 2.2, w, 3 + rnd(), 2.4 + rnd() * 0.9, rp(WC), rp(RC));
+    x += w + 0.8 + rnd() * 1.6;
+  }
+  for (let x = -36; x < 47; x += 5 + rnd() * 4) if (!(x > 19.4 && x < 25)) tree(x, -2.4 - rnd() * 1.2, 0.9 + rnd() * 0.3);
+  // 草地：深浅草斑、小花、灌木、石头
+  const CIRC = G('circ', () => new THREE.CircleGeometry(1, 14).rotateX(-Math.PI / 2)), FLW = new THREE.SphereGeometry(0.055, 6, 4), BUSH = new THREE.SphereGeometry(0.3, 9, 6);
+  const scatter = (root, x0, x1, z0, z1, n, ok) => { for (let i = 0; i < n; i++) {
+    const x = x0 + rnd() * (x1 - x0), z = z0 + rnd() * (z1 - z0), k = rnd(); if (!ok(x, z)) continue;
+    if (k < 0.3) { const m = new THREE.Mesh(CIRC, M(rp(['#86c06e', '#9ad284', '#7fbd68']), { roughness: 0.95 })), r = 0.7 + rnd() * 1.6; m.scale.set(r, 1, r * (0.6 + rnd() * 0.4)); m.position.set(x, -0.017 + i * 0.000004, z); m.receiveShadow = true; root.add(m); }
+    else if (k < 0.72) { const c = rp(['#ffffff', '#ffd166', '#ff8fab', '#b07cd8', '#ffb4a2']); for (let j = 0; j < 3; j++) mk(FLW, c, x + (rnd() - 0.5) * 0.36, 0.045, z + (rnd() - 0.5) * 0.36, root).castShadow = false; }
+    else if (k < 0.9) mk(BUSH, rp(['#52b788', '#40916c', '#74c69d']), x, 0.14, z, root).scale.set(0.8 + rnd() * 0.6, 0.6 + rnd() * 0.3, 0.8 + rnd() * 0.6);
+    else mk(BUSH, rp(['#adb5bd', '#ced4da', '#9aa5b1']), x, 0.05, z, root).scale.set(0.6 + rnd() * 0.5, 0.4, 0.5 + rnd() * 0.4);
+  } };
+  const blocked = (x, z) => (x > -1.2 && x < 21.2 && z > -1.2 && z < 13.2) || (z > 11.2 && z < 18.2) || (x > 20 && x < 24.6 && z < 12) || (x > 6 && x < 14 && z > 18.3 && z < 22.3) || (z < -3.6 && z > -11) ||
+    BIZ.some(b => x > b.x0 - 0.6 && x < b.x1 + 0.6 && z > b.y0 - 0.6 && z < 12) || (x > HQ.x0 - 0.6 && x < HQ.x1 + 0.6 && z > HQ.y0 - 0.6 && z < 12);
+  scatter(s, -42, 50, -3.4, 27, 430, (x, z) => !blocked(x, z));
+  const DS2 = new THREE.Group(); scene.add(DS2);   // 各家店周围的草地
+  scatter(DS2, -9, 31, 37, 144, 330, (x, z) => !(x > -1 && x < 23.2 && BIZ.some(b => z > b.oz - 1 && z < b.oz + VH + 1)));
+  for (let i = 0; i < 26; i++) { const x = rnd() < 0.5 ? -3 - rnd() * 5 : 25 + rnd() * 5, z = 40 + rnd() * 100, k = 0.9 + rnd() * 0.4;
+    mk(cyl(0.12 * k, 0.16 * k, 1.1 * k, 8), '#8a5a35', x, 0.55 * k, z, DS2); mk(sph(0.7), '#52b788', x, 1.5 * k, z, DS2).scale.setScalar(k); mk(sph(0.5), '#40916c', x + 0.35 * k, 1.95 * k, z - 0.1, DS2).scale.setScalar(k); }
+  bake(DS2);
+  // 街边小物：长椅、垃圾桶、花箱、站牌、消防栓、邮筒
+  for (const x of [-20, -4, 16, 31]) { mk(rb(1.3, 0.08, 0.42, 0.03), '#a86f42', x, 0.42, 17.35, s); mk(rb(1.3, 0.36, 0.07, 0.03), '#a86f42', x, 0.64, 17.56, s); for (const dx of [-0.5, 0.5]) mk(box(0.07, 0.42, 0.36), '#3b4a5a', x + dx, 0.21, 17.36, s);
+    mk(cyl(0.16, 0.13, 0.5, 10), '#52796f', x + 1.15, 0.25, 17.4, s); mk(cyl(0.17, 0.17, 0.04, 10), '#3b4a5a', x + 1.15, 0.52, 17.4, s); }
+  for (const x of [-30, -12, 22.5, 36]) { mk(cyl(0.3, 0.26, 0.4, 12), '#b08968', x, 0.2, 17.35, s); mk(BUSH, '#52b788', x, 0.5, 17.35, s).scale.set(1, 0.7, 1); for (let j = 0; j < 5; j++) mk(FLW, ['#ff8fab', '#ffd166', '#ffffff'][j % 3], x + Math.cos(j * 1.26) * 0.2, 0.68, 17.35 + Math.sin(j * 1.26) * 0.2, s).scale.setScalar(1.3); }
+  mk(cyl(0.04, 0.04, 2.2, 6), '#3b4a5a', 2.5, 1.1, 17.5, s); mk(box(0.5, 0.5, 0.05), '#3a86ff', 2.5, 2.05, 17.5, s); mk(box(0.34, 0.12, 0.06), '#ffffff', 2.5, 2.05, 17.52, s);
+  for (const x of [9, -15, 33]) { mk(cyl(0.1, 0.12, 0.42, 8), '#e5383b', x, 0.21, 16.62, s); mk(sph(0.11), '#e5383b', x, 0.45, 16.62, s); mk(cyl(0.05, 0.05, 0.3, 6), '#e5383b', x, 0.3, 16.62, s).rotation.z = Math.PI / 2; }
+  mk(rb(0.42, 0.75, 0.36, 0.06), '#3a86ff', 28, 0.55, 17.4, s); mk(cyl(0.05, 0.05, 0.2, 6), '#3b4a5a', 28, 0.1, 17.4, s); mk(box(0.3, 0.05, 0.02), '#ffffff', 28, 0.74, 17.59, s);
+  for (const b of BIZ) { b.lot.userData.dyn = b.g.userData.dyn = b.stack.userData.dyn = true; bake(b.lot); bake(b.g); }
+  HQ.lot.userData.dyn = HQ.g.userData.dyn = true; bake(HQ.lot); bake(HQ.g); bake(fountain); bake(DS); flatRoot = scene;
 })();
+// ---- 路上的车：两条车道来回开，前面有人会停下，也不会追尾 ----
+const carG = new THREE.Group(), cars = []; scene.add(carG);
+function carGeo(col, kind) { return G('car' + col + kind, () => { const t = new THREE.Group(), van = kind === 1;
+  mk(rb(2.0, 0.42, 0.96, 0.12), col, 0, 0.46, 0, t); mk(rb(van ? 1.5 : 1.05, van ? 0.52 : 0.36, 0.86, 0.1), '#a8dadc', van ? -0.2 : -0.12, van ? 0.92 : 0.83, 0, t); mk(rb(van ? 1.52 : 1.0, 0.07, 0.88, 0.03), col, van ? -0.2 : -0.12, van ? 1.2 : 1.03, 0, t);
+  for (const x of [-0.62, 0.62]) for (const z of [-0.45, 0.45]) mk(cyl(0.2, 0.2, 0.15, 12), '#22272b', x, 0.2, z, t).rotation.x = Math.PI / 2;
+  for (const z of [-0.3, 0.3]) { mk(sph(0.065), '#fff3b0', 1.0, 0.48, z, t); mk(sph(0.06), '#e5383b', -1.0, 0.48, z, t); }
+  if (kind === 2) mk(box(0.34, 0.14, 0.2), '#22272b', -0.12, 1.14, 0, t);
+  return mergeAll(t); }); }
+function carSpawn(c) { const kind = Math.random() < 0.2 ? 1 : Math.random() < 0.2 ? 2 : 0; c.m.geometry = carGeo(kind === 2 ? '#ffd166' : pick(['#e63946', '#3a86ff', '#f1faee', '#52b788', '#b07cd8', '#ff9f1c', '#577590']), kind); c.v = 3.4 + Math.random() * 1.6; }
+for (let i = 0; i < 5; i++) { const dir = i < 3 ? 1 : -1, c = { m: new THREE.Mesh(carGeo('#e63946', 0), VM.g), dir, z: dir > 0 ? 13.75 : 15.45, x: -44 + i * 21 + Math.random() * 8, v: 4, cv: null };
+  c.m.castShadow = true; c.m.receiveShadow = true; c.m.rotation.y = dir > 0 ? 0 : Math.PI; carSpawn(c); c.m.position.set(c.x, 0, c.z); carG.add(c.m); cars.push(c); }
+function updCars(dt) {
+  for (const c of cars) {
+    let v = c.v;
+    for (const o of cars) if (o !== c && o.dir === c.dir) { const gap = (o.x - c.x) * c.dir; if (gap > 0 && gap < 3.6) v = Math.min(v, (o.cv || 0) * 0.9); }
+    for (const q of [player, mate]) if (q === player || mateOn()) { const gap = (q.x - c.x) * c.dir; if (Math.abs(q.y - c.z) < 0.95 && gap > 0.5 && gap < 3.2) v = 0; }
+    c.cv = c.cv == null ? v : c.cv + (v - c.cv) * Math.min(1, dt * 4); c.x += c.cv * c.dir * dt;
+    if (c.x * c.dir > 56) { c.x = -52 * c.dir; carSpawn(c); }
+    c.m.position.set(c.x, 0, c.z);
+  }
+}
 function syncDistrict() {
   for (const b of BIZ) { const o = S.biz[b.k].lv > 0 || b.k === 'market'; b.g.visible = o; b.lot.visible = !o; }
   HQ.g.visible = !!S.hq; HQ.lot.visible = !S.hq;
@@ -887,7 +1144,8 @@ function addStation(i) {
   mk(rb(0.86, 0.86, 0.08, 0.04), it.drink ? '#7b5ea7' : '#8f5a35', x, 2.15, 0.05, g); mk(rb(0.72, 0.72, 0.09, 0.03), '#fffaf0', x, 2.15, 0.06, g);
   const sp = emojiSprite(it.e, 0.56, true); sp.position.set(x, 2.15, 0.2); g.add(sp);
   if (it.drink) { mk(rb(0.6, 0.55, 0.26, 0.05), '#e85d75', x, 1.08, 0.58, g, { roughness: 0.35 }); mk(cyl(0.03, 0.03, 0.1, 8), '#dfe7ec', x, 0.95, 0.74, g, { metalness: 0.7, roughness: 0.25 }); }
-  const look = Object.assign(randLook(), it.drink ? { shirt: '#f4f1de', pants: '#4a5759', apron: true, apronC: '#7b5ea7', visor: true, style: 'short' } : { shirt: '#ffffff', pants: '#4a5759', chef: true, style: 'short' });
+  bake(g);
+  const look = staffLook(it.drink ? { shirt: '#f4f1de', pants: '#4a5759', apron: true, apronC: '#7b5ea7', visor: true, style: 'short' } : { shirt: '#ffffff', pants: '#4a5759', chef: true, style: 'short' });
   const chef = { x, y: 0.24, dir: 0, face: 0, stack: [], look, order: null, t: 0 }; chef.mesh = makePerson(look); dyn.add(chef.mesh);
   ST.push({ i, item: it, x, slots: [null, null], cur: null, t: 0, total: 1, chef, starved: false });
 }
@@ -925,15 +1183,16 @@ function addTable(i, pop) {
     }
     t.seats.push({ x: x + dx, y, side: dx, table: t, state: 'free', claimed: null, plate: null });
   }
+  t.stacks.forEach(sg => { sg.userData.dyn = true; bake(sg); }); bake(g);
   tables.push(t);
 }
 function syncStaff() {
   while (workers.length < 2 + S.up.waiter) {   // 开局自带一名服务员
     const w = workers.length ? { x: 8 + workers.length * 0.6, y: 2.4, dir: 0, face: 0, stack: [], task: null, moving: false,
-      look: Object.assign(randLook(), { shirt: '#2f4858', pants: '#1d2d35', apron: true }) } : player;
+      look: staffLook({ shirt: '#2f4858', pants: '#1d2d35', apron: true }) } : player;
     w.mesh = makePerson(w.look); dyn.add(w.mesh); workers.push(w);
   }
-  while (bussers.length < S.up.busser) { const w = { x: 17.5 - bussers.length * 0.7, y: 2.4, dir: 0, face: 0, stack: [], moving: false, seat: null, toSink: 0, look: Object.assign(randLook(), { shirt: '#40916c', pants: '#1d2d35', apron: true, apronC: '#b7e4c7' }) }; w.mesh = makePerson(w.look); dyn.add(w.mesh); bussers.push(w); }
+  while (bussers.length < S.up.busser) { const w = { x: 17.5 - bussers.length * 0.7, y: 2.4, dir: 0, face: 0, stack: [], moving: false, seat: null, toSink: 0, look: staffLook({ shirt: '#40916c', pants: '#1d2d35', apron: true, apronC: '#b7e4c7', hat: 'cap', hatC: '#40916c' }) }; w.mesh = makePerson(w.look); dyn.add(w.mesh); bussers.push(w); }
   standG.visible = S.up.takeout > 0; standHedge.visible = !standG.visible;
 }
 function syncPeds() {
@@ -1267,7 +1526,7 @@ function makeMouse() {
   mk(sph(0.16), '#8d99ae', 0, 0.13, 0, g).scale.set(1, 0.8, 1.5); mk(sph(0.11), '#8d99ae', 0, 0.16, 0.22, g);
   for (const s of [-1, 1]) { mk(sph(0.065), '#f4acb7', s * 0.09, 0.27, 0.2, g).scale.z = 0.4; mk(sph(0.02), '#111111', s * 0.05, 0.19, 0.31, g); }
   mk(sph(0.025), '#f4acb7', 0, 0.14, 0.33, g); mk(cyl(0.015, 0.008, 0.34, 6), '#f4acb7', 0, 0.12, -0.36, g).rotation.x = 1.3;
-  return g;
+  return bake(g);
 }
 // ---- 产业店内经营：超市 / 奶茶店 / 酒店 / 游乐场 共用一套引擎 ----
 const VTHEME = { market: ['#f4f1de', '#e9c46a', '#f4a261'], teashop: ['#ffe5ec', '#ffb3c6', '#ff8fab'], hotel: ['#e9ecef', '#4a6fa5', '#577bb5'], park: ['#d8f3dc', '#74c69d', '#95d5b2'] };
@@ -1297,12 +1556,71 @@ function stationModel(b, i, g) {   // 每种产业的"货架"长得不一样
   const sp = emojiSprite(b.items[i][1], 0.62, true); sp.position.y = b.k === 'park' ? 2.9 : 2.25; g.add(sp);
   return tiers;
 }
+// ---- 各家店的地面和内饰 ----
+function venueFloor(b, g) {
+  const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d'); let sd = 5 + b.idx; const rnd = () => (sd = sd * 16807 % 2147483647) / 2147483647;
+  if (b.k === 'market') { x.fillStyle = '#f7f4ea'; x.fillRect(0, 0, 128, 128); x.fillStyle = '#e8e4d6'; x.fillRect(0, 0, 64, 64); x.fillRect(64, 64, 64, 64); x.strokeStyle = 'rgba(120,120,110,.3)'; x.lineWidth = 2; for (const [a, d] of [[0, 0], [64, 0], [0, 64], [64, 64]]) x.strokeRect(a, d, 64, 64); }
+  else if (b.k === 'teashop') { for (let r = 0; r < 4; r++) { let px = -rnd() * 60; while (px < 128) { const w = 50 + rnd() * 50, v = 222 + Math.floor(rnd() * 22); x.fillStyle = 'rgb(' + v + ',' + (v - 28) + ',' + (v - 62) + ')'; x.fillRect(px, r * 32, w + 1, 32); x.fillStyle = 'rgba(120,70,40,.25)'; x.fillRect(px, r * 32, 1.5, 32); px += w; } x.fillStyle = 'rgba(120,70,40,.28)'; x.fillRect(0, r * 32, 128, 1.5); } }
+  else if (b.k === 'hotel') { x.fillStyle = '#2f3e63'; x.fillRect(0, 0, 128, 128); x.strokeStyle = 'rgba(233,196,106,.5)'; x.lineWidth = 3; x.beginPath(); for (const o of [-128, 0, 128]) { x.moveTo(o, 0); x.lineTo(o + 128, 128); x.moveTo(o + 128, 0); x.lineTo(o, 128); } x.stroke(); x.fillStyle = '#e9c46a'; for (const [a, d] of [[64, 64], [0, 0], [128, 0], [0, 128], [128, 128]]) { x.beginPath(); x.arc(a, d, 6, 0, 7); x.fill(); } }
+  else { x.fillStyle = '#a7d98c'; x.fillRect(0, 0, 128, 128); for (let i = 0; i < 90; i++) { x.fillStyle = rnd() < 0.5 ? 'rgba(120,190,100,.7)' : 'rgba(190,230,160,.7)'; x.fillRect(rnd() * 128, rnd() * 128, 3, 7); } }
+  const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(VW / 2, VH / 2); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(VW, VH), new THREE.MeshStandardMaterial({ map: t, roughness: b.k === 'market' ? 0.45 : 0.85 })); m.rotation.x = -Math.PI / 2; m.position.set(b.ox + VW / 2, 0.006, b.oz + VH / 2); m.receiveShadow = true; g.add(m);
+}
+function venueDecor(b, g) {
+  const X = b.ox, Z = b.oz, pot = (x, z, k = 1) => { mk(cyl(0.24 * k, 0.19 * k, 0.4 * k, 12), '#e07a5f', X + x, 0.2 * k, Z + z, g); mk(sph(0.3), '#52b788', X + x, 0.7 * k, Z + z, g).scale.setScalar(k); mk(sph(0.2), '#40916c', X + x + 0.15 * k, 0.93 * k, Z + z - 0.05, g).scale.setScalar(k); };
+  if (b.k === 'market') {
+    for (let i = 0; i < 3; i++) { const cx = X + 19.2 + i * 0.75, cz = Z + 3.2;   // 购物车
+      mk(rb(0.5, 0.3, 0.7, 0.04), '#ced4da', cx, 0.58, cz, g, { metalness: 0.5, roughness: 0.35 }); mk(box(0.44, 0.04, 0.05), '#e63946', cx, 0.86, cz + 0.42, g); for (const a of [-0.2, 0.2]) { mk(cyl(0.02, 0.02, 0.45, 5), '#adb5bd', cx + a, 0.66, cz + 0.4, g).rotation.x = 0.5; for (const d of [-0.28, 0.28]) mk(sph(0.06), '#343a40', cx + a, 0.06, cz + d, g); }
+      mk(box(0.42, 0.04, 0.6), '#adb5bd', cx, 0.4, cz, g); for (const a of [-0.2, 0.2]) mk(cyl(0.02, 0.02, 0.36, 5), '#adb5bd', cx + a, 0.22, cz - 0.2, g); }
+    mk(cyl(0.04, 0.04, 1.5, 6), '#adb5bd', X + 20.9, 0.75, Z + 4.4, g); mk(rb(0.9, 0.5, 0.06, 0.03), '#e63946', X + 20.9, 1.6, Z + 4.4, g); mk(rb(0.7, 0.3, 0.07, 0.02), '#ffffff', X + 20.9, 1.6, Z + 4.41, g);
+    mk(rb(0.7, 1.9, 1.0, 0.06), '#577590', X + 0.5, 0.95, Z + 5.4, g); mk(box(0.06, 1.6, 0.8), '#a8dadc', X + 0.86, 1.0, Z + 5.4, g, { roughness: 0.2 });   // 饮料柜
+    for (let r = 0; r < 3; r++) for (let k = 0; k < 4; k++) mk(cyl(0.05, 0.05, 0.22, 6), ['#e63946', '#ffd166', '#52b788', '#3a86ff'][(r + k) % 4], X + 0.9, 0.5 + r * 0.5, Z + 5.1 + k * 0.2, g);
+    for (const [dx, dy, dz] of [[0, 0, 0], [0, 0, 0.75], [0, 0.42, 0.35]]) mk(rb(0.6, 0.4, 0.66, 0.03), '#a86f42', X + 0.55 + dx, 0.2 + dy, Z + 8.9 + dz, g);
+    ['#e63946', '#ffd166', '#52b788', '#3a86ff', '#f4a261'].forEach((c, i) => { mk(rb(1.7, 0.9, 0.06, 0.03), c, X + 2.6 + i * 4.2, 2.15, Z + 0.03, g); mk(rb(1.4, 0.5, 0.07, 0.02), '#fffaf0', X + 2.6 + i * 4.2, 2.2, Z + 0.035, g); mk(rb(1.0, 0.12, 0.08, 0.02), c, X + 2.6 + i * 4.2, 1.87, Z + 0.035, g); });
+    pot(0.6, 12.0); pot(21.3, 6.2, 0.9);
+  } else if (b.k === 'teashop') {
+    for (const [tx, tz] of [[19.2, 3.0], [20.7, 4.9]]) { mk(cyl(0.48, 0.48, 0.06, 18), '#fffaf0', X + tx, 0.72, Z + tz, g); mk(cyl(0.05, 0.05, 0.7, 8), '#8a5a35', X + tx, 0.36, Z + tz, g); mk(cyl(0.26, 0.3, 0.04, 14), '#8a5a35', X + tx, 0.02, Z + tz, g);
+      mk(cyl(0.06, 0.05, 0.16, 8), '#d6a574', X + tx + 0.1, 0.83, Z + tz, g); for (const a of [0.6, 3.7]) { mk(cyl(0.2, 0.17, 0.08, 12), '#e85d75', X + tx + Math.cos(a) * 0.78, 0.46, Z + tz + Math.sin(a) * 0.78, g); mk(cyl(0.035, 0.035, 0.44, 6), '#8a5a35', X + tx + Math.cos(a) * 0.78, 0.22, Z + tz + Math.sin(a) * 0.78, g); } }
+    mk(rb(0.55, 0.44, 3.2, 0.06), '#b56576', X + 0.55, 0.22, Z + 6.5, g); mk(rb(0.16, 0.9, 3.2, 0.06), '#9c4f61', X + 0.28, 0.6, Z + 6.5, g); for (const d of [-1, 0, 1]) mk(rb(0.42, 0.1, 0.8, 0.04), '#ffd6de', X + 0.6, 0.48, Z + 6.5 + d * 1.0, g);
+    pot(0.6, 4.3); pot(0.6, 8.7); pot(21.2, 2.5, 0.9); pot(0.6, 12.4);
+    for (let i = 0; i < 3; i++) { const bx = X + 5 + i * 6; mk(rb(2.8, 1.0, 0.06, 0.03), '#3b2a1a', bx, 2.15, Z + 0.03, g); for (let r = 0; r < 3; r++) { mk(box(1.3, 0.07, 0.02), '#fff3d6', bx - 0.5, 2.4 - r * 0.24, Z + 0.07, g); mk(box(0.4, 0.07, 0.02), ['#ffb3c6', '#ffd166', '#b7e4c7'][r], bx + 0.95, 2.4 - r * 0.24, Z + 0.07, g); } }
+    for (let i = 0; i < 4; i++) { mk(cyl(0.012, 0.012, 0.5, 4), '#3b2a1a', X + 4 + i * 4.6, 2.62, Z + 1.6, g); mk(cyl(0.16, 0.08, 0.2, 10), '#ffd6de', X + 4 + i * 4.6, 2.3, Z + 1.6, g); }   // 吊灯
+  } else if (b.k === 'hotel') {
+    mk(rb(2.0, 0.42, 0.85, 0.1), '#6d597a', X + 19.9, 0.26, Z + 3.0, g); mk(rb(2.0, 0.8, 0.24, 0.1), '#5a4866', X + 19.9, 0.5, Z + 2.52, g); for (const a of [-1, 1]) mk(rb(0.22, 0.6, 0.85, 0.08), '#5a4866', X + 19.9 + a * 1.0, 0.36, Z + 3.0, g);   // 沙发
+    for (const a of [-0.5, 0.5]) mk(rb(0.7, 0.14, 0.6, 0.06), '#e9c46a', X + 19.9 + a, 0.52, Z + 3.05, g);
+    mk(rb(0.85, 0.42, 0.85, 0.1), '#6d597a', X + 18.7, 0.26, Z + 4.9, g); mk(rb(0.22, 0.8, 0.85, 0.1), '#5a4866', X + 18.36, 0.5, Z + 4.9, g);
+    mk(rb(1.0, 0.08, 0.6, 0.03), '#8a5a35', X + 20.1, 0.4, Z + 4.4, g); for (const a of [-0.4, 0.4]) for (const d of [-0.22, 0.22]) mk(cyl(0.03, 0.03, 0.38, 5), '#3b2a1a', X + 20.1 + a, 0.19, Z + 4.4 + d, g); mk(cyl(0.06, 0.08, 0.2, 8), '#8ecae6', X + 20.1, 0.54, Z + 4.4, g); mk(sph(0.1), '#ff8fab', X + 20.1, 0.7, Z + 4.4, g);
+    mk(cyl(0.03, 0.03, 1.5, 6), '#e9c46a', X + 21.3, 0.75, Z + 2.5, g, { metalness: 0.6, roughness: 0.3 }); mk(cyl(0.14, 0.26, 0.3, 12), '#fff3d6', X + 21.3, 1.6, Z + 2.5, g); mk(cyl(0.18, 0.2, 0.04, 10), '#e9c46a', X + 21.3, 0.02, Z + 2.5, g, { metalness: 0.6, roughness: 0.3 });
+    mk(rb(1.6, 0.9, 2.6, 0.04), '#c1121f', X + 19.9, 0.011, Z + 3.9, g).scale.y = 0.02;   // 地毯
+    { const cx = X + 0.85, cz = Z + 6.2; mk(rb(0.8, 0.07, 1.3, 0.03), '#e9c46a', cx, 0.22, cz, g, { metalness: 0.6, roughness: 0.3 }); for (const d of [-0.6, 0.6]) { mk(cyl(0.03, 0.03, 1.5, 6), '#e9c46a', cx, 0.97, cz + d, g, { metalness: 0.6, roughness: 0.3 }); for (const a of [-0.3, 0.3]) mk(sph(0.07), '#343a40', cx + a, 0.07, cz + d, g); }
+      mk(cyl(0.03, 0.03, 1.2, 6), '#e9c46a', cx, 1.72, cz, g, { metalness: 0.6, roughness: 0.3 }).rotation.x = Math.PI / 2;   // 行李车
+      mk(rb(0.6, 0.42, 0.5, 0.06), '#8a5a35', cx, 0.47, cz - 0.3, g); mk(rb(0.55, 0.36, 0.44, 0.06), '#3a86ff', cx, 0.44, cz + 0.3, g); mk(rb(0.5, 0.26, 0.4, 0.06), '#e63946', cx, 0.79, cz - 0.28, g); }
+    pot(0.6, 3.4, 1.15); pot(0.6, 9.6, 1.15); pot(21.3, 5.9);
+    mk(rb(5.2, 0.34, 0.07, 0.04), '#e9c46a', X + 11, 2.5, Z + 0.035, g, { metalness: 0.5, roughness: 0.3 });
+    for (let i = 0; i < 3; i++) { const cx = X + 8 + i * 3; mk(cyl(0.34, 0.34, 0.06, 20), '#3b2a1a', cx, 1.95, Z + 0.04, g).rotation.x = Math.PI / 2; mk(cyl(0.29, 0.29, 0.07, 20), '#fffaf0', cx, 1.95, Z + 0.045, g).rotation.x = Math.PI / 2; mk(box(0.03, 0.2, 0.02), '#333333', cx, 2.03, Z + 0.09, g); mk(box(0.15, 0.03, 0.02), '#333333', cx + (i - 1) * 0.05 + 0.05, 1.95, Z + 0.09, g); }
+  } else {
+    for (const pz of [2.7, 6.55, 10.4, 13.6]) flat(VW - 0.8, 1.5, '#f0dfb4', X + VW / 2, 0.0085, Z + pz, g); flat(1.5, 12.4, '#f0dfb4', X + 19.7, 0.0085, Z + 7.9, g); flat(1.3, 12.4, '#f0dfb4', X + 1.0, 0.0085, Z + 7.9, g);   // 沙土小路
+    for (let x = 0; x <= VW + 0.01; x += 1.1) { mk(box(0.1, 0.9, 0.1), '#ffffff', X + x, 0.45, Z - 0.05, g); mk(cone(0.08, 0.14), '#ffffff', X + x, 0.97, Z - 0.05, g); }
+    for (let z = 1.05; z <= VH + 0.01; z += 1.1) { mk(box(0.1, 0.9, 0.1), '#ffffff', X - 0.05, 0.45, Z + z, g); mk(cone(0.08, 0.14), '#ffffff', X - 0.05, 0.97, Z + z, g); }
+    for (const y of [0.3, 0.68]) { mk(box(VW + 0.1, 0.07, 0.05), '#ffffff', X + VW / 2, y, Z - 0.05, g); mk(box(0.05, 0.07, VH + 0.1), '#ffffff', X - 0.05, y, Z + VH / 2, g); }
+    for (let i = 0; i <= 4; i++) mk(cyl(0.05, 0.05, 2.3, 6), '#ffd166', X + i * 5.5, 1.15, Z - 0.05, g);   // 彩旗
+    for (let i = 0; i < 44; i++) { const fx = X + 0.25 + i * 0.5, sag = Math.sin((i % 11) / 11 * Math.PI) * 0.28; mk(box(0.24, 0.3, 0.02), ['#e63946', '#ffd166', '#52b788', '#3a86ff', '#b07cd8'][i % 5], fx, 2.12 - sag, Z - 0.03, g).rotation.z = 0.78; }
+    for (const tx of [2.5, 8, 13.5, 19]) { mk(cyl(0.14, 0.18, 1.3, 8), '#8a5a35', X + tx, 0.65, Z - 1.5, g); mk(sph(0.8), '#52b788', X + tx, 1.8, Z - 1.5, g); mk(sph(0.55), '#74c69d', X + tx + 0.4, 2.3, Z - 1.6, g); }
+    mk(cyl(1.0, 1.1, 0.36, 20), '#cfd8dc', X + 19.9, 0.18, Z + 4.2, g); mk(cyl(0.86, 0.86, 0.05, 20), '#5fb3d9', X + 19.9, 0.36, Z + 4.2, g, { roughness: 0.15 }); mk(cyl(0.1, 0.14, 0.8, 8), '#cfd8dc', X + 19.9, 0.7, Z + 4.2, g); mk(sph(0.2), '#8ecae6', X + 19.9, 1.2, Z + 4.2, g, { roughness: 0.15 });
+    for (const fz of [3.6, 7.5, 11.4]) { mk(rb(0.7, 0.2, 1.9, 0.05), '#8a5a35', X + 0.75, 0.1, Z + fz + 0.9, g); for (let k = 0; k < 4; k++) { mk(sph(0.2), '#52b788', X + 0.75, 0.3, Z + fz + 0.2 + k * 0.45, g).scale.y = 0.7; mk(sph(0.08), ['#ff8fab', '#ffd166', '#ffffff', '#e63946'][k], X + 0.78, 0.47, Z + fz + 0.2 + k * 0.45, g); } }
+    mk(cyl(0.03, 0.03, 1.5, 5), '#adb5bd', X + 20.8, 0.75, Z + 11.4, g); [['#e63946', 0, 0], ['#ffd166', 0.2, 0.18], ['#3a86ff', -0.2, 0.12], ['#52b788', 0.05, 0.4]].forEach(([c, dx, dy]) => mk(sph(0.2), c, X + 20.8 + dx, 1.65 + dy, Z + 11.4, g));
+    for (const bx of [4, 14]) { mk(rb(1.3, 0.08, 0.42, 0.03), '#a86f42', X + bx, 0.42, Z + 14.35, g); mk(rb(1.3, 0.36, 0.07, 0.03), '#a86f42', X + bx, 0.64, Z + 14.56, g); for (const a of [-0.5, 0.5]) mk(box(0.07, 0.42, 0.36), '#3b4a5a', X + bx + a, 0.21, Z + 14.36, g); }
+  }
+}
 function buildVenue(b) {
   const g = b.vg = new THREE.Group(); b.dg = new THREE.Group(); const ox = b.ox, oz = b.oz, th = VTHEME[b.k];
   mk(rb(VW + 0.4, 0.3, VH + 0.4, 0.04), '#b9b3a5', ox + VW / 2 - 0.1, -0.15, oz + VH / 2 - 0.1, g).castShadow = false;
-  flat(VW, VH, th[0], ox + VW / 2, 0.006, oz + VH / 2, g); flat(VW - 0.6, 1.5, '#d9d4c7', ox + VW / 2, 0.009, oz + 1.0, g);
-  mk(rb(0.25, 2.9, VH + 0.3, 0.03), th[1], ox - 0.125, 1.45, oz + VH / 2 - 0.15, g); mk(rb(VW + 0.05, 2.9, 0.25, 0.03), th[2], ox + VW / 2, 1.45, oz - 0.125, g);
-  mk(rb(0.34, 0.12, VH + 0.36, 0.03), '#fbf3e1', ox - 0.11, 2.92, oz + VH / 2 - 0.15, g); mk(rb(VW + 0.1, 0.12, 0.34, 0.03), '#fbf3e1', ox + VW / 2, 2.92, oz - 0.11, g);
+  venueFloor(b, g); if (b.k !== 'park') flat(VW - 0.6, 1.5, '#d9d4c7', ox + VW / 2, 0.009, oz + 1.0, g);
+  if (b.k !== 'park') {   // 游乐场是露天的：用栅栏代替墙
+    mk(rb(0.25, 2.9, VH + 0.3, 0.03), th[1], ox - 0.125, 1.45, oz + VH / 2 - 0.15, g); mk(rb(VW + 0.05, 2.9, 0.25, 0.03), th[2], ox + VW / 2, 1.45, oz - 0.125, g);
+    mk(rb(0.3, 0.5, VH + 0.32, 0.03), shade(th[1], -0.14), ox - 0.11, 0.25, oz + VH / 2 - 0.15, g); mk(rb(VW + 0.07, 0.5, 0.3, 0.03), shade(th[2], -0.14), ox + VW / 2, 0.25, oz - 0.11, g);
+    mk(rb(0.34, 0.12, VH + 0.36, 0.03), '#fbf3e1', ox - 0.11, 2.92, oz + VH / 2 - 0.15, g); mk(rb(VW + 0.1, 0.12, 0.34, 0.03), '#fbf3e1', ox + VW / 2, 2.92, oz - 0.11, g);
+  }
   hedge(ox + VW / 2, oz + VH + 0.14, VW + 0.5, 0.28, g); hedge(ox + VW + 0.14, oz + 6.2, 0.28, 12.6, g);
   flat(1.3, 1.7, '#c8553d', ox + VW - 0.7, 0.012, oz + 13.6, g);
   mk(cyl(0.55, 0.55, 0.03, 24), '#fff3b0', ox + VW - 1.0, 0.016, oz + 14.45, g, { emissive: '#ffd60a', emissiveIntensity: 0.6 }).castShadow = false;
@@ -1316,18 +1634,28 @@ function buildVenue(b) {
   b.stG = b.items.map((it, i) => { const q = new THREE.Group(), [sx, sy] = stPos(b, i); q.position.set(sx, 0, sy); g.add(q); q.userData.tiers = stationModel(b, i, q); return q; });
   b.lockG = b.items.map((it, i) => { const [sx, sy] = stPos(b, i), m = mk(rb(2.7, 0.03, 1.0, 0.012), '#8d99a6', sx, 0.02, sy, g, { transparent: true, opacity: 0.35 }); m.castShadow = false; return m; });
   b.stack.children.forEach((m, k) => { if (k) m.visible = false; });
+  venueDecor(b, g);
+  b.regG.forEach(q => { q.userData.dyn = true; bake(q); }); b.palG.forEach(q => { q.userData.dyn = true; bake(q); });
+  b.stG.forEach(q => { q.userData.dyn = true; q.userData.tiers.forEach(tg => { tg.userData.dyn = true; bake(tg); }); bake(q); });
+  bake(g);
 }
 BIZ.forEach(buildVenue);
+const VSTAFF = {   // 每家店两类员工的制服：[补货的, 结账的]
+  market:  [{ outfit: 'vest', shirt: '#f4f1de', shirt2: '#2a9d8f', hat: 'cap', hatC: '#2a9d8f' }, { apron: true, apronC: '#e63946', shirt: '#ffffff' }],
+  teashop: [{ apron: true, apronC: '#b56576', shirt: '#fff1e6', visor: true }, { apron: true, apronC: '#7b5ea7', shirt: '#fff1e6', visor: true }],
+  hotel:   [{ apron: true, apronC: '#ffffff', shirt: '#577590', style: 'bun' }, { outfit: 'suit', shirt: '#1d3557', pants: '#1d3557' }],
+  park:    [{ outfit: 'vest', shirt: '#577590', shirt2: '#f4a261', hat: 'cap', hatC: '#f4a261' }, { outfit: 'stripe', shirt: '#ffffff', shirt2: '#e63946', hat: 'cap', hatC: '#e63946' }],
+};
 function vSync(b) {   // 按存档刷新店内：已解锁的货架、收银台、员工
   const s = S.biz[b.k], own = s.lv > 0;
   b.stG.forEach((q, i) => q.visible = own && s.st[i] > 0); b.palG.forEach((q, i) => q.visible = own && s.st[i] > 0); b.lockG.forEach((q, i) => q.visible = !(own && s.st[i] > 0));
   const nReg = Math.max(1, s.ck); b.regG.forEach((q, r) => q.visible = r < nReg);
   if (!own) { b.rt = null; b.obs = []; return; }
   const r = b.rt || (b.rt = { st: b.items.map((it, i) => ({ stock: Math.max(4, Math.ceil(stCap(b, i) / 2)), occ: [], claim: null })), reg: [0, 1, 2].map(() => ({ q: [], p: 0, busy: false })), cust: [], stk: [], csh: [], spawnT: 2, rev: 0, open: false });
-  const staff = (arr, n, x, y, look) => { while (arr.length < n) { const k = arr.length, w = { x: x(k), y: y(k), dir: Math.PI, face: Math.PI, stack: [], moving: false, task: null, look: Object.assign(randLook(), look) }; w.mesh = makePerson(w.look); b.dg.add(w.mesh); arr.push(w); } };
-  const uni = { market: ['#2a9d8f', '#e63946'], teashop: ['#b56576', '#7b5ea7'], hotel: ['#f1faee', '#1d3557'], park: ['#f4a261', '#3a86ff'] }[b.k];
-  staff(r.stk, s.sk, k => b.ox + 3 + k * 1.2, () => b.oz + 2.4, { shirt: uni[0], pants: '#22333b', apron: true, apronC: '#ffd166' });
-  staff(r.csh, s.ck, k => regPos(b, k)[0], k => regPos(b, k)[1] + 0.85, { shirt: uni[1], pants: '#22333b', apron: b.k !== 'hotel', vip: false });
+  const staff = (arr, n, x, y, look) => { while (arr.length < n) { const k = arr.length, w = { x: x(k), y: y(k), dir: Math.PI, face: Math.PI, stack: [], moving: false, task: null, look: staffLook(look) }; w.mesh = makePerson(w.look); b.dg.add(w.mesh); arr.push(w); } };
+  const vs = VSTAFF[b.k];
+  staff(r.stk, s.sk, k => b.ox + 3 + k * 1.2, () => b.oz + 2.4, vs[0]);
+  staff(r.csh, s.ck, k => regPos(b, k)[0], k => regPos(b, k)[1] + 0.85, vs[1]);
   const R = 0.3, o = []; s.st.forEach((l, i) => { if (l > 0) { const [sx, sy] = stPos(b, i); o.push({ x: sx, y: sy - 0.05, hx: 1.35 + R, hy: 0.45 + R }); } });
   for (let k = 0; k < nReg; k++) { const [rx, ry] = regPos(b, k); o.push({ x: rx, y: ry, hx: 0.78 + R, hy: 0.36 + R }); }
   b.obs = o;
@@ -1490,15 +1818,19 @@ function syncPerson(p, dt, sit) {
   const g = p.mesh, u = g.userData;
   let d = p.dir - p.face; d = Math.atan2(Math.sin(d), Math.cos(d)); p.face += d * Math.min(1, dt * 12);
   g.rotation.y = p.face;
-  const ph = time * 11 + (p.seed || (p.seed = Math.random() * 9));
-  const sw = p.moving ? Math.sin(ph) : 0, carry = p.stack.length > 0;
-  g.position.set(p.x, (sit ? 0.07 : 0) + (p.moving ? Math.abs(Math.cos(ph)) * 0.05 : 0), p.y);
-  u.legs[0].rotation.x = sit ? -1.5 : sw * 0.75; u.legs[1].rotation.x = sit ? -1.5 : -sw * 0.75;
+  const seed = p.seed || (p.seed = Math.random() * 9), ph = time * 11 + seed;
+  const w = p.wk = (p.wk || 0) + ((p.moving && !sit ? 1 : 0) - (p.wk || 0)) * Math.min(1, dt * 10);   // 起步和停下时动作幅度平滑过渡
+  const sw = Math.sin(ph) * w, carry = p.stack.length > 0;
+  g.position.set(p.x, (sit ? 0.44 - 0.37 * u.size : 0) + Math.abs(Math.cos(ph)) * 0.05 * w, p.y);
+  u.legs[0].rotation.x = sit ? -1.5 : sw * 0.8; u.legs[1].rotation.x = sit ? -1.5 : -sw * 0.8;
   const cooking = p.order && p.t > 0 && !p.state, eating = p.state === 'eat';
-  u.arms[0].rotation.x = carry ? -1.25 : cooking ? -1.0 + Math.sin(time * 14) * 0.35 : eating ? -1.1 + Math.sin(time * 7) * 0.35 : sit ? -0.5 : -sw * 0.7;
-  u.arms[1].rotation.x = carry ? -1.25 : cooking ? -1.0 - Math.sin(time * 14) * 0.35 : sit ? -0.5 : sw * 0.7;
-  u.head.rotation.z = !p.moving && !sit ? Math.sin(time * 2 + ph) * 0.04 : 0;
-  u.head.rotation.x = eating ? 0.12 + Math.sin(time * 7) * 0.08 : 0;
+  u.arms[0].rotation.x = carry ? -1.25 : cooking ? -1.0 + Math.sin(time * 14) * 0.35 : eating ? -1.1 + Math.sin(time * 7) * 0.35 : sit ? -0.5 : -sw * 0.75;
+  u.arms[1].rotation.x = carry ? -1.25 : cooking ? -1.0 - Math.sin(time * 14) * 0.35 : sit ? -0.5 : sw * 0.75;
+  u.body.rotation.x = eating ? 0.1 : 0.08 * w; u.body.rotation.z = Math.cos(ph) * 0.03 * w;   // 走路时身体前倾、轻轻左右晃
+  u.head.rotation.z = (1 - w) * Math.sin(time * 2 + seed) * 0.04;
+  u.head.rotation.y = cooking || eating ? 0 : (1 - w) * Math.sin(time * 0.6 + seed * 3) * 0.28;   // 闲下来会左右看看
+  u.head.rotation.x = eating ? 0.12 + Math.sin(time * 7) * 0.08 : cooking ? 0.15 : 0;
+  u.blob.visible = quality === 0 && !sit;
   if (u.marker) { u.marker.position.y = 1.85 + Math.sin(time * 4) * 0.06; u.marker.rotation.y = time * 2; u.marker.visible = !carry; }
   if (p.stackDirty) {
     p.stackDirty = false; while (u.tray.children.length) u.tray.remove(u.tray.children[0]);
@@ -1511,6 +1843,7 @@ function sync3D(dt) {
   const ev = Math.max(0, Math.min(1, (S.dayT / DAYLEN - 0.72) / 0.28)); sun.intensity = 2.3 - 1.2 * ev; sun.color.setRGB(1, 0.945 - 0.3 * ev, 0.84 - 0.5 * ev); hemi.intensity = 1.7 - 0.6 * ev;
   const k = Math.min(1, dt * 6); CT.x += (player.x - CT.x) * k; CT.z += (player.y - CT.z) * k; placeCam();
   const hv = venueAt(player.x, player.y);   // 你在哪，就只画哪里的人
+  if (!hv) updCars(dt);
   if (hv) syncPerson(player, dt);
   else { ST.forEach(st => syncPerson(st.chef, dt)); workers.forEach(w => syncPerson(w, dt)); bussers.forEach(w => syncPerson(w, dt)); peds.forEach(p => syncPerson(p, dt));
     customers.forEach(c => syncPerson(c, dt, c.kind !== 'rider' && (c.state === 'wait' || c.state === 'eat'))); }
@@ -2092,7 +2425,7 @@ requestAnimationFrame(frame);
 setInterval(save, 5000); addEventListener('pagehide', save);
 window.__game = { get S() { return S; }, player, get tables() { return tables; }, get customers() { return customers; }, get ST() { return ST; }, get workers() { return workers; }, get bussers() { return bussers; },
   SINKS, nearSink, STAND, FRIDGE, BIZ, HQ, PADY, cratePrice, venueAt, stPos, palPos, regPos, stCap, vReady, warp, wages, rent, endDay, buff, get pups() { return pups; }, get mouse() { return mouse; }, get combo() { return combo; }, step: update, setTarget, addXp, net, mate, netHost, netJoin, netLeave, buyTable, tableMax, tableCost, unitCost, stockCap,
-  doBuy, restDone, vDone, vOwned, unlocked, skillCost, stCost, vupCost, itPrice, UP, ITEMS, VUP, ECO, mainGoal, setQuality, perfTick, WK, keepAwake, get quality() { return quality; },
+  doBuy, restDone, vDone, vOwned, unlocked, skillCost, stCost, vupCost, itPrice, UP, ITEMS, VUP, ECO, mainGoal, setQuality, perfTick, WK, keepAwake, scene, cam, renderer, dyn, get quality() { return quality; },
   prof(n = 20) { const t0 = performance.now(); for (let i = 0; i < n; i++) sync3D(0.016); const t1 = performance.now(); for (let i = 0; i < n; i++) { renderer.shadowMap.needsUpdate = quality > 0; renderer.render(scene, cam); } renderer.getContext().finish(); const t2 = performance.now(); return { syncMs: +((t1 - t0) / n).toFixed(2), renderMs: +((t2 - t1) / n).toFixed(2), calls: renderer.info.render.calls, tris: renderer.info.render.triangles }; } };
 })();
 </script>
