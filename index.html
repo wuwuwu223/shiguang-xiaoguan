@@ -33,7 +33,21 @@
   .note { font-size: 12px; color: #c1121f; margin: 0 4px; font-weight: 700; }
   #foot { display: flex; gap: 18px; justify-content: center; margin-top: 10px; }
   #foot { flex-wrap: wrap; }
-  #wBtn, #qBtn { border: none; background: none; color: #b08a60; font-size: 12px; text-decoration: underline; cursor: pointer; }
+  #wBtn, #qBtn, #svBtn, #svUndo { border: none; background: none; color: #b08a60; font-size: 12px; text-decoration: underline; cursor: pointer; }
+  input, textarea { user-select: text; -webkit-user-select: text; }
+  #svBox { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: none; align-items: center; justify-content: center; }
+  #svBox.open { display: flex; }
+  #svCard { background: #fff7ea; width: min(400px, 92vw); max-height: 92vh; overflow-y: auto; border-radius: 20px; padding: 16px; box-shadow: 0 10px 30px rgba(0,0,0,.4); }
+  #svCard h2 { margin: 0 0 6px; color: #5a3600; font-size: 20px; display: flex; justify-content: space-between; align-items: center; }
+  #svClose { border: none; background: #e5383b; color: #fff; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; font-weight: 800; cursor: pointer; }
+  .svh { font-weight: 800; color: #a05a00; font-size: 15px; margin-top: 10px; }
+  .svd { font-size: 12px; color: #9a7b55; line-height: 1.5; margin: 2px 0 6px; }
+  #svCard textarea { width: 100%; height: 62px; border: 2px solid #f0dcc0; border-radius: 12px; padding: 8px; font: 11px/1.3 Menlo, Consolas, monospace; color: #4a2c00; background: #fff; resize: none; word-break: break-all; }
+  .svr { display: flex; gap: 8px; margin-top: 8px; } .svr .btn { flex: 1; font-size: 14px; padding: 9px 6px; }
+  .svr .alt { background: #8d99ae; box-shadow: 0 4px 0 #5d6873, 0 6px 10px rgba(0,0,0,.3); }
+  .svi { font-size: 12px; font-weight: 700; color: #4a2c00; margin-top: 6px; min-height: 16px; }
+  #svMsg { font-size: 13px; font-weight: 800; color: #2a6b3a; margin-top: 10px; min-height: 18px; text-align: center; } #svMsg.bad { color: #c1121f; }
+  #svUndo { display: block; margin: 8px auto 0; }
   #places { display: flex; gap: 6px; flex-wrap: wrap; max-width: 200px; pointer-events: auto; }
   .pl { border: none; border-radius: 12px; width: 40px; height: 40px; font-size: 20px; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.3); cursor: pointer; position: relative; padding: 0; }
   .pl.on { outline: 3px solid #ff7a45; }
@@ -58,6 +72,7 @@
   #dayRows .net, #offRows .net { font-size: 19px; border: none; margin-bottom: 10px; }
   #dayRows span:last-child, #offRows span:last-child { white-space: nowrap; }
   #mText { pointer-events: auto; cursor: pointer; }
+  #mText *, #goal * { pointer-events: none; }
   .pos { color: #2a7d36; } .neg { color: #c1121f; }
   #stock.low { background: #ffe3e3; color: #c1121f; }
   #combo { color: #d9480f; font-size: 15px; display: none; }
@@ -158,11 +173,18 @@
   <div id="card">
     <h2><span id="panelTitle"></span><button id="close">✕</button></h2>
     <div id="list"></div>
-    <div id="foot"><button id="wBtn"></button><button id="qBtn"></button><button id="reset"></button></div>
+    <div id="foot"><button id="wBtn"></button><button id="qBtn"></button><button id="svBtn"></button><button id="reset"></button></div>
   </div>
 </div>
 
 <div id="lookBox"><div id="lookCard"><h2><span id="lookTitle"></span><button id="lookClose">✓</button></h2><div id="lookHint"></div><div id="lookBody"></div></div></div>
+<div id="svBox"><div id="svCard"><h2><span id="svTitle"></span><button id="svClose">✕</button></h2>
+  <div class="svh" id="svExpT"></div><div class="svd" id="svExpD"></div><textarea id="svOut" readonly></textarea><div class="svi" id="svNow"></div>
+  <div class="svr"><button class="btn" id="svCopy"></button><button class="btn alt" id="svDown"></button></div>
+  <div class="svh" id="svImpT"></div><div class="svd" id="svImpD"></div><textarea id="svIn" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea><div class="svi" id="svThat"></div>
+  <div class="svr"><button class="btn alt" id="svFile"></button><button class="btn" id="svGo"></button></div>
+  <input type="file" id="svPick" accept=".txt,.json,text/plain,application/json" style="display:none">
+  <div id="svMsg"></div><button id="svUndo"></button></div></div>
 <div id="netBox"><div id="netCard"><h2><span id="netTitle"></span><button id="netClose">✕</button></h2><div id="netBody"></div></div></div>
 <div id="dayBox"><div id="dayCard"><h2 id="dayTitle"></h2><div id="dayRows"></div><button class="btn" id="dayBtn"></button></div></div>
 <div id="offBox"><div id="offCard"><h2 id="offTitle"></h2><div id="offRows"></div><button class="btn" id="offBtn"></button></div></div>
@@ -342,6 +364,18 @@ Object.assign(TXT.vi, { thiefOk: '🥷 Bắt được rồi!', thiefBad: '😤 T
   tip_thief: '🚨 Có kẻ đang trộm đồ trong siêu thị! Chạy đến chạm vào hắn trước khi hắn ra khỏi cửa', tip_bulk: '🛵 Đơn lớn! Đến đúng máy lấy đồ uống rồi mang ra cho shipper ở cửa', tip_bell: '🛎️ Dịch vụ phòng! Lấy đồ ở xe phục vụ gần cửa rồi mang đến phòng đang bấm chuông', tip_kid: '😭 Có bé bị lạc! Đến dắt bé rồi đưa về chỗ bố mẹ ở cổng',
   promoGo: 'Đứng đây để mở khuyến mãi', promoRun: 'Đang khuyến mãi {n}s', promoWait: 'Đợt sau: {n}s', promoOn: '🎉 {n} đang khuyến mãi! Khách đông hơn, giá +25% — mau đến phụ giúp',
   a_events: 'Xử lý {n} việc trong cửa hàng (trộm, đơn lớn, dịch vụ phòng, bé bị lạc)', a_promos: 'Tự tổ chức {n} đợt khuyến mãi', s_events: 'Việc đã xử lý trong cửa hàng', netVer: '⚠️ Hai máy đang dùng phiên bản khác nhau — hãy tải lại trang trên cả hai máy' });
+Object.assign(TXT.zh, { svBtn: '💾 导出 / 导入存档', svTitle: '💾 存档', svExpT: '导出', svExpD: '把下面这串存档码复制保存，或者下载成文件。换设备、换浏览器、换网址时，用它把进度搬过去。', svCopy: '复制存档码', svDown: '下载文件',
+  svImpT: '导入', svImpD: '把存档码粘贴到下面，或者选择存档文件，再点"导入"。当前进度会被替换（可以撤销一次）。', svPh: '在这里粘贴存档码', svFile: '选择文件', svGo: '导入',
+  svCopied: '✅ 已复制，找个地方粘贴保存吧', svCopyFail: '没能自动复制：请长按上面的存档码，全选后手动复制', svOk: '✅ 存档已导入', svBad: '❌ 存档码不完整或不正确，请重新复制一遍再试', svNet: '联机中不能导入存档，请先离开房间',
+  svAsk: '导入后会替换当前的进度，确定吗？', svUndo: '撤销：恢复导入前的存档', svUndone: '✅ 已恢复导入前的存档', svInfo: '{l} 级 · 第 {d} 天 · 💰{m}', svNow: '当前进度：', svThat: '这份存档：' });
+Object.assign(TXT.en, { svBtn: '💾 Export / import save', svTitle: '💾 Save data', svExpT: 'Export', svExpD: 'Copy this save code somewhere safe, or download it as a file. Use it to move your progress to another device, browser or web address.', svCopy: 'Copy code', svDown: 'Download file',
+  svImpT: 'Import', svImpD: 'Paste a save code below, or choose a save file, then tap Import. It replaces your current progress (you can undo once).', svPh: 'Paste the save code here', svFile: 'Choose file', svGo: 'Import',
+  svCopied: '✅ Copied — paste it somewhere safe', svCopyFail: 'Could not copy automatically: long-press the code above, select all and copy it yourself', svOk: '✅ Save imported', svBad: '❌ That code is incomplete or invalid — copy it again and retry', svNet: 'You cannot import while in a co-op room — leave the room first',
+  svAsk: 'Importing replaces your current progress. Continue?', svUndo: 'Undo: restore the save from before the import', svUndone: '✅ Restored the save from before the import', svInfo: 'Level {l} · Day {d} · 💰{m}', svNow: 'Current progress: ', svThat: 'This save: ' });
+Object.assign(TXT.vi, { svBtn: '💾 Xuất / nhập dữ liệu lưu', svTitle: '💾 Dữ liệu lưu', svExpT: 'Xuất', svExpD: 'Sao chép mã lưu này và cất giữ, hoặc tải về thành tệp. Dùng nó để chuyển tiến trình sang thiết bị, trình duyệt hoặc địa chỉ web khác.', svCopy: 'Sao chép mã', svDown: 'Tải tệp',
+  svImpT: 'Nhập', svImpD: 'Dán mã lưu vào bên dưới, hoặc chọn tệp lưu, rồi bấm Nhập. Tiến trình hiện tại sẽ bị thay thế (có thể hoàn tác một lần).', svPh: 'Dán mã lưu vào đây', svFile: 'Chọn tệp', svGo: 'Nhập',
+  svCopied: '✅ Đã sao chép — hãy dán vào nơi an toàn', svCopyFail: 'Không tự sao chép được: hãy nhấn giữ mã ở trên, chọn tất cả rồi tự sao chép', svOk: '✅ Đã nhập dữ liệu lưu', svBad: '❌ Mã không đầy đủ hoặc không đúng — hãy sao chép lại rồi thử lại', svNet: 'Không thể nhập khi đang ở trong phòng chơi chung — hãy rời phòng trước',
+  svAsk: 'Nhập sẽ thay thế tiến trình hiện tại. Tiếp tục?', svUndo: 'Hoàn tác: khôi phục dữ liệu trước khi nhập', svUndone: '✅ Đã khôi phục dữ liệu trước khi nhập', svInfo: 'Cấp {l} · Ngày {d} · 💰{m}', svNow: 'Tiến trình hiện tại: ', svThat: 'Bản lưu này: ' });
 let lang = '';
 try { lang = localStorage.getItem('shiguang-lang') || ''; } catch (e) {}
 if (!TXT[lang]) { const n = (navigator.language || 'zh').toLowerCase(); lang = n.startsWith('vi') ? 'vi' : n.startsWith('zh') ? 'zh' : 'en'; }
@@ -391,6 +425,7 @@ const BIZ = [   // 产业按顺序开放：上一处满级才能开下一处；�
 const HQ = { cost: 3e8, x0: -34.5, x1: -27.5, y0: 5.5, px: -31 };
 const BY = 11.6, PADY = 12.65, BIZMAX = 10, CRATE = 20, DAYLEN = 300;
 const VW = 22, VH = 15, BOXU = 6;
+const VUP = { sk: ['📦', 4, 4000, 2.2], ck: ['🧾', 3, 6000, 2.5], spd: ['👟', 5, 3000, 2], cap: ['🧺', 3, 5000, 2.2], ad: ['📣', 5, 3500, 2] };   // 各家店的员工与经营升级：[图标, 最高级, 基础价, 每级涨价倍数]
 BIZ.forEach((b, i) => { b.idx = i; b.px = (b.x0 + b.x1) / 2; b.ox = 0; b.oz = 44 + i * 26; b.rt = null; b.obs = []; });
 const EAT = 4.5, SAVE_KEY = 'shiguang-xiaoguan-v4', SINKS = [0.8, 10.0, 19.0], nearSink = x => SINKS.reduce((a, b) => Math.abs(b - x) < Math.abs(a - x) ? b : a), FRIDGE = { x: 1.25, y: 10.9 };
 
@@ -404,11 +439,29 @@ function fresh() {
 function normS(s) {   // 旧存档（或联机时旧版本房主发来的存档）补上新加的字段
   const f = fresh(); s.stat = Object.assign(f.stat, s.stat); if (!s.ach) s.ach = {}; if (s.brand == null) s.brand = 0; return s;
 }
+function adopt(d) {   // 把读到的存档补齐成当前版本能用的样子（启动时读本机存档、导入存档码都走这里）
+  const f = fresh(), num = (v, lo, hi, dv) => { v = +v; return v === v ? Math.max(lo, Math.min(hi, v)) : dv; };
+  if (d.tables == null) d.tables = Math.min(d.level * 2, 18);
+  const s = normS(Object.assign(f, d, { up: Object.assign(f.up, d.up), skill: Object.assign(f.skill, d.skill), biz: Object.assign(f.biz, d.biz) }));
+  s.level = Math.floor(num(s.level, 1, 9999, 1)); s.tables = Math.floor(num(s.tables, 2, SPOTS.length, 2)); s.rating = num(s.rating, 0, 5, 3); s.money = num(s.money, -1e15, 1e18, 0); s.xp = num(s.xp, 0, 1e12, 0);
+  s.day = Math.floor(num(s.day, 1, 1e7, 1)); s.dayT = num(s.dayT, 0, DAYLEN - 1, 0); s.stock = Math.floor(num(s.stock, 0, 1e4, 20)); s.missionN = Math.floor(num(s.missionN, 0, 1e6, 0)); s.brand = Math.floor(num(s.brand, 0, 1e4, 0)); s.hq = s.hq ? 1 : 0;
+  for (const k in UP) s.up[k] = Math.floor(num(s.up[k], 0, UP[k].cost.length, 0));
+  for (const it of ITEMS) s.skill[it.m] = Math.floor(num(s.skill[it.m], 0, 8, 0));
+  for (const b of BIZ) { const o = s.biz[b.k] && typeof s.biz[b.k] === 'object' ? s.biz[b.k] : {}, st = Array.isArray(o.st) ? o.st : [];
+    s.biz[b.k] = { lv: o.lv > 0 ? 1 : 0, st: b.items.map((it, i) => Math.floor(num(st[i], i ? 0 : 1, 5, i ? 0 : 1))), sk: Math.floor(num(o.sk, 0, VUP.sk[1], 0)), ck: Math.floor(num(o.ck, 0, VUP.ck[1], 0)), spd: Math.floor(num(o.spd, 0, VUP.spd[1], 0)), cap: Math.floor(num(o.cap, 0, VUP.cap[1], 0)), ad: Math.floor(num(o.ad, 0, VUP.ad[1], 0)) }; }
+  if (!s.d || typeof s.d !== 'object') s.d = { rev: 0, cost: 0 }; s.d.rev = num(s.d.rev, 0, 1e18, 0); s.d.cost = num(s.d.cost, -1e18, 1e18, 0);
+  const m = s.mission; if (!m || typeof m !== 'object' || typeof m.type !== 'string' || !(m.goal > 0) || !(m.reward >= 0)) s.mission = null; else m.prog = num(m.prog, 0, 1e18, 0);
+  if (!s.ach || typeof s.ach !== 'object') s.ach = {}; if (!s.ms || typeof s.ms !== 'object') s.ms = {};
+  for (const k in s.stat) s.stat[k] = num(s.stat[k], 0, 1e18, 0);
+  if (s.mission && s.mission.left != null) s.mission.left = num(s.mission.left, 0, 300, 300);
+  if (s.yrev != null) s.yrev = num(s.yrev, 0, 1e18, 0); if (s.avgP != null) s.avgP = num(s.avgP, -1e18, 1e18, 0); s.last = num(s.last, 0, 1e15, 0); s.contract = num(s.contract, 0, 1e7, 0);
+  return s;
+}
 let S = fresh(), achQuiet = false;
 try {
   const d = JSON.parse(localStorage.getItem(SAVE_KEY));
-  if (d && d.up) { const f = fresh(); if (d.tables == null) d.tables = Math.min(d.level * 2, 18); achQuiet = !d.ach; S = normS(Object.assign(f, d, { up: Object.assign(f.up, d.up), skill: Object.assign(f.skill, d.skill), biz: Object.assign(f.biz, d.biz) })); }
-} catch (e) {}
+  if (d && d.up) { achQuiet = !d.ach; S = adopt(d); }
+} catch (e) { S = fresh(); try { const raw = localStorage.getItem(SAVE_KEY); if (raw) localStorage.setItem(SAVE_KEY + '-broken', raw); } catch (e2) {} }   // 万一读不出来：原始内容留一份，不至于被新存档直接盖掉
 let frozen = false;   // 页面切到后台后不再刷新"最后在线时间"，回来时按这段时间结算挂机收益
 const save = () => { if (net.role === 'guest') return; try { if (!frozen) S.last = Date.now(); localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) {} };
 
@@ -440,7 +493,6 @@ const stCap = (b, i) => 8 + 4 * (Math.max(1, S.biz[b.k].st[i]) - 1);
 const boxCost = (b, i) => Math.round(itPrice(b, i) * BOXU * 0.35);
 const ECO = { stBase: 2500, stG: 1.7, stLv: 1.8, wSk: 300, wCk: 400, rent: 1000 };   // 产业数值：解锁价基数/逐个递增倍率/升级倍率/日薪/房租（都再乘以该店的花费倍率 cm）
 const stCost = (b, i) => { const l = S.biz[b.k].st[i], u = ECO.stBase * b.cm * Math.pow(ECO.stG, i); return Math.round(l ? u * 0.6 * Math.pow(ECO.stLv, l - 1) : u); };
-const VUP = { sk: ['📦', 4, 4000, 2.2], ck: ['🧾', 3, 6000, 2.5], spd: ['👟', 5, 3000, 2], cap: ['🧺', 3, 5000, 2.2], ad: ['📣', 5, 3500, 2] };
 const vupCost = (b, n) => Math.round(VUP[n][2] * b.cm * Math.pow(VUP[n][3], S.biz[b.k][n]));
 const wages = () => 30 * (S.up.waiter + S.up.busser) + 50 * S.up.buyer + BIZ.reduce((a, b) => { const s = S.biz[b.k]; return a + (s.lv > 0 ? (s.sk * ECO.wSk + s.ck * ECO.wCk) * b.cm : 0); }, 0);
 const rent = () => 20 * S.tables + 40 * S.level + BIZ.reduce((a, b) => a + (S.biz[b.k].lv > 0 ? ECO.rent * b.cm : 0), 0) + (S.hq ? 1e6 : 0);
@@ -1189,7 +1241,7 @@ function playStep(i, t) {
   if (s % 2 === 0) { const n = MEL[bar][s / 2]; if (n) { tone(mf(n), t, 0.34, 'sine', 0.13, m); tone(mf(n + 12), t, 0.16, 'sine', 0.025, m); } hat(t, s % 4 === 2 ? 0.06 : 0.03); }
 }
 function audioInit() {
-  if (AU.ctx) { if (AU.ctx.state === 'suspended' && !document.hidden) AU.ctx.resume(); return; }
+  if (AU.ctx) return;
   const C = window.AudioContext || window.webkitAudioContext; if (!C) return;
   const c = AU.ctx = new C(); AU.master = c.createGain(); AU.master.gain.value = AU.on ? 1 : 0; AU.master.connect(c.destination);
   AU.music = c.createGain(); AU.music.gain.value = 0.55; AU.music.connect(AU.master); AU.sfx = c.createGain(); AU.sfx.gain.value = 0.9; AU.sfx.connect(AU.master);
@@ -1215,8 +1267,18 @@ function sfx(n) {
   if (n === 'coin') { if (t - lastCoin < 0.12) return; lastCoin = t; }
   for (const [f, d, len, type, v] of SFX[n]) tone(f, t + d, len, type, v, AU.sfx);
 }
-addEventListener('pointerdown', audioInit, true); addEventListener('keydown', audioInit, true);
-document.addEventListener('visibilitychange', () => { if (AU.ctx) document.hidden ? AU.ctx.suspend() : AU.ctx.resume(); });
+function audioMode() {   // iPhone / iPad：开着声音时按"播放"处理，静音键打开也出声；关掉声音就还给系统，不打断别的 App 放的音乐
+  const a = navigator.audioSession; if (!a) return; const want = AU.on ? 'playback' : 'auto';
+  if (a.type !== want) { try { a.type = want; } catch (e) {} }
+}
+function audioWake() {   // 把声音叫醒。手机浏览器不认"按下"，只认"抬手/点击"那一下；切到后台回来、被来电打断之后也要重新叫醒，所以每次操作都试一次
+  audioInit(); const c = AU.ctx; if (!c) return;
+  audioMode();
+  if (AU.on && c.state !== 'running' && !document.hidden) { try { const q = c.resume(); if (q && q.catch) q.catch(() => {});
+    const b = c.createBufferSource(); b.buffer = c.createBuffer(1, 1, 22050); b.connect(c.destination); b.start(0); } catch (e) {} }   // 顺手放一段听不见的空白：老一些的 iPhone 要这样才肯出声
+}
+for (const ev of ['pointerdown', 'pointerup', 'touchend', 'mousedown', 'click', 'keydown']) addEventListener(ev, audioWake, true);
+document.addEventListener('visibilitychange', () => { const c = AU.ctx; if (!c) return; try { const q = document.hidden ? c.suspend() : AU.on ? c.resume() : null; if (q && q.catch) q.catch(() => {}); } catch (e) {} });
 
 // ================= 运行时状态 =================
 let bussers = [], tables = [], customers = [], orders = [], workers = [], floats = [], ST = [], peds = [], OBS = [];
@@ -2488,7 +2550,7 @@ const endJoy = e => {
   if (!joy.moved && performance.now() - joy.t0 < 400) { const f = floorAt(e.clientX, e.clientY); setTarget(f.x, f.y); }
 };
 glc.addEventListener('pointerup', endJoy); glc.addEventListener('pointercancel', () => { joy.on = false; });
-addEventListener('keydown', e => { keys[e.key.toLowerCase()] = true; }); addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
+addEventListener('keydown', e => { if (e.target && /^(INPUT|TEXTAREA)$/.test(e.target.tagName)) return; keys[e.key.toLowerCase()] = true; }); addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
 addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
 
 // ================= HUD =================
@@ -2545,22 +2607,29 @@ function renderHud() {
   }
   { const gl = mainGoal(); $('goal').innerHTML = (gl.b ? '🎯 ' : '') + gl.txt + (gl.b ? ' <b>' + fmt(gl.a) + '/' + fmt(gl.b) + '</b>' : ''); }
   $('upDot').style.display = canBuyAny() ? 'block' : 'none';
-  if ($('panel').classList.contains('open')) renderPanel();
+  panelSoon();
 }
-let panelTab = null;
+// 面板不能跟着金币跳动不停重画：手指按下和抬起之间按钮被换成新的，这一下就点空了。
+// 所以：手指按在面板上、刚抬手、正在滚动时都不重画；平时最多每 0.4 秒画一次；内容没变就完全不动
+let panelTab = null, panelAt = 0, panelHold = 0, panelDue = false, panelHtml = '';
+const panelIdle = () => { const t = performance.now(); return t >= panelHold && t - panelAt >= 400; };
+function panelSoon() { if (!$('panel').classList.contains('open')) return; if (panelIdle()) renderPanel(); else panelDue = true; }
+$('card').addEventListener('pointerdown', () => { panelHold = performance.now() + 4000; }, true);
+for (const ev of ['pointerup', 'pointercancel']) addEventListener(ev, () => { if (panelHold > performance.now()) panelHold = performance.now() + 350; }, true);   // 抬手后再等一小会儿，让点击先送到
+$('list').addEventListener('scroll', () => { panelHold = Math.max(panelHold, performance.now() + 300); }, { passive: true });
 function renderPanel() {
-  const list = $('list'), sc = list.scrollTop; list.innerHTML = '';
+  const box = $('list'), list = document.createElement('div'); panelAt = performance.now(); panelDue = false;
   const hv = venueAt(player.x, player.y); if (!panelTab) panelTab = hv && vOwned(hv) ? hv.k : 'rest';
   const sec = t => { const d = document.createElement('div'); d.className = 'sec'; d.textContent = t; list.appendChild(d); };
   const row = (ic, nm, lv, ds, btn, cost, act) => {
     const r = document.createElement('div'); r.className = 'row';
     r.innerHTML = '<div class="ic">' + ic + '</div><div class="tx"><div class="nm">' + nm + ' <span style="color:#c08a3e;font-size:12px">' + lv + '</span></div><div class="ds">' + ds + '</div></div>';
     const b = document.createElement('button'); b.textContent = btn; b.disabled = cost == null || S.money < cost;
-    b.onclick = () => { if (b.disabled) return; if (net.role === 'guest') { netAct(['buy', ...act]); b.disabled = true; } else { doBuy(act); renderHud(); } };
+    b.onclick = () => { if (b.disabled) return; if (net.role === 'guest') { netAct(['buy', ...act]); b.disabled = true; } else { doBuy(act); hudDirty = true; renderPanel(); } };   // 买完马上重画，让等级和价格立刻变
     r.appendChild(b); list.appendChild(r);
   };
   const tabs = document.createElement('div'); tabs.className = 'tabs'; list.appendChild(tabs);
-  const tab = (id, e) => { const t = document.createElement('button'); t.className = 'tab' + (panelTab === id ? ' on' : ''); t.textContent = e; t.onclick = () => { panelTab = id; renderPanel(); list.scrollTop = 0; }; tabs.appendChild(t); };
+  const tab = (id, e) => { const t = document.createElement('button'); t.className = 'tab' + (panelTab === id ? ' on' : ''); t.textContent = e; t.onclick = () => { panelTab = id; renderPanel(); box.scrollTop = 0; }; tabs.appendChild(t); };
   tab('rest', '🍜'); let nextShown = false; BIZ.forEach(b => { if (vOwned(b)) tab(b.k, b.e); else if (!nextShown) { nextShown = true; tab(b.k, '🔒' + b.e); } }); tab('ach', '🏆');
   if (panelTab === 'ach') {
     sec('🏆 ' + T('achTitle') + '  ' + trophies() + '/' + ACHN + ' · ' + T('achRew', { n: fmt(achReward()) }));
@@ -2603,7 +2672,8 @@ function renderPanel() {
       if (i === BIZ.length - 1) { const ok = vDone(b); sec('🏢 ' + T('hq')); row('🏢', T('hq'), S.hq ? '✓' : '', T('hqD'), !ok ? '🔒' : S.hq ? T('max') : '💰' + fmt(HQ.cost), !ok || S.hq ? null : HQ.cost, ['hq']); }
     }
   }
-  list.scrollTop = sc;
+  const html = panelTab + '|' + list.innerHTML; if (html === panelHtml && box.firstChild) return;   // 内容没变：不动现有的按钮
+  panelHtml = html; const sc = box.scrollTop; box.innerHTML = ''; while (list.firstChild) box.appendChild(list.firstChild); box.scrollTop = sc;
 }
 $('mText').onclick = () => {   // 点任务栏：直接去任务所在的那家店
   const m = S.mission; if (!m || m.left == null) return;
@@ -2660,13 +2730,79 @@ addEventListener('pointerdown', keepAwake, true); addEventListener('keydown', ke
 document.addEventListener('visibilitychange', () => { if (!document.hidden) keepAwake(); });
 $('close').onclick = () => $('panel').classList.remove('open');
 $('panel').onclick = e => { if (e.target === $('panel')) $('panel').classList.remove('open'); };
+// ---- 存档导出 / 导入：存档码只含数字和字母，在聊天软件里复制粘贴不会被改坏；开头 5 位是标记，接着 7 位校验，后面是内容 ----
+const SVTAG = 'SGXG4';
+const hash36 = t => { let h = 2166136261; for (let i = 0; i < t.length; i++) { h ^= t.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(36).padStart(7, '0'); };
+function saveCode() {
+  const body = Array.from(new TextEncoder().encode(JSON.stringify({ v: 4, t: Date.now(), S, L: lookCode(LOOK) })), b => b.toString(16).padStart(2, '0')).join('');
+  return SVTAG + hash36(body) + body;
+}
+function readCode(text) {   // 读出存档码（或直接贴进来的存档文件内容）；不对就返回 null
+  try {
+    const raw = String(text || ''), t = raw.replace(/\s+/g, ''); let o;
+    if (t[0] === '{') o = JSON.parse(raw);
+    else { const body = t.slice(12).toLowerCase(); if (t.slice(0, 5).toUpperCase() !== SVTAG || !/^([0-9a-f]{2})+$/.test(body) || hash36(body) !== t.slice(5, 12).toLowerCase()) return null;
+      o = JSON.parse(new TextDecoder().decode(Uint8Array.from(body.match(/../g), x => parseInt(x, 16)))); }
+    const d = o && o.S ? o.S : o;
+    if (!d || typeof d !== 'object' || !d.up || typeof d.up !== 'object' || !(d.level >= 1) || typeof d.money !== 'number' || !d.biz) return null;
+    return { S: d, L: o.L };
+  } catch (e) { return null; }
+}
+function loadSave(d, L) {   // 换成另一份存档；出了岔子就退回原来的
+  const old = JSON.stringify(S); let ok = true;
+  const boot = () => { tq.length = 0; $('dayBox').classList.remove('open'); $('offBox').classList.remove('open'); paused = false; init(); };
+  try { achQuiet = !d.ach; S = adopt(JSON.parse(JSON.stringify(d))); boot(); } catch (e) { ok = false; S = adopt(JSON.parse(old)); boot(); }
+  if (ok) { const l = lookFrom(L); if (l) { LOOK = l; saveLook(); applyLook(); } }
+  S.last = Date.now(); save(); hudDirty = true; panelHtml = ''; return ok;
+}
+function importSave(text, undo) {
+  if (net.role) return 'svNet';
+  const r = readCode(text); if (!r) return 'svBad';
+  if (!undo) { try { localStorage.setItem(SAVE_KEY + '-bak', saveCode()); } catch (e) {} }   // 先把当前进度留一份，可以撤销
+  return loadSave(r.S, r.L) ? (undo ? 'svUndone' : 'svOk') : 'svBad';
+}
+const svInfo = d => T('svInfo', { l: d.level, d: d.day || 1, m: fmt(d.money) });
+function svSay(key, bad) { const el = $('svMsg'); el.textContent = key ? T(key) : ''; el.className = bad ? 'bad' : ''; }
+function svUi() {
+  $('svTitle').textContent = T('svTitle'); $('svBtn').textContent = T('svBtn');
+  for (const k of ['svExpT', 'svExpD', 'svCopy', 'svDown', 'svImpT', 'svImpD', 'svFile', 'svGo', 'svUndo']) $(k).textContent = T(k);
+  $('svIn').placeholder = T('svPh'); $('svNow').textContent = T('svNow') + svInfo(S);
+  let bak = null; try { bak = localStorage.getItem(SAVE_KEY + '-bak'); } catch (e) {} $('svUndo').style.display = bak && !net.role ? 'block' : 'none';
+}
+function svPeek() { const v = $('svIn').value, r = v.trim() ? readCode(v) : null; $('svThat').textContent = r ? T('svThat') + svInfo(r.S) : ''; if (v.trim() && !r) svSay('svBad', true); else svSay(''); return r; }
+function openSave() { $('panel').classList.remove('open'); if (lookOpen) openLook(false); $('svOut').value = saveCode(); $('svIn').value = ''; $('svThat').textContent = ''; svSay(''); svUi(); $('svBox').classList.add('open'); }
+$('svBtn').onclick = openSave;
+$('svClose').onclick = () => $('svBox').classList.remove('open');
+$('svBox').onclick = e => { if (e.target === $('svBox')) $('svBox').classList.remove('open'); };
+$('svCopy').onclick = () => {
+  const t = $('svOut'), done = ok => svSay(ok ? 'svCopied' : 'svCopyFail', !ok), old = () => { let ok = false; try { t.focus(); t.select(); t.setSelectionRange(0, t.value.length); ok = document.execCommand('copy'); } catch (e) {} done(ok); };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t.value).then(() => done(true), old); else old();
+};
+$('svDown').onclick = () => {
+  const d = new Date(), z = n => String(n).padStart(2, '0'), a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([$('svOut').value], { type: 'text/plain' })); a.download = 'shiguang-save-' + d.getFullYear() + z(d.getMonth() + 1) + z(d.getDate()) + '-' + z(d.getHours()) + z(d.getMinutes()) + '.txt';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+};
+$('svIn').oninput = svPeek;
+$('svFile').onclick = () => $('svPick').click();
+$('svPick').onchange = () => { const f = $('svPick').files[0]; if (!f) return; const rd = new FileReader(); rd.onload = () => { $('svIn').value = String(rd.result || ''); svPeek(); }; rd.readAsText(f); $('svPick').value = ''; };
+$('svGo').onclick = () => {
+  const r = svPeek(); if (!r) { svSay('svBad', true); return; }
+  if (net.role) { svSay('svNet', true); return; }
+  if (!confirm(T('svAsk') + '\n' + T('svThat') + svInfo(r.S))) return;
+  const res = importSave($('svIn').value); svSay(res, res !== 'svOk'); if (res === 'svOk') { $('svOut').value = saveCode(); $('svIn').value = ''; $('svThat').textContent = ''; svUi(); toast(T('svOk')); }
+};
+$('svUndo').onclick = () => {
+  let bak = null; try { bak = localStorage.getItem(SAVE_KEY + '-bak'); } catch (e) {} if (!bak) return;
+  const res = importSave(bak, true); svSay(res, res !== 'svUndone'); if (res === 'svUndone') { try { localStorage.removeItem(SAVE_KEY + '-bak'); } catch (e) {} $('svOut').value = saveCode(); svUi(); }
+};
 $('reset').onclick = () => { if (confirm(T('resetAsk'))) { tq.length = 0; $('dayBox').classList.remove('open'); paused = false; S = fresh(); init(); save(); hudDirty = true; $('panel').classList.remove('open'); } };
 function applyLang() {
   document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang; document.title = T('title');
   $('langBtn').textContent = '🌐 ' + LANGS[lang]; $('upTxt').textContent = T('upgrade');
   $('hint').innerHTML = T('hint1') + '<br>' + T('hint2'); $('rush').textContent = T('rush');
   $('panelTitle').textContent = T('panel'); $('reset').textContent = T('reset'); $('qBtn').textContent = T('gfx', { n: T('q' + quality) }); wakeUi(); $('netTitle').textContent = '👥 ' + T('coop');
-  drawMenu(); drawSign(); hudDirty = true; netUi(); if (lookOpen) renderLook();
+  drawMenu(); drawSign(); hudDirty = true; netUi(); if (lookOpen) renderLook(); svUi(); panelHtml = '';
 }
 $('langBtn').onclick = () => {
   const ks = Object.keys(LANGS); lang = ks[(ks.indexOf(lang) + 1) % ks.length];
@@ -2680,6 +2816,7 @@ $('sndBtn').textContent = AU.on ? '🔊' : '🔇';
 $('sndBtn').onclick = () => {
   AU.on = !AU.on; $('sndBtn').textContent = AU.on ? '🔊' : '🔇'; if (AU.master) AU.master.gain.value = AU.on ? 1 : 0;
   try { localStorage.setItem('shiguang-snd', AU.on ? '1' : '0'); } catch (e) {}
+  if (AU.on) audioWake(); else { audioMode(); if (AU.ctx) { try { const q = AU.ctx.suspend(); if (q && q.catch) q.catch(() => {}); } catch (e) {} } }   // 关声音时把音频还给系统
 };
 
 function clockStr() { const m = Math.floor((8 + 14 * S.dayT / DAYLEN) * 6) * 10; return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); }
@@ -2783,7 +2920,7 @@ function netJoin(code) {
   if (code.length !== 5 || !NETURLS[bi]) { net.st = 'bad'; netUi(); return; }
   net.role = 'guest'; net.peer = false; net.code = code; net.topic = 'sgxg/v1/' + code; net.st = 'wait'; netUi();
   tq.length = 0; S = fresh(); init(); setMateLook(null); mate.mesh = makePerson(mate.look); dyn.add(mate.mesh); mate.tx = mate.x; mate.ty = mate.y;
-  $('reset').style.display = 'none'; hudDirty = true;
+  $('reset').style.display = 'none'; $('svBtn').style.display = 'none'; hudDirty = true;   // 伙伴一侧没有自己的存档：不能重置，也不能导出导入
   netConnect(bi, ok => { if (!ok) { net.st = 'fail'; netUi(); setTimeout(() => location.reload(), 2500); } });
 }
 function netLeave() { if (net.role === 'guest') { location.reload(); return; } if (net.mq) net.mq.close(); net.mq = null; net.role = null; net.peer = false; rm(mate.mesh); mate.mesh = null; net.st = ''; netUi(); }
@@ -2945,14 +3082,15 @@ function frame(now) {
   if (net.role === 'guest') guestTick(dt); else if (!paused) update(dt);
   netTick(dt); sync3D(dt); if ((plT -= dt) <= 0) { plT = 0.4; updPlaces(); } renderer.render(scene, cam); drawOverlay(dt);
   if (hudDirty) { hudDirty = false; renderHud(); }
+  if (panelDue && panelIdle()) panelSoon();   // 刚才因为手指按着而推迟的面板重画
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
 setInterval(save, 5000); addEventListener('pagehide', save);
 window.__game = { get S() { return S; }, player, get tables() { return tables; }, get customers() { return customers; }, get ST() { return ST; }, get workers() { return workers; }, get bussers() { return bussers; },
   SINKS, nearSink, STAND, FRIDGE, BIZ, HQ, PADY, cratePrice, venueAt, stPos, palPos, regPos, stCap, vReady, warp, wages, rent, endDay, buff, get pups() { return pups; }, get mouse() { return mouse; }, get combo() { return combo; }, step: update, setTarget, addXp, net, mate, netHost, netJoin, netLeave, buyTable, tableMax, tableCost, unitCost, stockCap,
-  tick(dt) { if (net.role === 'guest') guestTick(dt); else if (!paused) update(dt); netTick(dt); },   // 测试用：页面不在前台、没有画面刷新时手动推进一帧
-  doBuy, restDone, vDone, vOwned, unlocked, skillCost, TXT, evStart, evEnd, spotOf, promoPos, avgP, EVK, grantOffline, offlineGain, newMission, updCars, cars, get peds() { return peds; }, openLook, applyLook, setMateLook, lookCode, get LOOK() { return LOOK; }, ACH, checkAch, trophies, achReward, brandCost, navPath, pathLen, get RNAV() { return RNAV; }, stCost, vupCost, itPrice, UP, ITEMS, VUP, ECO, mainGoal, setQuality, perfTick, WK, keepAwake, scene, cam, renderer, dyn, get quality() { return quality; },
+  tick(dt) { if (net.role === 'guest') guestTick(dt); else if (!paused) update(dt); netTick(dt); if (hudDirty) { hudDirty = false; renderHud(); } if (panelDue && panelIdle()) panelSoon(); },   // 测试用：页面不在前台、没有画面刷新时手动推进一帧（不含画面绘制）
+  doBuy, restDone, vDone, vOwned, unlocked, skillCost, TXT, AU, saveCode, readCode, importSave, adopt, evStart, evEnd, spotOf, promoPos, avgP, EVK, grantOffline, offlineGain, newMission, updCars, cars, get peds() { return peds; }, openLook, applyLook, setMateLook, lookCode, get LOOK() { return LOOK; }, ACH, checkAch, trophies, achReward, brandCost, navPath, pathLen, get RNAV() { return RNAV; }, stCost, vupCost, itPrice, UP, ITEMS, VUP, ECO, mainGoal, setQuality, perfTick, WK, keepAwake, scene, cam, renderer, dyn, get quality() { return quality; },
   prof(n = 20) { const t0 = performance.now(); for (let i = 0; i < n; i++) sync3D(0.016); const t1 = performance.now(); for (let i = 0; i < n; i++) { renderer.shadowMap.needsUpdate = quality > 0; renderer.render(scene, cam); } renderer.getContext().finish(); const t2 = performance.now(); return { syncMs: +((t1 - t0) / n).toFixed(2), renderMs: +((t2 - t1) / n).toFixed(2), calls: renderer.info.render.calls, tris: renderer.info.render.triangles }; } };
 })();
 </script>
