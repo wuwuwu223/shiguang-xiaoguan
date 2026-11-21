@@ -31,6 +31,7 @@
   .pl.ev::before { content: '!'; position: absolute; top: -8px; left: -8px; width: 16px; height: 16px; border-radius: 50%; background: #ff9f1c; color: #fff; font: 800 13px/16px Arial, sans-serif; text-align: center; border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,.4); animation: evb .5s infinite alternate; }   /* 这家店有事等你处理 */
   @keyframes evb { to { transform: translateY(-4px); } }
   .note { font-size: 12px; color: #c1121f; margin: 0 4px; font-weight: 700; }
+  .note2 { font-size: 12px; color: #7a5c36; margin: 0 4px; line-height: 1.5; }
   #foot { display: flex; gap: 18px; justify-content: center; margin-top: 10px; }
   #foot { flex-wrap: wrap; }
   #wBtn, #qBtn, #svBtn, #svUndo { border: none; background: none; color: #b08a60; font-size: 12px; text-decoration: underline; cursor: pointer; }
@@ -279,19 +280,19 @@ Object.assign(TXT.vi, { coop: 'Chơi hai người', createRoom: 'Tạo phòng (t
   netHint: 'Hai thiết bị cùng kinh doanh một quán. Tiến trình lưu ở máy chủ phòng; chủ phòng phải để trò chơi ở phía trước, nếu không trò chơi sẽ tạm dừng.' });
 Object.assign(TXT.zh, { restN: '餐厅', vEnter: '进入{n}', vExit: '回到街上', vNeed: '需要{n}满级', vBuy: '开设{n}', vBuyD: '买下后可以走进店里经营', vCap: '容量 {n}', vLocked: '未解锁', secVStaff: '👥 员工与经营',
   v_sk: '理货员', v_skD: '自动从仓库补货，日薪 💰{n}', v_ck: '收银员', v_ckD: '自动结账，多一位多开一个收银台，日薪 💰{n}', v_spd: '员工速度', v_spdD: '理货员和收银员更快', v_cap: '搬运量', v_capD: '理货员每趟多搬一箱', v_ad: '宣传', v_adD: '顾客来得更多',
-  vOpen: '🏗️ {n}开业了！点左边的图标进店：仓库取货 → 上架 → 到收银台结账', vDoneT: '🎉 {n}满级了！下一处产业可以开了', restDoneT: '🎉 餐厅满级了！可以开超市了', hqD: '每天来签一份合同，当天全部收入 +20%',
+  vOpen: '🏗️ {n}开业了！沿街走进店门（或点左边的图标）：仓库取货 → 上架 → 到收银台结账', vDoneT: '🎉 {n}满级了！下一处产业可以开了', restDoneT: '🎉 餐厅满级了！可以开超市了', hqD: '每天来签一份合同，当天全部收入 +20%',
   hint2: '取菜 → 上菜 → 收盘洗碗 → 收钱。食材去西边超市门口买。餐厅满级后可以开超市，之后依次开奶茶店、酒店、游乐场',
   fruit: '水果', veg: '蔬菜', bread: '面包', milk: '牛奶', soda: '饮料', snack: '零食', ice: '冰淇淋', fish: '海鲜', mtea: '珍珠奶茶', matcha: '抹茶', fruitea: '水果茶', latte: '拿铁', cake: '蛋糕', donut: '甜甜圈',
   single: '单人间', double: '双人间', family: '亲子房', seaview: '海景房', suite: '总统套房', spa: '温泉', carousel: '旋转木马', bumper: '碰碰车', shoot: '射击摊', popcorn: '爆米花', coaster: '过山车', wheel: '摩天轮' });
 Object.assign(TXT.en, { restN: 'Restaurant', vEnter: 'Enter {n}', vExit: 'Back to the street', vNeed: 'Max out the {n} first', vBuy: 'Open the {n}', vBuyD: 'Buy it, then walk inside and run it', vCap: 'holds {n}', vLocked: 'Locked', secVStaff: '👥 Staff & Operations',
   v_sk: 'Stocker', v_skD: 'Restocks from the warehouse, wage 💰{n}/day', v_ck: 'Cashier', v_ckD: 'Checks customers out; each one opens a register, wage 💰{n}/day', v_spd: 'Staff Speed', v_spdD: 'Stockers and cashiers work faster', v_cap: 'Carry Size', v_capD: 'Stockers carry one more box per trip', v_ad: 'Advertising', v_adD: 'More customers',
-  vOpen: '🏗️ The {n} is open! Tap its icon on the left: warehouse → shelves → checkout', vDoneT: '🎉 {n} maxed out! The next business is available', restDoneT: '🎉 Restaurant maxed out! You can open the supermarket', hqD: 'Sign one contract a day for +20% income that day',
+  vOpen: '🏗️ The {n} is open! Walk in from the street (or tap its icon on the left): warehouse → shelves → checkout', vDoneT: '🎉 {n} maxed out! The next business is available', restDoneT: '🎉 Restaurant maxed out! You can open the supermarket', hqD: 'Sign one contract a day for +20% income that day',
   hint2: 'Grab food → serve → wash plates → collect. Buy ingredients at the supermarket door. Max out the restaurant to open the supermarket, then the tea shop, hotel and amusement park',
   fruit: 'Fruit', veg: 'Vegetables', bread: 'Bread', milk: 'Milk', soda: 'Soft drinks', snack: 'Snacks', ice: 'Ice cream', fish: 'Seafood', mtea: 'Bubble tea', matcha: 'Matcha', fruitea: 'Fruit tea', latte: 'Latte', cake: 'Cake', donut: 'Donuts',
   single: 'Single room', double: 'Double room', family: 'Family room', seaview: 'Sea-view room', suite: 'Presidential suite', spa: 'Hot spring', carousel: 'Carousel', bumper: 'Bumper cars', shoot: 'Shooting gallery', popcorn: 'Popcorn', coaster: 'Roller coaster', wheel: 'Ferris wheel' });
 Object.assign(TXT.vi, { restN: 'Nhà hàng', vEnter: 'Vào {n}', vExit: 'Ra đường', vNeed: 'Cần nâng tối đa {n}', vBuy: 'Mở {n}', vBuyD: 'Mua xong có thể vào trong để kinh doanh', vCap: 'chứa {n}', vLocked: 'Chưa mở', secVStaff: '👥 Nhân viên & vận hành',
   v_sk: 'Nhân viên kho', v_skD: 'Tự lấy hàng từ kho lên kệ, lương 💰{n}/ngày', v_ck: 'Thu ngân', v_ckD: 'Tự tính tiền, thêm người thêm quầy, lương 💰{n}/ngày', v_spd: 'Tốc độ nhân viên', v_spdD: 'Nhân viên kho và thu ngân nhanh hơn', v_cap: 'Sức mang', v_capD: 'Nhân viên kho mang thêm một thùng', v_ad: 'Quảng cáo', v_adD: 'Khách đến nhiều hơn',
-  vOpen: '🏗️ {n} đã khai trương! Bấm biểu tượng bên trái để vào: kho → kệ → quầy thu ngân', vDoneT: '🎉 {n} đã tối đa! Có thể mở cơ sở tiếp theo', restDoneT: '🎉 Nhà hàng đã tối đa! Có thể mở siêu thị', hqD: 'Mỗi ngày ký một hợp đồng, thu nhập hôm đó +20%',
+  vOpen: '🏗️ {n} đã khai trương! Đi bộ vào cửa (hoặc bấm biểu tượng bên trái): kho → kệ → quầy thu ngân', vDoneT: '🎉 {n} đã tối đa! Có thể mở cơ sở tiếp theo', restDoneT: '🎉 Nhà hàng đã tối đa! Có thể mở siêu thị', hqD: 'Mỗi ngày ký một hợp đồng, thu nhập hôm đó +20%',
   hint2: 'Lấy món → phục vụ → rửa đĩa → thu tiền. Mua nguyên liệu ở cửa siêu thị. Nâng tối đa nhà hàng để mở siêu thị, rồi đến quán trà sữa, khách sạn, công viên',
   fruit: 'Trái cây', veg: 'Rau củ', bread: 'Bánh mì', milk: 'Sữa', soda: 'Nước ngọt', snack: 'Đồ ăn vặt', ice: 'Kem', fish: 'Hải sản', mtea: 'Trà sữa trân châu', matcha: 'Trà matcha', fruitea: 'Trà trái cây', latte: 'Cà phê latte', cake: 'Bánh kem', donut: 'Bánh donut',
   single: 'Phòng đơn', double: 'Phòng đôi', family: 'Phòng gia đình', seaview: 'Phòng hướng biển', suite: 'Phòng tổng thống', spa: 'Suối nước nóng', carousel: 'Ngựa gỗ xoay', bumper: 'Xe đụng', shoot: 'Gian bắn súng', popcorn: 'Bắp rang', coaster: 'Tàu lượn', wheel: 'Vòng đu quay' });
@@ -376,6 +377,60 @@ Object.assign(TXT.vi, { svBtn: '💾 Xuất / nhập dữ liệu lưu', svTitle:
   svImpT: 'Nhập', svImpD: 'Dán mã lưu vào bên dưới, hoặc chọn tệp lưu, rồi bấm Nhập. Tiến trình hiện tại sẽ bị thay thế (có thể hoàn tác một lần).', svPh: 'Dán mã lưu vào đây', svFile: 'Chọn tệp', svGo: 'Nhập',
   svCopied: '✅ Đã sao chép — hãy dán vào nơi an toàn', svCopyFail: 'Không tự sao chép được: hãy nhấn giữ mã ở trên, chọn tất cả rồi tự sao chép', svOk: '✅ Đã nhập dữ liệu lưu', svBad: '❌ Mã không đầy đủ hoặc không đúng — hãy sao chép lại rồi thử lại', svNet: 'Không thể nhập khi đang ở trong phòng chơi chung — hãy rời phòng trước',
   svAsk: 'Nhập sẽ thay thế tiến trình hiện tại. Tiếp tục?', svUndo: 'Hoàn tác: khôi phục dữ liệu trước khi nhập', svUndone: '✅ Đã khôi phục dữ liệu trước khi nhập', svInfo: 'Cấp {l} · Ngày {d} · 💰{m}', svNow: 'Tiến trình hiện tại: ', svThat: 'Bản lưu này: ' });
+Object.assign(TXT.zh, { home: '我的家', homeGo: '回家', homeLock: '{l} 级后可以入住', comfort: '舒适度 {n}/{m}', restGo: '在这里休息', rested2: '今天休息过了', needGroc2: '家里没吃的了', needBed: '先买张床才能休息',
+  rested: '😴 休息好了！今天全部收入 +{p}%，走路也更快', needGroc: '🍱 家里没有吃的：去超市门口的摊位买点"家里的食材"，再回来休息', homeNew: '🏠 你有自己的家了！就在餐厅东边、小路对面（也可以点左边的 🏠）。可以花钱装修，每天回去休息',
+  restD: '每天回家在床边休息一次（用掉 1 份 🍱 家里的食材）：当天全部收入 +{p}%，走路更快。舒适度越高加得越多，挂机收益的比例也越高（现在按 {o}% 算）。', secHome: '🛋️ 装修',
+  f_floor: '地板', f_wall: '墙面', f_bed: '床', f_sofa: '沙发', f_tv: '电视', f_table: '餐桌', f_kitchen: '厨房', f_plant: '绿植', f_rug: '地毯', f_art: '挂画和摆件', f_shelf: '书架', f_lux: '鱼缸和钢琴',
+  tier1: '简易', tier2: '舒适', tier3: '精致', tier4: '豪华', furnNone: '还没有', furnD: '换成{n}款，舒适度 +{p}', furnMax: '已经是最好的了', offRate: '员工照常营业，效率按 {p}% 算' });
+Object.assign(TXT.en, { home: 'My Home', homeGo: 'Go home', homeLock: 'Move in at level {l}', comfort: 'Comfort {n}/{m}', restGo: 'Rest here', rested2: 'Rested today', needGroc2: 'No food at home', needBed: 'Buy a bed first',
+  rested: '😴 Well rested! All income +{p}% today, and you walk faster', needGroc: '🍱 No food at home: buy some groceries at the stall by the supermarket door, then come back to rest', homeNew: '🏠 You have a home now! It is just east of the restaurant, across the lane (or tap 🏠 on the left). Decorate it and rest there every day',
+  restD: 'Rest by your bed once a day (uses 1 🍱 groceries): +{p}% on all income that day and faster walking. More comfort means a bigger bonus and a higher idle-income rate (now {o}%).', secHome: '🛋️ Decorating',
+  f_floor: 'Floor', f_wall: 'Walls', f_bed: 'Bed', f_sofa: 'Sofa', f_tv: 'TV', f_table: 'Dining table', f_kitchen: 'Kitchen', f_plant: 'Plants', f_rug: 'Rug', f_art: 'Art & ornaments', f_shelf: 'Bookshelf', f_lux: 'Aquarium & piano',
+  tier1: 'Basic', tier2: 'Cozy', tier3: 'Fine', tier4: 'Luxury', furnNone: 'None yet', furnD: 'Upgrade to {n}: comfort +{p}', furnMax: 'Best there is', offRate: 'Your staff kept working at {p}% pace' });
+Object.assign(TXT.vi, { home: 'Nhà của tôi', homeGo: 'Về nhà', homeLock: 'Dọn vào ở từ cấp {l}', comfort: 'Tiện nghi {n}/{m}', restGo: 'Nghỉ ngơi ở đây', rested2: 'Hôm nay đã nghỉ', needGroc2: 'Nhà hết đồ ăn', needBed: 'Hãy mua giường trước',
+  rested: '😴 Đã nghỉ ngơi! Hôm nay mọi thu nhập +{p}% và đi nhanh hơn', needGroc: '🍱 Nhà hết đồ ăn: hãy mua "thực phẩm cho nhà" ở quầy hàng trước cửa siêu thị rồi về nghỉ', homeNew: '🏠 Bạn đã có nhà riêng! Ngay phía đông nhà hàng, bên kia con hẻm (hoặc bấm 🏠 bên trái). Hãy trang trí và về nghỉ mỗi ngày',
+  restD: 'Mỗi ngày về nghỉ cạnh giường một lần (tốn 1 phần 🍱 thực phẩm): hôm đó mọi thu nhập +{p}% và đi nhanh hơn. Càng tiện nghi thì cộng càng nhiều, tỉ lệ thu nhập khi vắng mặt cũng cao hơn (hiện {o}%).', secHome: '🛋️ Trang trí',
+  f_floor: 'Sàn nhà', f_wall: 'Tường', f_bed: 'Giường', f_sofa: 'Sofa', f_tv: 'TV', f_table: 'Bàn ăn', f_kitchen: 'Bếp', f_plant: 'Cây xanh', f_rug: 'Thảm', f_art: 'Tranh & đồ trưng bày', f_shelf: 'Kệ sách', f_lux: 'Bể cá & đàn piano',
+  tier1: 'Đơn giản', tier2: 'Ấm cúng', tier3: 'Tinh tế', tier4: 'Sang trọng', furnNone: 'Chưa có', furnD: 'Đổi sang loại {n}: tiện nghi +{p}', furnMax: 'Đã là loại tốt nhất', offRate: 'Nhân viên vẫn làm việc, tính {p}% hiệu suất' });
+Object.assign(TXT.zh, { stall: '生活用品摊', stallFar: '走到摊位前才能买', goBuy: '过去', lifeNew: '🏠 新内容：自己的家（餐厅东边）、宠物、超市门口的生活用品摊，还有派出所的上门检查。整条街现在是连在一起的，走进门就是店里',
+  g_groc: '家里的食材', g_grocD: '回家休息时吃，每次 1 份（一次买 {n} 份）', g_food: '宠物粮', g_foodD: '喂宠物，每次 1 份（一次买 {n} 份）', g_toy: '宠物玩具', g_toyD: '在家陪宠物玩一次用 1 个，亲密度涨得快',
+  g_clean: '清洁用品', g_cleanD: '卫生检查要查，每次检查用掉 1 份', g_ext: '灭火器', g_extD: '消防检查要查，每次检查换掉 1 个', s_rests: '回家休息', s_insp: '检查合格',
+  a_comfort: '家的舒适度达到 {n}', a_rests: '回家休息 {n} 次', a_pets: '宠物等级合计达到 {n}', a_insp: '检查合格 {n} 次',
+  petTitle: '宠物', petLock: '{l} 级后可以养', p_cat: '小猫', p_dog: '小狗', p_parrot: '鹦鹉', p_catD: '帮你抓餐厅的老鼠，越亲抓得越快', p_dogD: '逗客人开心：客人愿意多等 4%（每级）', p_parrotD: '在门口招呼：客人来得快 2%（每级）',
+  petGo: '带上', petStay: '留在家', petHungry: '饿了', feeder: '自动喂食器', feederD: '宠物饿了自己从存粮里吃（要备着宠物粮）',
+  petNew: '🐾 可以养宠物了！打开"经营"里的 🧺 页领养；宠物粮在超市门口的摊位买', petGot: '🐾 {n}到家了！回家站到食盆前喂它、摸摸它，它会越来越亲',
+  petHungryT: '🍖 {n}饿了，饿着就不帮忙：带上宠物粮回家，站到食盆前喂它', petLvUp: '💕 {n}和你更亲了：Lv.{l}',
+  cop: '派出所', secInsp: '上门检查', inspRec: '合格 {a} 次 · 不合格 {b} 次', inspNew: '🚓 派出所开始巡查了：检查员会不定期上门，合格有奖，不合格罚款。执照快到期时记得去续办',
+  inspSoon: '📢 {n}：检查员马上从派出所出发，快看看店里', i_health: '卫生检查', i_fire: '消防检查', i_police: '治安检查',
+  inspRes4: '✅ {n} {a}/4 全部合格！奖励 💰{r}', inspRes3: '👍 {n} {a}/4 基本合格，奖励 💰{r}', inspRes2: '⚠️ {n} {a}/4：口头警告，下次注意', inspRes1: '❌ {n} {a}/4 不合格，罚款 💰{r}',
+  c_tidy: '餐桌干净', c_mouse: '没有老鼠', c_clean: '备有清洁用品', c_stock: '食材充足', c_ext: '备有灭火器', c_door: '门口不拥堵', c_pass: '出餐台不积压', c_floor: '店里整洁', c_lic: '执照有效', c_debt: '没有欠债', c_star: '口碑达标', c_cash: '现金及时收好',
+  licRow: '营业执照', licOk: '还有 {n} 天到期', licBad: '已经过期了', licD: '治安检查要看；剩 3 天以内可以到派出所门口续办', licRenew: '站这里续办执照 💰{n}', licDone: '📄 执照续好了，有效到第 {n} 天', inspLast: '上一次：{n}', inspNow: '{n}正在进行…' });
+Object.assign(TXT.en, { stall: 'Household stall', stallFar: 'Walk up to the stall to buy', goBuy: 'Go', lifeNew: '🏠 New: your own home (east of the restaurant), pets, a household stall by the supermarket door, and inspections from the police station. The whole street is one connected map now: walk through a door and you are inside',
+  g_groc: 'Groceries', g_grocD: 'Eaten when you rest at home, 1 each time (pack of {n})', g_food: 'Pet food', g_foodD: 'Feeds a pet, 1 each time (pack of {n})', g_toy: 'Pet toy', g_toyD: 'Play with a pet at home (uses 1) to bond faster',
+  g_clean: 'Cleaning supplies', g_cleanD: 'Checked by health inspectors; each visit uses 1', g_ext: 'Fire extinguisher', g_extD: 'Checked by fire inspectors; each visit replaces 1', s_rests: 'Rests at home', s_insp: 'Inspections passed',
+  a_comfort: 'Reach comfort {n} at home', a_rests: 'Rest at home {n} times', a_pets: 'Total pet level {n}', a_insp: 'Pass {n} inspections',
+  petTitle: 'Pets', petLock: 'Unlocks at level {l}', p_cat: 'Kitten', p_dog: 'Puppy', p_parrot: 'Parrot', p_catD: 'Catches mice in the restaurant, faster as you bond', p_dogD: 'Cheers guests up: they wait 4% longer (per level)', p_parrotD: 'Greets at the door: guests arrive 2% faster (per level)',
+  petGo: 'Take along', petStay: 'Leave home', petHungry: 'Hungry', feeder: 'Auto feeder', feederD: 'Hungry pets eat from your stock by themselves (keep pet food in stock)',
+  petNew: '🐾 You can keep pets now! Adopt one on the 🧺 page of Manage; pet food is sold at the stall by the supermarket door', petGot: '🐾 {n} has come home! Stand by the food bowl at home to feed and pet it, and it will grow closer to you',
+  petHungryT: '🍖 {n} is hungry and will not help until fed: bring pet food home and stand by the bowl', petLvUp: '💕 {n} feels closer to you: Lv.{l}',
+  cop: 'Police station', secInsp: 'Inspections', inspRec: 'Passed {a} · failed {b}', inspNew: '🚓 The police station now sends inspectors: they drop by from time to time, with a bonus if you pass and a fine if you fail. Renew your licence before it runs out',
+  inspSoon: '📢 {n}: an inspector is about to leave the station. Check your restaurant!', i_health: 'Health inspection', i_fire: 'Fire inspection', i_police: 'Police check',
+  inspRes4: '✅ {n} {a}/4, all passed! Bonus 💰{r}', inspRes3: '👍 {n} {a}/4, mostly fine. Bonus 💰{r}', inspRes2: '⚠️ {n} {a}/4: a warning this time', inspRes1: '❌ {n} {a}/4 failed. Fine 💰{r}',
+  c_tidy: 'Tables are clean', c_mouse: 'No mice', c_clean: 'Cleaning supplies in stock', c_stock: 'Enough ingredients', c_ext: 'Extinguisher in place', c_door: 'Entrance not crowded', c_pass: 'No dishes piling up', c_floor: 'Tidy dining room', c_lic: 'Licence is valid', c_debt: 'No debt', c_star: 'Good rating', c_cash: 'Cash collected in time',
+  licRow: 'Business licence', licOk: 'Expires in {n} days', licBad: 'Expired', licD: 'Checked by the police; renew at the station door when 3 days or fewer are left', licRenew: 'Stand here to renew 💰{n}', licDone: '📄 Licence renewed, valid until day {n}', inspLast: 'Last time: {n}', inspNow: '{n} in progress…' });
+Object.assign(TXT.vi, { stall: 'Quầy đồ gia dụng', stallFar: 'Hãy đến trước quầy để mua', goBuy: 'Đến', lifeNew: '🏠 Mới: nhà riêng (phía đông nhà hàng), thú cưng, quầy đồ gia dụng trước cửa siêu thị và các đợt kiểm tra từ đồn công an. Cả con phố giờ là một bản đồ liền nhau: bước qua cửa là vào trong',
+  g_groc: 'Thực phẩm cho nhà', g_grocD: 'Dùng khi nghỉ ở nhà, mỗi lần 1 phần (mua một lần {n} phần)', g_food: 'Thức ăn thú cưng', g_foodD: 'Cho thú cưng ăn, mỗi lần 1 phần (mua một lần {n} phần)', g_toy: 'Đồ chơi thú cưng', g_toyD: 'Chơi với thú cưng ở nhà (tốn 1 cái), thân thiết nhanh hơn',
+  g_clean: 'Đồ vệ sinh', g_cleanD: 'Kiểm tra vệ sinh sẽ xem, mỗi lần tốn 1 phần', g_ext: 'Bình chữa cháy', g_extD: 'Kiểm tra phòng cháy sẽ xem, mỗi lần thay 1 bình', s_rests: 'Số lần về nhà nghỉ', s_insp: 'Số lần kiểm tra đạt',
+  a_comfort: 'Độ tiện nghi của nhà đạt {n}', a_rests: 'Về nhà nghỉ {n} lần', a_pets: 'Tổng cấp thú cưng đạt {n}', a_insp: 'Đạt kiểm tra {n} lần',
+  petTitle: 'Thú cưng', petLock: 'Mở ở cấp {l}', p_cat: 'Mèo con', p_dog: 'Cún con', p_parrot: 'Vẹt', p_catD: 'Bắt chuột trong nhà hàng, càng thân càng bắt nhanh', p_dogD: 'Làm khách vui: khách chịu chờ lâu hơn 4% (mỗi cấp)', p_parrotD: 'Chào khách ở cửa: khách đến nhanh hơn 2% (mỗi cấp)',
+  petGo: 'Dắt theo', petStay: 'Để ở nhà', petHungry: 'Đang đói', feeder: 'Máy cho ăn tự động', feederD: 'Thú cưng đói sẽ tự ăn từ kho (nhớ trữ thức ăn thú cưng)',
+  petNew: '🐾 Đã có thể nuôi thú cưng! Nhận nuôi ở trang 🧺 trong Quản lý; thức ăn thú cưng bán ở quầy hàng trước cửa siêu thị', petGot: '🐾 {n} đã về nhà! Về nhà đứng trước bát ăn để cho ăn và vuốt ve, nó sẽ ngày càng thân với bạn',
+  petHungryT: '🍖 {n} đang đói nên không giúp được: mang thức ăn về nhà và đứng trước bát ăn', petLvUp: '💕 {n} thân với bạn hơn: Lv.{l}',
+  cop: 'Đồn công an', secInsp: 'Kiểm tra tại quán', inspRec: 'Đạt {a} lần · không đạt {b} lần', inspNew: '🚓 Đồn công an bắt đầu đi kiểm tra: thỉnh thoảng thanh tra sẽ ghé quán, đạt thì thưởng, không đạt thì phạt. Nhớ gia hạn giấy phép trước khi hết hạn',
+  inspSoon: '📢 {n}: thanh tra sắp rời đồn, hãy xem lại quán ngay', i_health: 'Kiểm tra vệ sinh', i_fire: 'Kiểm tra phòng cháy', i_police: 'Kiểm tra an ninh',
+  inspRes4: '✅ {n} {a}/4, đạt tất cả! Thưởng 💰{r}', inspRes3: '👍 {n} {a}/4, cơ bản đạt. Thưởng 💰{r}', inspRes2: '⚠️ {n} {a}/4: nhắc nhở lần này', inspRes1: '❌ {n} {a}/4 không đạt. Phạt 💰{r}',
+  c_tidy: 'Bàn ăn sạch', c_mouse: 'Không có chuột', c_clean: 'Có sẵn đồ vệ sinh', c_stock: 'Đủ nguyên liệu', c_ext: 'Có bình chữa cháy', c_door: 'Cửa không ùn tắc', c_pass: 'Quầy ra món không ứ đọng', c_floor: 'Quán gọn gàng', c_lic: 'Giấy phép còn hạn', c_debt: 'Không nợ nần', c_star: 'Đánh giá tốt', c_cash: 'Thu tiền kịp thời',
+  licRow: 'Giấy phép kinh doanh', licOk: 'Còn {n} ngày', licBad: 'Đã hết hạn', licD: 'Công an sẽ kiểm tra; còn từ 3 ngày trở xuống thì đến cửa đồn để gia hạn', licRenew: 'Đứng đây để gia hạn 💰{n}', licDone: '📄 Đã gia hạn giấy phép, có hiệu lực đến ngày {n}', inspLast: 'Lần trước: {n}', inspNow: 'Đang {n}…' });
 let lang = '';
 try { lang = localStorage.getItem('shiguang-lang') || ''; } catch (e) {}
 if (!TXT[lang]) { const n = (navigator.language || 'zh').toLowerCase(); lang = n.startsWith('vi') ? 'vi' : n.startsWith('zh') ? 'zh' : 'en'; }
@@ -412,32 +467,53 @@ const UP = {
   ad:      { ic: '📣', cost: [200, 700, 2200, 7000, 22000] },
   takeout: { ic: '🛵', cost: [1500] },
 };
+// 整个游戏是一张地图、一条街：从西到东是 公司总部、游乐场、派出所、超市、（摊位）、餐厅、小路、自己的家、奶茶店、酒店。各家店的店内就建在街边（ox 是店的西墙），走进门就是店里
 const BIZ = [   // 产业按顺序开放：上一处满级才能开下一处；售价和花费逐级翻倍（mul）
-  { k: 'market',  e: '🛒', x0: -10.5, x1: -2.6,  y0: 5.5, cost: 80000, mul: 12, cm: 6, useT: 0.5, users: 3,
+  { k: 'market',  e: '🛒', ox: -25.75, cost: 80000, mul: 12, cm: 6, useT: 0.5, users: 3,
     items: [['fruit', '🍎', '#e63946', 16], ['veg', '🥬', '#52b788', 22], ['bread', '🍞', '#e0a04a', 30], ['milk', '🥛', '#f1faee', 40], ['soda', '🥤', '#3a86ff', 54], ['snack', '🍪', '#bc6c25', 72], ['ice', '🍦', '#ffd6de', 96], ['fish', '🐟', '#8ecae6', 128]] },
-  { k: 'teashop', e: '🧋', x0: 24.2,  x1: 29.2,  y0: 6.6, cost: 2e6, mul: 50, cm: 60, useT: 1.3, users: 2, payFirst: 1,
+  { k: 'teashop', e: '🧋', ox: 40.6, cost: 2e6, mul: 50, cm: 60, useT: 1.3, users: 2, payFirst: 1,
     items: [['mtea', '🧋', '#d6a574', 18], ['matcha', '🍵', '#74c69d', 26], ['fruitea', '🍹', '#ff9f1c', 36], ['latte', '☕', '#8a5a35', 50], ['cake', '🍰', '#ffd6de', 70], ['donut', '🍩', '#e85d75', 96]] },
-  { k: 'hotel',   e: '🏨', x0: 33.5,  x1: 40.5,  y0: 5.5, cost: 6e6, mul: 200, cm: 280, useT: 5, users: 2, payFirst: 1, hide: 1,
+  { k: 'hotel',   e: '🏨', ox: 65.6, cost: 6e6, mul: 200, cm: 280, useT: 5, users: 2, payFirst: 1, hide: 1,
     items: [['single', '🛏️', '#8ecae6', 24], ['double', '🛌', '#b7e4c7', 36], ['family', '🧸', '#ffd166', 52], ['seaview', '🌅', '#f4a261', 74], ['suite', '👑', '#b07cd8', 104], ['spa', '♨️', '#e85d75', 150]] },
-  { k: 'park',    e: '🎡', x0: -25,   x1: -12.5, y0: 2,   cost: 3e7, mul: 800, cm: 900, useT: 3.5, users: 3, payFirst: 1,
+  { k: 'park',    e: '🎡', ox: -60.4, cost: 3e7, mul: 800, cm: 900, useT: 3.5, users: 3, payFirst: 1,
     items: [['carousel', '🎠', '#ffd6de', 20], ['bumper', '🚗', '#3a86ff', 30], ['shoot', '🎯', '#e63946', 44], ['popcorn', '🍿', '#ffd166', 60], ['coaster', '🎢', '#f4a261', 86], ['wheel', '🎡', '#b07cd8', 126]] },
 ];
-const HQ = { cost: 3e8, x0: -34.5, x1: -27.5, y0: 5.5, px: -31 };
+const HQ = { cost: 3e8, x0: -70.5, x1: -63.5, y0: 5.5, px: -67 };
 const BY = 11.6, PADY = 12.65, BIZMAX = 10, CRATE = 20, DAYLEN = 300;
+const XWALK = [-67, -58.6, -39.6, -32.1, -23.95, -4.3, 6.75, 13.3, 27.1, 42.4, 61.4, 67.4, 86.4];   // 斑马线的位置：各处门口
+// ---- 生活：家、宠物、生活用品、上门检查 ----
+const HOME = { ox: 25.6, oz: 2.6, w: 12, h: 9, obs: [] };   // 自己的家：餐厅东边、小路对面，南墙贴着人行道，门在西南角
+const COP = { x0: -35.4, x1: -28.8, y0: 6.2, px: -32.1 };   // 派出所：检查员从这里出发，证照也在这里办
+const STALL = { x: -1.95, y: 12.65 }, SHOP = { x: -3.75, y: 12.5 };   // 超市门口的摊位：摊主卖生活用品（STALL），旁边是买食材的地方（SHOP）
+const FURN = [   // 家具：[编号, 图标, 第一档的价钱, 屋里的位置 x, z]，每件四档，价钱按 FMUL 递增
+  ['floor', '🟫', 600], ['wall', '🎨', 500], ['bed', '🛏️', 800, 2.0, 1.5], ['sofa', '🛋️', 1200, 3.7, 6.3], ['tv', '📺', 2000, 0.7, 5.6], ['table', '🍽️', 900, 8.2, 5.0],
+  ['kitchen', '🍳', 3000, 10.6, 0.8], ['plant', '🪴', 300, 0.9, 8.2], ['rug', '🧶', 700, 2.2, 7.2], ['art', '🖼️', 1500, 0.5, 3.4], ['shelf', '📚', 1000, 5.9, 0.7], ['lux', '💎', 20000, 5.6, 7.9]];
+const FMUL = [1, 30, 900, 30000], FPTS = [0, 1, 3, 6, 10];   // 四档的价钱倍数；各档的舒适度
+const PETS = [['cat', '🐱', 3000], ['dog', '🐶', 12000], ['parrot', '🦜', 60000]];   // 宠物：[编号, 图标, 领养费]
+const IKS = ['health', 'fire', 'police'], IPLAN = { health: ['tidy', 'mouse', 'clean', 'stock'], fire: ['ext', 'door', 'pass', 'floor'], police: ['lic', 'debt', 'star', 'cash'] };   // 上门检查：三种轮着来，每种查四项
+const GOODS = [['groc', '🍱', 15, 5, 30, 0.001], ['food', '🐾', 20, 5, 30, 0.001], ['toy', '🧸', 120, 1, 10, 0.003], ['clean', '🧹', 60, 1, 10, 0.003], ['ext', '🧯', 200, 1, 5, 0.01]];   // 生活用品：[编号, 图标, 单价基数, 一次买几份, 最多囤几份, 单价至少是日收入的多少]
+const COMFMAX = 135, FEEDER = 20000;   // 舒适度上限（家具 120 + 三只宠物各 5 级）；自动喂食器的价钱
 const VW = 22, VH = 15, BOXU = 6;
 const VUP = { sk: ['📦', 4, 4000, 2.2], ck: ['🧾', 3, 6000, 2.5], spd: ['👟', 5, 3000, 2], cap: ['🧺', 3, 5000, 2.2], ad: ['📣', 5, 3500, 2] };   // 各家店的员工与经营升级：[图标, 最高级, 基础价, 每级涨价倍数]
-BIZ.forEach((b, i) => { b.idx = i; b.px = (b.x0 + b.x1) / 2; b.ox = 0; b.oz = 44 + i * 26; b.rt = null; b.obs = []; });
+BIZ.forEach((b, i) => { b.idx = i; b.oz = BY - VH; b.px = b.ox + 20.8; b.rt = null; b.obs = []; });   // 店内占 [ox, ox+VW] × [oz, oz+VH]，南墙贴着人行道；东南角（px）和西南角各有一道门
+const atHome = (x, y) => x > HOME.ox - 0.3 && x < HOME.ox + HOME.w + 0.3 && y > HOME.oz - 0.3 && y < HOME.oz + HOME.h + 0.1;
+HOME.in = [HOME.ox + 1.5, HOME.oz + 8.0]; HOME.rest = [HOME.ox + 3.5, HOME.oz + 5.6]; HOME.bowl = [HOME.ox + 5.6, HOME.oz + 7.55];   // 屋里的几个点：进门落脚处、床边休息处、食盆前
 const EAT = 4.5, SAVE_KEY = 'shiguang-xiaoguan-v4', SINKS = [0.8, 10.0, 19.0], nearSink = x => SINKS.reduce((a, b) => Math.abs(b - x) < Math.abs(a - x) ? b : a), FRIDGE = { x: 1.25, y: 10.9 };
 
 // ================= 存档 =================
 function fresh() {
   const s = { money: 30, level: 1, xp: 0, rating: 3, missionN: 0, mission: null, last: 0, stock: 20, tables: 2, day: 1, dayT: 0, hq: 0, contract: 0, brand: 0, ach: {}, d: { rev: 0, cost: 0 },
-    stat: { served: 0, earned: 0, happy: 0, washed: 0, vip: 0, critic: 0, mouse: 0, combo: 0, boxes: 0, checkout: 0, contracts: 0, star: 0, offline: 0, events: 0, promos: 0 },
+    home: {}, pets: {}, pet: '', feeder: 0, rest: 0, lic: 0, inv: {}, insp: { next: 200 },
+    stat: { served: 0, earned: 0, happy: 0, washed: 0, vip: 0, critic: 0, mouse: 0, combo: 0, boxes: 0, checkout: 0, contracts: 0, star: 0, offline: 0, events: 0, promos: 0, rests: 0, inspOk: 0, inspBad: 0 },
     up: { waiter: 0, busser: 0, eff: 0, svc: 0, cap: 0, store: 0, buyer: 0, pat: 0, ad: 0, takeout: 0 }, skill: {}, biz: {} };
-  ITEMS.forEach(i => s.skill[i.m] = 0); BIZ.forEach(b => s.biz[b.k] = { lv: 0, st: b.items.map((it, i) => i ? 0 : 1), sk: 0, ck: 0, spd: 0, cap: 0, ad: 0 }); s.ms = {}; return s;
+  ITEMS.forEach(i => s.skill[i.m] = 0); BIZ.forEach(b => s.biz[b.k] = { lv: 0, st: b.items.map((it, i) => i ? 0 : 1), sk: 0, ck: 0, spd: 0, cap: 0, ad: 0 }); s.ms = {};
+  FURN.forEach(f => s.home[f[0]] = 0); GOODS.forEach(q => s.inv[q[0]] = 0); return s;
 }
 function normS(s) {   // 旧存档（或联机时旧版本房主发来的存档）补上新加的字段
-  const f = fresh(); s.stat = Object.assign(f.stat, s.stat); if (!s.ach) s.ach = {}; if (s.brand == null) s.brand = 0; return s;
+  const f = fresh(); s.stat = Object.assign(f.stat, s.stat); if (!s.ach) s.ach = {}; if (s.brand == null) s.brand = 0;
+  s.home = Object.assign(f.home, s.home); s.inv = Object.assign(f.inv, s.inv); if (!s.pets || typeof s.pets !== 'object') s.pets = {}; if (typeof s.pet !== 'string') s.pet = '';
+  if (!s.insp || typeof s.insp !== 'object') s.insp = f.insp; if (s.lic == null) s.lic = 0; if (s.rest == null) s.rest = 0; if (s.feeder == null) s.feeder = 0;
+  return s;
 }
 function adopt(d) {   // 把读到的存档补齐成当前版本能用的样子（启动时读本机存档、导入存档码都走这里）
   const f = fresh(), num = (v, lo, hi, dv) => { v = +v; return v === v ? Math.max(lo, Math.min(hi, v)) : dv; };
@@ -453,6 +529,11 @@ function adopt(d) {   // 把读到的存档补齐成当前版本能用的样子�
   const m = s.mission; if (!m || typeof m !== 'object' || typeof m.type !== 'string' || !(m.goal > 0) || !(m.reward >= 0)) s.mission = null; else m.prog = num(m.prog, 0, 1e18, 0);
   if (!s.ach || typeof s.ach !== 'object') s.ach = {}; if (!s.ms || typeof s.ms !== 'object') s.ms = {};
   for (const k in s.stat) s.stat[k] = num(s.stat[k], 0, 1e18, 0);
+  for (const f of FURN) s.home[f[0]] = Math.floor(num(s.home[f[0]], 0, 4, 0));
+  for (const q of GOODS) s.inv[q[0]] = Math.floor(num(s.inv[q[0]], 0, 99, 0));
+  { const pp = s.pets; s.pets = {}; for (const q of PETS) { const o = pp[q[0]]; if (o && typeof o === 'object') s.pets[q[0]] = { h: num(o.h, 0, 100, 100), love: num(o.love, 0, 1e7, 0), pd: num(o.pd, 0, 1e7, 0), td: num(o.td, 0, 1e7, 0) }; } if (!s.pets[s.pet]) s.pet = ''; }
+  s.feeder = s.feeder ? 1 : 0; s.rest = num(s.rest, 0, 1e7, 0); s.lic = num(s.lic, 0, 1e7, 0); { const L = s.insp.last, okL = L && typeof L === 'object' && IPLAN[L.k] && Array.isArray(L.res) && L.res.length === 4;
+    s.insp = { next: num(s.insp.next, 0, 5000, 200), n: Math.floor(num(s.insp.n, 0, 1e7, 0)) }; if (okL) s.insp.last = { k: L.k, res: L.res.map(v => v ? 1 : 0), r: num(L.r, -1e18, 1e18, 0), d: num(L.d, 0, 1e7, 0) }; }
   if (s.mission && s.mission.left != null) s.mission.left = num(s.mission.left, 0, 300, 300);
   if (s.yrev != null) s.yrev = num(s.yrev, 0, 1e18, 0); if (s.avgP != null) s.avgP = num(s.avgP, -1e18, 1e18, 0); s.last = num(s.last, 0, 1e15, 0); s.contract = num(s.contract, 0, 1e7, 0);
   return s;
@@ -470,18 +551,28 @@ const unlocked = () => Math.min(S.level, ITEMS.length);
 const tableCount = () => S.tables;
 const tableMax = () => Math.min(S.level * 2, SPOTS.length);
 const tableCost = () => Math.round(150 * Math.pow(1.45, S.tables - 2) / 10) * 10;
-const playerSpeed = () => 3.3 * (1 + 0.14 * S.up.svc);
+const playerSpeed = () => 3.3 * (1 + 0.14 * S.up.svc) * (S.rest === S.day ? 1.08 : 1);   // 今天在家休息过：走路快一点
 const waiterSpeed = () => 2.75 * (1 + 0.18 * S.up.eff);   // 沿过道绕行比直线远一些，走路速度相应提高，整体效率与之前持平
 const cookTime = it => it.t * Math.pow(0.88, S.skill[it.m]);
 const price = it => it.p * (1 + 0.15 * S.skill[it.m]);
 const skillCost = it => Math.round(it.p * 15 * Math.pow(2.2, S.skill[it.m]) / 10) * 10;
-const patience = () => 36 * (1 + 0.15 * S.up.pat);
+const patience = () => 36 * (1 + 0.15 * S.up.pat) * (1 + 0.04 * petOk('dog'));   // 家里的狗会逗客人开心：每级多等 4%
 const capacity = () => 2 + S.up.cap;
 const stockCap = () => 60 + 40 * S.up.store;
 const unitCost = () => { let a = 0; const n = unlocked(); for (let i = 0; i < n; i++) a += ITEMS[i].p; return Math.max(1, Math.round(a / n * 0.4 * (S.biz.market.lv > 0 ? 0.7 : 1))); };
 const xpNeed = () => Math.round(14 * Math.pow(S.level, 1.7));
 const cratePrice = () => unitCost() * CRATE;
-const incMul = () => (S.contract === S.day ? 1.2 : 1) * (1 + 0.04 * S.brand);
+const incMul = () => (S.contract === S.day ? 1.2 : 1) * (1 + 0.04 * S.brand) * restMul();
+const homeOpen = () => S.level >= 2, inspOpen = () => S.level >= 4, petOpen = () => S.level >= 5;   // 生活内容随餐厅等级逐步开放
+const furnCost = k => Math.round(FURN.find(f => f[0] === k)[2] * FMUL[S.home[k]]);   // 换下一档的价钱
+const comfort = () => FURN.reduce((a, f) => a + FPTS[S.home[f[0]] || 0], 0) + PETS.reduce((a, q) => a + petLv(q[0]), 0);   // 舒适度：12 件家具各 0~10 分，每只宠物每级再加 1 分
+const restMul = () => S.rest === S.day ? 1.03 + comfort() * 0.001 : 1;   // 今天回家休息过：全部收入 +3%，舒适度每 10 点再 +1%
+const offRate = () => OFF.rate + 0.05 * Math.min(1, comfort() / COMFMAX);   // 挂机收益的比例：25% 起，家里越舒适越高，最多 30%
+const petLv = k => { const q = S.pets[k]; if (!q) return 0; let l = 1; for (const t of [30, 90, 200, 400]) if (q.love >= t) l++; return l; };   // 亲密度升级：1~5 级
+const petOk = k => { const q = S.pets[k]; return q && q.h > 0 ? petLv(k) : 0; };   // 吃饱了才帮忙：返回等级，饿着就是 0
+const goodPrice = k => { const q = GOODS.find(g => g[0] === k); return Math.max(5, Math.round(Math.max(q[2] * Math.pow(1 + S.level / 5, 1.2), refDay() * q[5]) * q[3] / 5) * 5); };   // 买一组的价钱：随等级慢慢涨，也跟着日收入水平走（赚得多了，日子也过得贵）
+const petHungry = () => PETS.some(q => S.pets[q[0]] && S.pets[q[0]].h <= 0);
+const licFee = () => Math.max(100, Math.round(Math.max(60 * S.level, refDay() * 0.03) / 10) * 10);   // 续办执照的费用（管 10 天）
 const brandCost = () => Math.round(1.5e8 * Math.pow(1.45, S.brand));   // 通关后的长期目标：品牌等级没有上限，越往后越贵
 const vOwned = b => S.biz[b.k].lv > 0;
 const restDone = () => S.tables >= SPOTS.length && unlocked() >= ITEMS.length;
@@ -1019,89 +1110,70 @@ const fountain = new THREE.Group(); scene.add(fountain);
 (function buildDistrict() {
   const s = DS; flatRoot = DS;
   flat(400, 400, '#8fc97a', 0, -0.02, 60, scene).userData.keep = true;
-  flat(112, 1.3, '#d9d4c7', 3.5, -0.012, 12.25); flat(112, 3.4, '#59636e', 3.5, -0.008, 14.6); flat(112, 1.4, '#d9d4c7', 3.5, -0.012, 17.0);
-  flat(0.9, 21, '#d9d4c7', 20.75, -0.012, 1.4); flat(2.6, 21, '#59636e', 22.5, -0.009, 1.4); flat(0.4, 21, '#d9d4c7', 24.0, -0.012, 1.4);
-  for (let x = -51; x < 59; x += 2.4) flat(1.2, 0.14, '#f1e9c9', x, -0.004, 14.6);
-  for (let z = -8; z < 12; z += 2.4) flat(0.14, 1.2, '#f1e9c9', 22.5, -0.004, z);
-  for (let x = -36; x <= 44; x += 8) {
+  flat(184, 1.3, '#d9d4c7', 9, -0.012, 12.25); flat(184, 3.4, '#59636e', 9, -0.008, 14.6); flat(184, 1.4, '#d9d4c7', 9, -0.012, 17.0);
+  flat(0.9, 26, '#d9d4c7', 20.75, -0.012, -1.1); flat(2.6, 26, '#59636e', 22.5, -0.009, -1.1); flat(0.4, 26, '#d9d4c7', 24.0, -0.012, -1.1);
+  for (let x = -81; x < 100; x += 2.4) flat(1.2, 0.14, '#f1e9c9', x, -0.004, 14.6);
+  for (let z = -13; z < 12; z += 2.4) flat(0.14, 1.2, '#f1e9c9', 22.5, -0.004, z);
+  for (let x = -76; x <= 92; x += 8) {
     mk(cyl(0.05, 0.07, 2.6, 8), '#3b4a5a', x, 1.3, 17.45, s); mk(sph(0.17), '#fff3b0', x, 2.7, 17.45, s, { emissive: '#ffd60a', emissiveIntensity: 1 }); mk(cyl(0.2, 0.12, 0.08), '#3b4a5a', x, 2.86, 17.45, s);
   }
-  for (let x = -37; x <= 44; x += 5.5) tree(x + (Math.abs(x) % 3) * 0.3, 19.2 + (Math.abs(x) % 2), 1 + (Math.abs(x) % 3) * 0.12);
-  for (const [x, z] of [[-1.5, 3], [-1.6, 8.5], [30.8, 8], [31.5, 3.5], [42.5, 9], [-27, 6], [26, 3], [28.5, 1], [-6, 2], [-9, 3.4]]) tree(x, z, 1.1);
+  for (let x = -81; x <= 98; x += 5.5) tree(x + (Math.abs(x) % 3) * 0.3, 19.2 + (Math.abs(x) % 2), 1 + (Math.abs(x) % 3) * 0.12);
+  for (const [x, z] of [[-1.5, 3], [-1.6, 8.5], [-27.3, 3], [-27.3, 8.5], [-36.9, 4], [-36.9, 9], [-62, 5], [-62, 9.5], [39.1, 3], [39.1, 9], [64.1, 5], [89.6, 4], [90.6, 9], [-72.6, 8]]) tree(x, z, 1.1);   // 各家店之间的空隙里
   // 喷泉广场（产业 ≥2 后出现）
   flat(7, 3.2, '#e9e2d0', 10, -0.006, 20.2, fountain);
   mk(cyl(1.5, 1.6, 0.4, 28), '#cfd8dc', 10, 0.2, 20.2, fountain); mk(cyl(1.3, 1.3, 0.06, 28), '#5fb3d9', 10, 0.4, 20.2, fountain, { roughness: 0.1 });
   mk(cyl(0.16, 0.22, 1.2, 12), '#cfd8dc', 10, 0.9, 20.2, fountain); mk(cyl(0.6, 0.3, 0.14, 20), '#cfd8dc', 10, 1.45, 20.2, fountain); mk(sph(0.2), '#8ecae6', 10, 1.7, 20.2, fountain, { roughness: 0.1 });
   for (const x of [7.2, 12.8]) { mk(rb(1.3, 0.1, 0.45, 0.03), '#a86f42', x, 0.42, 21.3, fountain); mk(rb(1.3, 0.4, 0.08, 0.03), '#a86f42', x, 0.68, 21.5, fountain); }
 
-  for (const b of BIZ) {
-    const w = b.x1 - b.x0, d = BY - b.y0, cx = b.px, cz = (b.y0 + BY) / 2;
-    // 待售地块
+  for (const b of BIZ) {   // 每家店占街边一块 22×15 的地。没买下：围着的待售地块（超市是别人开着的一整栋店）；买下后这里直接就是店内，店后再立一个地标
+    const w = VW, d = VH, x0 = b.ox, x1 = x0 + w, z0 = b.oz, cx = x0 + w / 2, cz = z0 + d / 2, dx = x0 + 20.8;
     const lot = b.lot = new THREE.Group(); s.add(lot);
-    flat(w, d, '#c9c2b0', cx, -0.005, cz, lot);
-    for (const [x, z] of [[b.x0, BY], [b.x1, BY], [b.x0, b.y0], [b.x1, b.y0]]) mk(cyl(0.06, 0.06, 0.9, 6), '#e9c46a', x, 0.45, z, lot);
-    mk(rb(w, 0.06, 0.06, 0.02), '#e9c46a', cx, 0.8, BY, lot); mk(rb(0.06, 0.06, d, 0.02), '#e9c46a', b.x1, 0.8, cz, lot);
-    mk(cyl(0.06, 0.06, 1.6, 6), '#8a5a35', cx, 0.8, BY - 1.2, lot); mk(rb(1.5, 1.1, 0.1, 0.04), '#fffaf0', cx, 1.9, BY - 1.2, lot);
-    const ls = emojiSprite(b.e, 0.9, true); ls.position.set(cx, 1.9, BY - 1.1); lot.add(ls);
-    // 建筑
-    const g = b.g = new THREE.Group(); s.add(g);
-    const awning = (y, c1, c2, n) => { for (let i = 0; i < n; i++) mk(rb(w / n, 0.08, 0.9, 0.02), i % 2 ? c1 : c2, b.x0 + (i + 0.5) * w / n, y, BY + 0.35, g).rotation.x = 0.25; };
     if (b.k === 'market') {
-      mk(rb(w, 2.8, d, 0.06), '#f1faee', cx, 1.4, cz, g); mk(rb(w + 0.3, 0.25, d + 0.3, 0.06), '#e63946', cx, 2.9, cz, g);
-      awning(2.25, '#e63946', '#ffffff', 9);
-      mk(rb(5.0, 1.4, 0.08, 0.02), '#bfe9f5', cx - 1.0, 1.1, BY + 0.02, g, { emissive: '#7fc8dd', emissiveIntensity: 0.4, roughness: 0.1 });
-      mk(rb(1.3, 1.9, 0.08, 0.02), '#457b9d', cx + 2.8, 0.95, BY + 0.03, g); mk(rb(0.08, 1.4, 4.2, 0.02), '#bfe9f5', b.x1 + 0.02, 1.2, cz, g, { emissive: '#7fc8dd', emissiveIntensity: 0.4, roughness: 0.1 });
-      ['#e63946', '#ffd166', '#52b788'].forEach((c, i) => { mk(rb(0.7, 0.4, 0.5, 0.04), '#a86f42', b.x0 + 0.8 + i * 0.85, 0.2, BY + 0.45, g); for (let k = 0; k < 3; k++) mk(sph(0.13), c, b.x0 + 0.6 + i * 0.85 + k * 0.2, 0.47, BY + 0.45, g); });
-      { const tx = cx - 2.4, tz = 14.15; mk(rb(1.9, 1.0, 1.0, 0.08), '#f1faee', tx - 0.35, 0.85, tz, g); mk(rb(0.8, 0.8, 1.0, 0.1), '#e63946', tx + 1.05, 0.72, tz, g);
-        mk(rb(0.1, 0.36, 0.8, 0.03), '#bfe9f5', tx + 1.46, 0.85, tz, g); for (const dx of [-0.9, 0.9]) for (const dz of [-0.45, 0.45]) mk(cyl(0.2, 0.2, 0.14, 12), '#22333b', tx + dx, 0.2, tz + dz, g).rotation.x = Math.PI / 2; }
-      const sp = emojiSprite('🛒', 1.5, true); sp.position.set(cx, 3.8, cz + 2); g.add(sp);
-    } else if (b.k === 'teashop') {
-      mk(rb(w, 2.6, d, 0.08), '#ffd6de', cx, 1.3, cz, g); mk(rb(w + 0.3, 0.25, d + 0.3, 0.06), '#e85d75', cx, 2.7, cz, g);
-      awning(2.05, '#e85d75', '#ffffff', 6);
-      mk(rb(3.0, 1.0, 0.1, 0.03), '#5c3a21', cx - 0.4, 1.45, BY + 0.02, g); mk(rb(3.3, 0.1, 0.5, 0.03), '#fffaf0', cx - 0.4, 0.92, BY + 0.2, g);
-      mk(rb(0.9, 1.8, 0.08, 0.02), '#b56576', cx + 1.9, 0.9, BY + 0.03, g);
-      mk(cyl(0.75, 0.55, 1.5, 20), '#d6a574', cx, 3.6, cz, g, { roughness: 0.3 }); mk(cyl(0.8, 0.8, 0.14, 20), '#ffffff', cx, 4.42, cz, g);
-      mk(cyl(0.08, 0.08, 1.3, 8), '#e5383b', cx + 0.2, 5.0, cz, g).rotation.z = -0.15;
-      for (let i = 0; i < 5; i++) mk(sph(0.13), '#3b2a1a', cx + Math.cos(i * 1.3) * 0.45, 3.0, cz + 0.5, g);
-    } else if (b.k === 'hotel') {
-      mk(rb(w, 6.5, d, 0.08), '#4a6fa5', cx, 3.25, cz, g); mk(rb(w + 0.3, 0.3, d + 0.3, 0.06), '#22333b', cx, 6.6, cz, g);
+      mk(rb(w, 2.8, d, 0.06), '#f1faee', cx, 1.4, cz, lot); mk(rb(w + 0.3, 0.25, d + 0.3, 0.06), '#e63946', cx, 2.9, cz, lot); mk(rb(w - 0.5, 0.06, d - 0.5, 0.03), '#e9edf0', cx, 3.04, cz, lot);   // 屋顶：浅灰色的顶、红色的边
+      for (let i = 0; i < 22; i++) mk(rb(1, 0.08, 0.9, 0.02), i % 2 ? '#e63946' : '#ffffff', x0 + i + 0.5, 2.25, BY + 0.35, lot).rotation.x = 0.25;
+      for (const a of [3.4, 9, 14.6]) mk(rb(4.6, 1.4, 0.08, 0.02), '#bfe9f5', x0 + a, 1.1, BY + 0.02, lot, { emissive: '#7fc8dd', emissiveIntensity: 0.4, roughness: 0.1 });
+      mk(rb(1.5, 1.9, 0.08, 0.02), '#457b9d', dx, 0.95, BY + 0.03, lot);
+      for (const a of [-3.6, 3.6]) mk(rb(0.08, 1.4, 5, 0.02), '#bfe9f5', x1 + 0.02, 1.2, cz + a, lot, { emissive: '#7fc8dd', emissiveIntensity: 0.4, roughness: 0.1 });
+      for (const [ax, az] of [[-6, -3], [1, 2.5], [7, -4]]) { mk(rb(1.5, 0.5, 1.1, 0.06), '#ced4da', cx + ax, 3.27, cz + az, lot); mk(cyl(0.3, 0.3, 0.06, 12), '#8d99ae', cx + ax, 3.54, cz + az, lot); }   // 屋顶的空调机
+      mk(rb(6.4, 1.1, 0.24, 0.05), '#e63946', cx, 3.7, BY - 0.5, lot); mk(rb(6.0, 0.8, 0.26, 0.04), '#fffaf0', cx, 3.7, BY - 0.5, lot);
+      const sp = emojiSprite('🛒', 0.8, true); sp.position.set(cx, 3.7, BY - 0.3); lot.add(sp);
+    } else {
+      flat(w, d, '#c9c2b0', cx, -0.005, cz, lot);
+      for (let i = 0; i <= 8; i++) for (const z of [z0, BY]) mk(cyl(0.06, 0.06, 0.9, 6), '#e9c46a', x0 + i * w / 8, 0.45, z, lot);
+      for (let i = 1; i < 5; i++) for (const x of [x0, x1]) mk(cyl(0.06, 0.06, 0.9, 6), '#e9c46a', x, 0.45, z0 + i * d / 5, lot);
+      for (const z of [z0, BY]) mk(rb(w, 0.06, 0.06, 0.02), '#e9c46a', cx, 0.8, z, lot); for (const x of [x0, x1]) mk(rb(0.06, 0.06, d, 0.02), '#e9c46a', x, 0.8, cz, lot);
+      mk(cyl(0.06, 0.06, 1.6, 6), '#8a5a35', cx, 0.8, BY - 1.2, lot); mk(rb(1.5, 1.1, 0.1, 0.04), '#fffaf0', cx, 1.9, BY - 1.2, lot);
+      const ls = emojiSprite(b.e, 0.9, true); ls.position.set(cx, 1.9, BY - 1.1); lot.add(ls);
+    }
+    const g = b.g = new THREE.Group(); s.add(g);
+    if (b.k === 'market') {   // 店后高高的招牌
+      mk(cyl(0.12, 0.16, 5.2, 10), '#8d99ae', x0 + 3, 2.6, z0 - 1.4, g); mk(rb(3.4, 1.5, 0.3, 0.06), '#e63946', x0 + 3, 5.6, z0 - 1.4, g); mk(rb(3.0, 1.1, 0.32, 0.04), '#fffaf0', x0 + 3, 5.6, z0 - 1.4, g);
+      const sp = emojiSprite('🛒', 1.0, true); sp.position.set(x0 + 3, 5.6, z0 - 1.2); g.add(sp);
+    } else if (b.k === 'teashop') {   // 店后的大奶茶杯
+      const px = cx, pz = z0 - 1.8; mk(cyl(0.5, 0.65, 3.2, 14), '#ffd6de', px, 1.6, pz, g);
+      mk(cyl(0.95, 0.7, 1.9, 20), '#d6a574', px, 4.15, pz, g, { roughness: 0.3 }); mk(cyl(1.0, 1.0, 0.16, 20), '#ffffff', px, 5.18, pz, g);
+      mk(cyl(0.1, 0.1, 1.6, 8), '#e5383b', px + 0.25, 5.9, pz, g).rotation.z = -0.15;
+      for (let i = 0; i < 6; i++) mk(sph(0.16), '#3b2a1a', px + Math.cos(i * 1.05) * 0.55, 3.5, pz + 0.5, g);
+    } else if (b.k === 'hotel') {   // 店后的客房大楼
+      const tw = 14, td = 4.4, tz = z0 - 0.5 - td / 2, th = 9;
+      mk(rb(tw, th, td, 0.08), '#4a6fa5', cx, th / 2, tz, g); mk(rb(tw + 0.3, 0.3, td + 0.3, 0.06), '#22333b', cx, th + 0.1, tz, g);
       const c = document.createElement('canvas'); c.width = c.height = 256; const x = c.getContext('2d'); x.fillStyle = '#4a6fa5'; x.fillRect(0, 0, 256, 256);
       for (let r = 0; r < 4; r++) for (let col = 0; col < 4; col++) { x.fillStyle = (r * 3 + col * 5) % 4 ? '#ffe9a8' : '#cfe8ff'; x.fillRect(22 + col * 58, 16 + r * 50, 38, 32); x.fillStyle = '#22333b'; x.fillRect(22 + col * 58, 50 + r * 50, 38, 4); }
-      const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.6 });
-      const f = new THREE.Mesh(new THREE.PlaneGeometry(w - 0.4, 4.6), mat); f.position.set(cx, 4.0, BY + 0.01); g.add(f);
-      const e = new THREE.Mesh(new THREE.PlaneGeometry(d - 0.4, 4.6), mat); e.rotation.y = Math.PI / 2; e.position.set(b.x1 + 0.01, 4.0, cz); g.add(e);
-      mk(rb(3.0, 0.2, 1.3, 0.05), '#c1121f', cx, 1.75, BY + 0.6, g); for (const dx of [-1.3, 1.3]) mk(cyl(0.07, 0.07, 1.7, 8), '#e9c46a', cx + dx, 0.85, BY + 1.1, g);
-      mk(rb(1.8, 1.5, 0.08, 0.02), '#bfe9f5', cx, 0.78, BY + 0.03, g, { emissive: '#ffe9a8', emissiveIntensity: 0.5, roughness: 0.1 });
-      const sp = emojiSprite('🏨', 1.6, true); sp.position.set(cx, 7.6, cz); g.add(sp);
-    } else {
-      flat(w, d, '#cdeac0', cx, -0.004, cz, g);
-      for (let x = b.x0; x <= b.x1 + 0.01; x += 1.25) if (Math.abs(x - cx) > 1.3) mk(cyl(0.05, 0.05, 0.8, 6), '#ffffff', x, 0.4, BY, g);
-      mk(rb(w / 2 - 1.2, 0.06, 0.06, 0.02), '#e85d75', b.x0 + (w / 2 - 1.2) / 2, 0.7, BY, g); mk(rb(w / 2 - 1.2, 0.06, 0.06, 0.02), '#e85d75', b.x1 - (w / 2 - 1.2) / 2, 0.7, BY, g);
-      for (const dx of [-1.2, 1.2]) mk(cyl(0.1, 0.1, 2.6, 8), '#ffd166', cx + dx, 1.3, BY, g);
-      ['#e63946', '#f4a261', '#ffd166', '#52b788', '#5b8def'].forEach((c, i) => mk(rb(2.6, 0.12, 0.14, 0.03), c, cx, 2.9 - i * 0.12, BY, g));
-      // 摩天轮
-      const wx = b.x0 + 4.2, wz = 5.4, wh = new THREE.Group(); wh.position.set(wx, 3.7, wz); g.add(wh);
+      const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.wrapS = THREE.RepeatWrapping; tex.repeat.set(2, 1); const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.6 });
+      const f = new THREE.Mesh(new THREE.PlaneGeometry(tw - 0.4, 5.4), mat); f.position.set(cx, 6.0, tz + td / 2 + 0.01); g.add(f);
+      const tex2 = tex.clone(); tex2.repeat.set(1, 1); tex2.needsUpdate = true; const e = new THREE.Mesh(new THREE.PlaneGeometry(td - 0.4, 5.4), new THREE.MeshStandardMaterial({ map: tex2, roughness: 0.6 })); e.rotation.y = Math.PI / 2; e.position.set(cx + tw / 2 + 0.01, 6.0, tz); g.add(e);
+      const sp = emojiSprite('🏨', 1.6, true); sp.position.set(cx, th + 1.1, tz); g.add(sp);
+    } else {   // 游乐场：后面的大摩天轮，门口的彩虹拱门
+      const wx = x0 + 6, wz = z0 - 3.4, wh = new THREE.Group(); wh.position.set(wx, 4.2, wz); g.add(wh);
       const ring = new THREE.Mesh(G('ferris', () => new THREE.TorusGeometry(2.7, 0.07, 8, 40)), M('#e63946')); ring.castShadow = true; wh.add(ring);
       for (let i = 0; i < 4; i++) mk(rb(5.4, 0.06, 0.06, 0.02), '#f1faee', 0, 0, 0, wh).rotation.z = i * Math.PI / 4;
       const cabs = []; ['#e63946', '#ffd166', '#52b788', '#5b8def', '#b07cd8', '#f4a261', '#3fb7b0', '#e85d75'].forEach((c, i) => cabs.push(mk(rb(0.55, 0.5, 0.45, 0.1), c, Math.cos(i * Math.PI / 4) * 2.7, Math.sin(i * Math.PI / 4) * 2.7, 0, wh)));
-      mk(cyl(0.08, 0.1, 4.0, 8), '#8d99ae', wx - 0.95, 1.85, wz + 0.25, g).rotation.z = -0.26; mk(cyl(0.08, 0.1, 4.0, 8), '#8d99ae', wx + 0.95, 1.85, wz + 0.25, g).rotation.z = 0.26; mk(sph(0.22), '#ffd166', wx, 3.7, wz + 0.1, g);
+      mk(cyl(0.08, 0.1, 4.6, 8), '#8d99ae', wx - 1.05, 2.1, wz + 0.25, g).rotation.z = -0.24; mk(cyl(0.08, 0.1, 4.6, 8), '#8d99ae', wx + 1.05, 2.1, wz + 0.25, g).rotation.z = 0.24; mk(sph(0.22), '#ffd166', wx, 4.2, wz + 0.1, g);
       wh.userData.dyn = true; cabs.forEach(c => c.userData.keep = true); bake(wh);
       anim.push(t => { wh.rotation.z = t * 0.25; cabs.forEach(c => c.rotation.z = -wh.rotation.z); });
-      // 旋转木马
-      const kx = b.x1 - 3.3, kz = 7.6; mk(cyl(1.7, 1.8, 0.2, 24), '#ffd6de', kx, 0.1, kz, g);
-      const spin = new THREE.Group(); spin.position.set(kx, 0, kz); g.add(spin);
-      mk(cyl(0.14, 0.14, 2.5, 10), '#ffd166', 0, 1.35, 0, spin);
-      const roof = new THREE.Mesh(G('roof', () => new THREE.ConeGeometry(2.0, 1.0, 12)), M('#e85d75')); roof.position.y = 3.05; roof.castShadow = true; spin.add(roof); mk(sph(0.14), '#ffd166', 0, 3.6, 0, spin);
-      ['#ffffff', '#ffd166', '#8ecae6', '#ffffff', '#f4acb7', '#b7e4c7'].forEach((c, i) => { const a = i * Math.PI / 3; mk(cyl(0.03, 0.03, 2.3, 6), '#e9c46a', Math.cos(a) * 1.2, 1.35, Math.sin(a) * 1.2, spin); const h = mk(cap(0.14, 0.3), c, Math.cos(a) * 1.2, 0.9 + (i % 2) * 0.25, Math.sin(a) * 1.2, spin); h.rotation.z = Math.PI / 2; h.rotation.y = -a; });
-      spin.userData.dyn = true; bake(spin);
-      anim.push(t => { spin.rotation.y = t * 0.7; });
-      mk(rb(1.4, 1.6, 1.2, 0.06), '#8ecae6', cx + 2.6, 0.8, BY - 1.0, g); mk(rb(1.7, 0.2, 1.5, 0.05), '#e63946', cx + 2.6, 1.7, BY - 1.0, g);
-      [['#e63946', 0], ['#ffd166', 0.3], ['#5b8def', -0.25]].forEach(([c, dx]) => { mk(sph(0.2), c, cx - 3 + dx, 2.3 + Math.abs(dx), BY - 0.6, g); });
-      mk(cyl(0.015, 0.015, 1.6, 4), '#555555', cx - 3, 1.4, BY - 0.6, g);
+      for (const a of [-1.08, 1.08]) mk(cyl(0.1, 0.1, 2.9, 8), '#ffd166', dx + a, 1.45, BY + 0.14, g);
+      ['#e63946', '#f4a261', '#ffd166', '#52b788', '#5b8def'].forEach((c, i) => mk(rb(2.36, 0.12, 0.14, 0.03), c, dx, 2.9 - i * 0.12, BY + 0.14, g));
     }
-    b.stack = new THREE.Group(); b.stack.position.set(b.px, 0, PADY); s.add(b.stack);
-    mk(cyl(0.55, 0.55, 0.03, 24), '#fff3b0', 0, 0.015, 0, b.stack, { emissive: '#ffd60a', emissiveIntensity: 0.6 }).castShadow = false;
-    for (let k = 0; k < 4; k++) { mk(rb(0.3, 0.06, 0.17, 0.015), '#58b368', 0, 0.06 + k * 0.062, 0, b.stack); mk(rb(0.08, 0.062, 0.175, 0.012), '#f1faee', 0, 0.06 + k * 0.062, 0, b.stack); }
   }
   { // 公司总部
     const w = HQ.x1 - HQ.x0, d = BY - HQ.y0, cx = HQ.px, cz = (HQ.y0 + BY) / 2;
@@ -1126,9 +1198,9 @@ const fountain = new THREE.Group(); scene.add(fountain);
     x.strokeStyle = 'rgba(120,110,95,.35)'; x.lineWidth = 2; for (const [a, b] of [[0, 0], [32, 0], [0, 32], [32, 32]]) x.strokeRect(a, b, 32, 32);
     const walk = (w, d, px, pz) => { const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(w / 1.3, d / 1.3); t.colorSpace = THREE.SRGBColorSpace;
       const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), new THREE.MeshStandardMaterial({ map: t, roughness: 0.95 })); m.rotation.x = -Math.PI / 2; m.position.set(px, -0.0105, pz); m.receiveShadow = true; s.add(m); };
-    walk(112, 1.3, 3.5, 12.25); walk(112, 1.4, 3.5, 17.0); walk(0.9, 21, 20.75, 1.4);
+    walk(184, 1.3, 9, 12.25); walk(184, 1.4, 9, 17.0); walk(0.9, 26, 20.75, -1.1);
   }
-  for (const cx of [6.75, 13.3, -6.5, 26.7, 37, -18.7]) for (let i = 0; i < 6; i++) flat(0.34, 3.0, '#f4f4f4', cx + (i - 2.5) * 0.62, -0.0035, 14.6);   // 斑马线
+  for (const cx of XWALK) for (let i = 0; i < 6; i++) flat(0.34, 3.0, '#f4f4f4', cx + (i - 2.5) * 0.62, -0.0035, 14.6);   // 斑马线
   // 远处的小镇：房屋和公寓楼在餐厅和店铺的北面，形成天际线
   const PYR = G('pyr', () => new THREE.ConeGeometry(0.7071, 1, 4).rotateY(Math.PI / 4));
   const house = (x, z, w, d, h, wc, rc) => {
@@ -1147,12 +1219,12 @@ const fountain = new THREE.Group(); scene.add(fountain);
     }
   };
   const WC = ['#f4f1de', '#ffe5d9', '#d8e2dc', '#fff1c1', '#e8f1f5', '#f6d6ad'], RC = ['#c8553d', '#577590', '#8a5a35', '#6d597a', '#40916c'];
-  for (let x = -38, i = 0; x < 47; i++) {
+  for (let x = -80, i = 0; x < 97; i++) {   // 各家店的后面要留出地方，这一排房子比以前靠北
     const w = 3 + rnd() * 1.6; if (x + w > 20 && x < 24.6) { x = 24.9; continue; }
-    if (i % 5 === 3) tower(x + w / 2, -7.2 - rnd() * 1.5, w, 3.2, 5.5 + rnd() * 3, rp(WC)); else house(x + w / 2, -6 - rnd() * 2.2, w, 3 + rnd(), 2.4 + rnd() * 0.9, rp(WC), rp(RC));
+    if (i % 5 === 3) tower(x + w / 2, -12.4 - rnd() * 1.5, w, 3.2, 5.5 + rnd() * 3, rp(WC)); else house(x + w / 2, -11.2 - rnd() * 2.2, w, 3 + rnd(), 2.4 + rnd() * 0.9, rp(WC), rp(RC));
     x += w + 0.8 + rnd() * 1.6;
   }
-  for (let x = -36; x < 47; x += 5 + rnd() * 4) if (!(x > 19.4 && x < 25)) tree(x, -2.4 - rnd() * 1.2, 0.9 + rnd() * 0.3);
+  for (let x = -79; x < 97; x += 5 + rnd() * 4) if (!(x > 19.4 && x < 25) && !BIZ.some(b => x > b.ox + 2 && x < b.ox + 20)) tree(x, (x > -1 && x < 21 ? -2.4 : -5.6) - rnd() * 1.2, 0.9 + rnd() * 0.3);   // 店后面留给各家的地标
   // 草地：深浅草斑、小花、灌木、石头
   const CIRC = G('circ', () => new THREE.CircleGeometry(1, 14).rotateX(-Math.PI / 2)), FLW = new THREE.SphereGeometry(0.055, 6, 4), BUSH = new THREE.SphereGeometry(0.3, 9, 6);
   const scatter = (root, x0, x1, z0, z1, n, ok) => { for (let i = 0; i < n; i++) {
@@ -1162,23 +1234,59 @@ const fountain = new THREE.Group(); scene.add(fountain);
     else if (k < 0.9) mk(BUSH, rp(['#52b788', '#40916c', '#74c69d']), x, 0.14, z, root).scale.set(0.8 + rnd() * 0.6, 0.6 + rnd() * 0.3, 0.8 + rnd() * 0.6);
     else mk(BUSH, rp(['#adb5bd', '#ced4da', '#9aa5b1']), x, 0.05, z, root).scale.set(0.6 + rnd() * 0.5, 0.4, 0.5 + rnd() * 0.4);
   } };
-  const blocked = (x, z) => (x > -1.2 && x < 21.2 && z > -1.2 && z < 13.2) || (z > 11.2 && z < 18.2) || (x > 20 && x < 24.6 && z < 12) || (x > 6 && x < 14 && z > 18.3 && z < 22.3) || (z < -3.6 && z > -11) ||
-    BIZ.some(b => x > b.x0 - 0.6 && x < b.x1 + 0.6 && z > b.y0 - 0.6 && z < 12) || (x > HQ.x0 - 0.6 && x < HQ.x1 + 0.6 && z > HQ.y0 - 0.6 && z < 12);
-  scatter(s, -42, 50, -3.4, 27, 430, (x, z) => !blocked(x, z));
-  const DS2 = new THREE.Group(); scene.add(DS2);   // 各家店周围的草地
-  scatter(DS2, -9, 31, 37, 144, 330, (x, z) => !(x > -1 && x < 23.2 && BIZ.some(b => z > b.oz - 1 && z < b.oz + VH + 1)));
-  for (let i = 0; i < 26; i++) { const x = rnd() < 0.5 ? -3 - rnd() * 5 : 25 + rnd() * 5, z = 40 + rnd() * 100, k = 0.9 + rnd() * 0.4;
-    mk(cyl(0.12 * k, 0.16 * k, 1.1 * k, 8), '#8a5a35', x, 0.55 * k, z, DS2); mk(sph(0.7), '#52b788', x, 1.5 * k, z, DS2).scale.setScalar(k); mk(sph(0.5), '#40916c', x + 0.35 * k, 1.95 * k, z - 0.1, DS2).scale.setScalar(k); }
-  bake(DS2);
+  const blocked = (x, z) => (x > -1.2 && x < 21.2 && z > -1.2 && z < 13.2) || (z > 11.2 && z < 18.2) || (x > 20 && x < 24.6 && z < 12) || (x > 6 && x < 14 && z > 18.3 && z < 22.3) || (z < -8.6 && z > -16) ||
+    BIZ.some(b => x > b.ox - 0.8 && x < b.ox + VW + 0.8 && z > -9.6) || (x > HQ.x0 - 0.6 && x < HQ.x1 + 0.6 && z > HQ.y0 - 0.6) || (x > COP.x0 - 0.6 && x < COP.x1 + 0.6 && z > COP.y0 - 0.6) ||
+    (x > HOME.ox - 0.8 && x < HOME.ox + HOME.w + 0.8 && z > HOME.oz - 0.8) || (x > -3.6 && x < -0.5 && z > 10);
+  scatter(s, -82, 100, -8, 27, 880, (x, z) => !blocked(x, z));
   // 街边小物：长椅、垃圾桶、花箱、站牌、消防栓、邮筒
-  for (const x of [-20, -4, 16, 31]) { mk(rb(1.3, 0.08, 0.42, 0.03), '#a86f42', x, 0.42, 17.35, s); mk(rb(1.3, 0.36, 0.07, 0.03), '#a86f42', x, 0.64, 17.56, s); for (const dx of [-0.5, 0.5]) mk(box(0.07, 0.42, 0.36), '#3b4a5a', x + dx, 0.21, 17.36, s);
+  for (const x of [-58, -44, -20, -4, 16, 31, 48, 70, 84]) { mk(rb(1.3, 0.08, 0.42, 0.03), '#a86f42', x, 0.42, 17.35, s); mk(rb(1.3, 0.36, 0.07, 0.03), '#a86f42', x, 0.64, 17.56, s); for (const dx of [-0.5, 0.5]) mk(box(0.07, 0.42, 0.36), '#3b4a5a', x + dx, 0.21, 17.36, s);
     mk(cyl(0.16, 0.13, 0.5, 10), '#52796f', x + 1.15, 0.25, 17.4, s); mk(cyl(0.17, 0.17, 0.04, 10), '#3b4a5a', x + 1.15, 0.52, 17.4, s); }
-  for (const x of [-30, -12, 22.5, 36]) { mk(cyl(0.3, 0.26, 0.4, 12), '#b08968', x, 0.2, 17.35, s); mk(BUSH, '#52b788', x, 0.5, 17.35, s).scale.set(1, 0.7, 1); for (let j = 0; j < 5; j++) mk(FLW, ['#ff8fab', '#ffd166', '#ffffff'][j % 3], x + Math.cos(j * 1.26) * 0.2, 0.68, 17.35 + Math.sin(j * 1.26) * 0.2, s).scale.setScalar(1.3); }
+  for (const x of [-66, -50, -30, -12, 22.5, 36, 56, 78]) { mk(cyl(0.3, 0.26, 0.4, 12), '#b08968', x, 0.2, 17.35, s); mk(BUSH, '#52b788', x, 0.5, 17.35, s).scale.set(1, 0.7, 1); for (let j = 0; j < 5; j++) mk(FLW, ['#ff8fab', '#ffd166', '#ffffff'][j % 3], x + Math.cos(j * 1.26) * 0.2, 0.68, 17.35 + Math.sin(j * 1.26) * 0.2, s).scale.setScalar(1.3); }
   mk(cyl(0.04, 0.04, 2.2, 6), '#3b4a5a', 2.5, 1.1, 17.5, s); mk(box(0.5, 0.5, 0.05), '#3a86ff', 2.5, 2.05, 17.5, s); mk(box(0.34, 0.12, 0.06), '#ffffff', 2.5, 2.05, 17.52, s);
-  for (const x of [9, -15, 33]) { mk(cyl(0.1, 0.12, 0.42, 8), '#e5383b', x, 0.21, 16.62, s); mk(sph(0.11), '#e5383b', x, 0.45, 16.62, s); mk(cyl(0.05, 0.05, 0.3, 6), '#e5383b', x, 0.3, 16.62, s).rotation.z = Math.PI / 2; }
+  for (const x of [9, -15, 33, -47, 59, 81]) { mk(cyl(0.1, 0.12, 0.42, 8), '#e5383b', x, 0.21, 16.62, s); mk(sph(0.11), '#e5383b', x, 0.45, 16.62, s); mk(cyl(0.05, 0.05, 0.3, 6), '#e5383b', x, 0.3, 16.62, s).rotation.z = Math.PI / 2; }
   mk(rb(0.42, 0.75, 0.36, 0.06), '#3a86ff', 28, 0.55, 17.4, s); mk(cyl(0.05, 0.05, 0.2, 6), '#3b4a5a', 28, 0.1, 17.4, s); mk(box(0.3, 0.05, 0.02), '#ffffff', 28, 0.74, 17.59, s);
-  for (const b of BIZ) { b.lot.userData.dyn = b.g.userData.dyn = b.stack.userData.dyn = true; bake(b.lot); bake(b.g); }
-  HQ.lot.userData.dyn = HQ.g.userData.dyn = true; bake(HQ.lot); bake(HQ.g); bake(fountain); bake(DS); flatRoot = scene;
+  { // 自己的家：2 级入住之前是一块围着的空地；入住后这里直接就是屋内
+    const w = HOME.w, d = HOME.h, x0 = HOME.ox, x1 = x0 + w, z0 = HOME.oz, cx = x0 + w / 2, cz = z0 + d / 2, lot = HOME.lot = new THREE.Group(); s.add(lot);
+    flat(w, d, '#c9c2b0', cx, -0.005, cz, lot);
+    for (let i = 0; i <= 4; i++) for (const z of [z0, BY]) mk(cyl(0.06, 0.06, 0.9, 6), '#e9c46a', x0 + i * w / 4, 0.45, z, lot);
+    for (let i = 1; i < 3; i++) for (const x of [x0, x1]) mk(cyl(0.06, 0.06, 0.9, 6), '#e9c46a', x, 0.45, z0 + i * d / 3, lot);
+    for (const z of [z0, BY]) mk(rb(w, 0.06, 0.06, 0.02), '#e9c46a', cx, 0.8, z, lot); for (const x of [x0, x1]) mk(rb(0.06, 0.06, d, 0.02), '#e9c46a', x, 0.8, cz, lot);
+    mk(cyl(0.06, 0.06, 1.6, 6), '#8a5a35', cx, 0.8, BY - 1.2, lot); mk(rb(1.5, 1.1, 0.1, 0.04), '#fffaf0', cx, 1.9, BY - 1.2, lot);
+    const ls = emojiSprite('🏠', 0.9, true); ls.position.set(cx, 1.9, BY - 1.1); lot.add(ls);
+    mk(cyl(0.04, 0.04, 0.9, 6), '#8a5a35', x0 + 2.95, 0.45, BY + 0.5, s); mk(rb(0.34, 0.24, 0.24, 0.05), '#e63946', x0 + 2.95, 0.98, BY + 0.5, s);   // 门口的信箱
+  }
+  { // 派出所：蓝白色的小楼，楼顶有警灯
+    const w = COP.x1 - COP.x0, d = BY - COP.y0, cx = (COP.x0 + COP.x1) / 2, cz = (COP.y0 + BY) / 2;
+    flat(w + 0.4, d + 0.4, '#cfd8dc', cx, -0.005, cz);
+    mk(rb(w, 3.2, d, 0.06), '#eef2f7', cx, 1.6, cz, s); mk(rb(w + 0.08, 0.6, d + 0.08, 0.04), '#1d3557', cx, 0.3, cz, s); mk(rb(w + 0.2, 0.3, d + 0.2, 0.05), '#1d3557', cx, 3.3, cz, s);
+    mk(rb(1.3, 1.9, 0.08, 0.02), '#1d3557', COP.px, 0.95, BY + 0.03, s); mk(rb(1.6, 0.14, 0.5, 0.03), '#457b9d', COP.px, 2.05, BY + 0.25, s);   // 门和雨棚
+    for (const dx of [-1.9, 1.7]) mk(rb(1.1, 1.0, 0.08, 0.02), '#bfe9f5', cx + dx, 1.5, BY + 0.03, s, { emissive: '#7fc8dd', emissiveIntensity: 0.4, roughness: 0.1 });
+    mk(rb(3.0, 0.62, 0.1, 0.03), '#1d3557', cx, 2.72, BY + 0.06, s); mk(rb(2.8, 0.44, 0.11, 0.02), '#fffaf0', cx, 2.72, BY + 0.065, s);
+    const sp = emojiSprite('🚓', 0.5, true); sp.position.set(cx, 2.72, BY + 0.16); s.add(sp);
+    mk(rb(0.7, 0.14, 0.3, 0.03), '#3b4a5a', cx, 3.52, cz, s); mk(sph(0.13), '#e63946', cx - 0.2, 3.62, cz, s, { emissive: '#e63946', emissiveIntensity: 0.9 }); mk(sph(0.13), '#3a86ff', cx + 0.2, 3.62, cz, s, { emissive: '#3a86ff', emissiveIntensity: 0.9 });
+    mk(cyl(0.04, 0.05, 3.6, 8), '#adb5bd', COP.x0 + 0.5, 1.8, BY + 0.5, s); mk(box(0.7, 0.44, 0.03), '#e63946', COP.x0 + 0.88, 3.3, BY + 0.5, s);   // 旗杆
+    mk(cyl(0.55, 0.55, 0.03, 24), '#bfe9f5', COP.px, 0.015, PADY, s, { emissive: '#3a86ff', emissiveIntensity: 0.5 }).castShadow = false;
+  }
+  { // 超市旁边的生活用品摊
+    const x = STALL.x, z = 11.85;
+    mk(rb(1.66, 0.76, 0.66, 0.04), '#a86f42', x, 0.38, z, s); mk(rb(1.74, 0.06, 0.76, 0.02), '#fffaf0', x, 0.79, z, s);
+    for (const dx of [-0.9, 0.9]) mk(cyl(0.035, 0.035, 2.2, 6), '#8a5a35', x + dx, 1.1, z, s);
+    for (let i = 0; i < 9; i++) { const f = i / 8, sag = Math.sin(f * Math.PI) * 0.16; mk(box(0.17, 0.2, 0.02), ['#2a9d8f', '#ffd166', '#e63946'][i % 3], x - 0.8 + f * 1.6, 2.02 - sag, z, s).rotation.z = 0.78; }   // 一串小彩旗（不搭棚子，免得挡住摊主）
+    for (let i = 0; i < 6; i++) mk(box(0.28, 0.5, 0.02), i % 2 ? '#fffaf0' : '#2a9d8f', x - 0.7 + i * 0.28, 0.45, z + 0.345, s).castShadow = false;   // 柜台前的条纹围布
+    mk(rb(0.66, 0.36, 0.5, 0.04), '#a86f42', SHOP.x + 0.42, 0.18, 12.02, s); for (let k = 0; k < 3; k++) { mk(sph(0.12), '#52b788', SHOP.x + 0.22 + k * 0.2, 0.42, 11.95, s); mk(sph(0.1), '#e63946', SHOP.x + 0.3 + k * 0.2, 0.44, 12.14, s); }   // 买食材的地方：一筐蔬果
+    mk(rb(0.3, 0.26, 0.24, 0.03), '#ffd166', x - 0.55, 0.95, z, s); mk(cyl(0.07, 0.07, 0.3, 10), '#e63946', x - 0.15, 0.97, z, s); mk(cyl(0.02, 0.03, 0.08, 6), '#3b4a5a', x - 0.15, 1.16, z, s);
+    mk(cyl(0.06, 0.05, 0.24, 10), '#8ecae6', x + 0.15, 0.94, z, s); mk(rb(0.26, 0.2, 0.2, 0.03), '#b56576', x + 0.5, 0.92, z, s); mk(sph(0.09), '#f4a261', x + 0.5, 1.1, z, s);
+    const sp = emojiSprite('🧺', 0.5, true); sp.position.set(x, 2.5, z); s.add(sp);
+    mk(cyl(0.5, 0.5, 0.03, 24), '#b7e4c7', STALL.x, 0.015, STALL.y, s, { emissive: '#2a9d8f', emissiveIntensity: 0.5 }).castShadow = false;
+  }
+  for (const b of BIZ) { b.lot.userData.dyn = b.g.userData.dyn = true; bake(b.lot); bake(b.g); }
+  HOME.lot.userData.dyn = true; bake(HOME.lot);
+  HQ.lot.userData.dyn = HQ.g.userData.dyn = true; bake(HQ.lot); bake(HQ.g); bake(fountain);
+  { const parts = [];   // 街变长了：街景按 23 格一段分开烘焙，镜头外的几段显卡直接跳过（整条的马路、人行道单独一组）
+    for (const o of DS.children.slice()) { if (!o.isMesh || o.userData.keep) continue; if (!o.geometry.boundingSphere) o.geometry.computeBoundingSphere();
+      const k = o.geometry.boundingSphere.radius * Math.max(o.scale.x, o.scale.y, o.scale.z) > 15 ? 0 : 1 + Math.max(0, Math.min(7, Math.floor((o.position.x + 84) / 23))); (parts[k] || (parts[k] = new THREE.Group())).add(o); }
+    for (const g of parts) if (g) { DS.add(g); bake(g); } }
+  flatRoot = scene;
 })();
 // ---- 路上的车：两条车道来回开，前面有人会停下，也不会追尾 ----
 const carG = new THREE.Group(), cars = []; scene.add(carG);
@@ -1189,7 +1297,7 @@ function carGeo(col, kind) { return G('car' + col + kind, () => { const t = new 
   if (kind === 2) mk(box(0.34, 0.14, 0.2), '#22272b', -0.12, 1.14, 0, t);
   return mergeAll(t); }); }
 function carSpawn(c) { const kind = Math.random() < 0.2 ? 1 : Math.random() < 0.2 ? 2 : 0; c.m.geometry = carGeo(kind === 2 ? '#ffd166' : pick(['#e63946', '#3a86ff', '#f1faee', '#52b788', '#b07cd8', '#ff9f1c', '#577590']), kind); c.v = 3.4 + Math.random() * 1.6; }
-for (let i = 0; i < 5; i++) { const dir = i < 3 ? 1 : -1, c = { m: new THREE.Mesh(carGeo('#e63946', 0), VM.g), dir, z: dir > 0 ? 13.75 : 15.45, x: -44 + i * 21 + Math.random() * 8, v: 4, cv: null };
+for (let i = 0; i < 8; i++) { const dir = i < 4 ? 1 : -1, c = { m: new THREE.Mesh(carGeo('#e63946', 0), VM.g), dir, z: dir > 0 ? 13.75 : 15.45, x: -78 + (i % 4) * 45 + Math.random() * 14, v: 4, cv: null };
   c.m.castShadow = true; c.m.receiveShadow = true; c.m.rotation.y = dir > 0 ? 0 : Math.PI; carSpawn(c); c.m.position.set(c.x, 0, c.z); carG.add(c.m); cars.push(c); }
 function updCars(dt) {
   for (const c of cars) {
@@ -1198,13 +1306,13 @@ function updCars(dt) {
     for (const q of [player, mate]) if (q === player || mateOn()) { const gap = (q.x - c.x) * c.dir; if (Math.abs(q.y - c.z) < 0.95 && gap > 0.5 && gap < 3.2) v = 0; }
     for (const q of peds) if (q.road) { const gap = (q.x - c.x) * c.dir; if (gap > 0.5 && gap < 3.8 && (q.y - c.z) * q.road < 0.9) v = 0; }   // 礼让斑马线上还没走过这条车道的行人
     c.cv = c.cv == null ? v : c.cv + (v - c.cv) * Math.min(1, dt * 4); c.x += c.cv * c.dir * dt;
-    if (c.x * c.dir > 56) { c.x = -52 * c.dir; carSpawn(c); }
+    if (c.dir > 0 ? c.x > 103 : c.x < -86) { c.x = c.dir > 0 ? -84 : 101; carSpawn(c); }
     c.m.position.set(c.x, 0, c.z);
   }
 }
 function syncDistrict() {
-  for (const b of BIZ) { const o = S.biz[b.k].lv > 0 || b.k === 'market'; b.g.visible = o; b.lot.visible = !o; }
-  HQ.g.visible = !!S.hq; HQ.lot.visible = !S.hq;
+  for (const b of BIZ) { const o = S.biz[b.k].lv > 0; b.g.visible = o; b.lot.visible = !o; }
+  HQ.g.visible = !!S.hq; HQ.lot.visible = !S.hq; HOME.lot.visible = !homeOpen();
   fountain.visible = ownedBiz() >= 2;
 }
 const tpad = mk(rb(2.5, 0.03, 1.3, 0.012), '#3fb950', 0, 0.02, 0, scene); tpad.material = new THREE.MeshStandardMaterial({ color: '#3fb950', transparent: true, opacity: 0.4 }); tpad.castShadow = false;
@@ -1306,8 +1414,15 @@ function rebuildObs() {
   box(W, W + 0.28, -3, 4.35); box(W, W + 0.28, 6.15, H + 0.28);
   box(0.05, 0.6, 10.4, H);
   if (S.up.takeout > 0) box(W - 0.6, W + 0.28, 1.65, 2.75);
-  for (const b of BIZ) box(b.x0, b.x1, -4, BY);
-  box(HQ.x0, HQ.x1, -4, BY);
+  for (const b of BIZ) { const x0 = b.ox, x1 = x0 + VW, z0 = b.oz, z1 = z0 + VH;
+    if (!vOwned(b)) { box(x0, x1, z0, z1); continue; }   // 还没买下：整块围着
+    box(x0 - 0.3, x0 + 0.05, z0 - 0.3, z1 + 0.3); box(x1 - 0.05, x1 + 0.3, z0 - 0.3, z1 + 0.3); box(x0, x1, z0 - 0.3, z0 + 1.25);   // 西墙、东边花坛、北墙连着仓库那一排
+    box(x0, x0 + 0.9, z1 - 0.05, z1 + 0.3); box(x0 + 2.7, x0 + 19.9, z1 - 0.05, z1 + 0.3); box(x0 + 21.7, x1, z1 - 0.05, z1 + 0.3);   // 南边花坛：西南角、东南角各留一道门
+    for (const t of b.obs) o.push(t); }
+  box(HQ.x0, HQ.x1, HQ.y0, BY); box(COP.x0, COP.x1, COP.y0, BY); box(STALL.x - 0.83, STALL.x + 0.83, 11.52, 12.18);
+  { const x0 = HOME.ox, x1 = x0 + HOME.w, z0 = HOME.oz, z1 = z0 + HOME.h;
+    if (!homeOpen()) box(x0, x1, z0, z1);
+    else { box(x0 - 0.3, x0 + 0.05, z0 - 0.3, z1 + 0.3); box(x1 - 0.05, x1 + 0.3, z0 - 0.3, z1 + 0.3); box(x0, x1, z0 - 0.3, z0 + 0.1); box(x0, x0 + 0.7, z1 - 0.05, z1 + 0.3); box(x0 + 2.3, x1, z1 - 0.05, z1 + 0.3); for (const t of HOME.obs) o.push(t); } }   // 家：四面墙，门在西南角
   for (const t of tables) o.push({ x: t.x, y: t.y, hx: 1.32, hy: 0.68 });
   OBS = o; rebuildNav();
 }
@@ -1370,19 +1485,19 @@ function syncStaff() {
   standG.visible = S.up.takeout > 0; standHedge.visible = !standG.visible;
 }
 function syncPeds() {
-  const n = 4 + 2 * ownedBiz();
-  while (peds.length < n) { const p = { x: -26 + Math.random() * 66, y: pick([12.5, 16.9, 17.3]), dir: 0, face: 0, stack: [], moving: true, look: randLook(), tx: 0, ty: 0, wait: 0 }; p.tx = p.x; p.ty = p.y; p.mesh = makePerson(p.look); dyn.add(p.mesh); peds.push(p); }
+  const n = 8 + 3 * ownedBiz();
+  while (peds.length < n) { const p = { x: -68 + Math.random() * 154, y: pick([12.5, 16.9, 17.3]), dir: 0, face: 0, stack: [], moving: true, look: randLook(), tx: 0, ty: 0, wait: 0 }; p.tx = p.x; p.ty = p.y; p.mesh = makePerson(p.look); dyn.add(p.mesh); peds.push(p); }
 }
 function syncWorld(announce) {
   while (ST.length < unlocked()) { addStation(ST.length); const it = ST[ST.length - 1].item; if (announce) toast(TK('unlockItem', { e: it.e, n: TK(it.m) })); }
   while (tables.length < tableCount()) addTable(tables.length, false);
   if (announce && S.level <= 9) toast(TK('newTables'));
-  BIZ.forEach(vSync); syncStaff(); syncDistrict(); syncPeds(); drawMenu(); rebuildObs(); buildPlaces();
+  BIZ.forEach(vSync); syncStaff(); syncDistrict(); syncPeds(); syncLife(); drawMenu(); rebuildObs(); buildPlaces();
 }
 function init() {
   while (dyn.children.length) dyn.remove(dyn.children[0]);
   for (const b of BIZ) while (b.dg.children.length) b.dg.remove(b.dg.children[0]);
-  bussers = []; tables = []; customers = []; orders = []; workers = []; floats = []; ST = []; peds = []; pups = []; mouse = null; coins = []; net.cm.clear(); mate.mesh = null; mate.stack = []; if (net.role === 'host') net.peer = false;
+  bussers = []; tables = []; customers = []; orders = []; workers = []; floats = []; ST = []; peds = []; pups = []; mouse = null; coins = []; insp = null; vendor = null; net.cm.clear(); mate.mesh = null; mate.stack = []; if (net.role === 'host') net.peer = false;
   Object.assign(player, { x: 9, y: 2.4, stack: [], target: null, stackDirty: true });
   BIZ.forEach(b => b.rt = null); STAND.cash = 0; STAND.seat.state = 'free'; combo = 0; mouseT = 50; pupT = 18; rushT = 0; stockWarned = false; for (const k in buff) buff[k] = 0;
   syncWorld(false); tier = -1; applyTier(false);
@@ -1538,8 +1653,13 @@ function doBuy(a) {   // 所有花钱的操作都走这里（联机时由房主�
   else if (kind === 'vst') { const b = BIZ.find(b => b.k === key), i = a[2], s = b && S.biz[key]; if (b && vOwned(b) && s.st[i] != null && s.st[i] < 5 && (s.st[i] > 0 || i === 0 || s.st[i - 1] > 0)) { cost = stCost(b, i); fn = () => { s.st[i]++; }; } }
   else if (kind === 'vup') { const b = BIZ.find(b => b.k === key), n = a[2], s = b && S.biz[key]; if (b && vOwned(b) && VUP[n] && s[n] < VUP[n][1]) { cost = vupCost(b, n); fn = () => { s[n]++; }; } }
   else if (kind === 'hq') { if (vDone(BIZ[BIZ.length - 1]) && !S.hq) { cost = HQ.cost; fn = () => { S.hq = 1; toast(TK('hqNew')); }; } }
+  else if (kind === 'furn') { if (homeOpen() && FURN.some(f => f[0] === key) && S.home[key] < 4) { cost = furnCost(key); fn = () => { S.home[key]++; }; } }
+  else if (kind === 'inv') { const q = GOODS.find(g => g[0] === key); if (q && homeOpen() && S.inv[key] < q[4]) { cost = goodPrice(key); fn = () => { S.inv[key] = Math.min(q[4], S.inv[key] + q[3]); }; } }
+  else if (kind === 'pet') { const q = PETS.find(g => g[0] === key); if (q && petOpen() && !S.pets[key]) { cost = q[2]; fn = () => { S.pets[key] = { h: 100, love: 0, pd: 0, td: 0 }; if (!S.pet) S.pet = key; toast(TK('petGot', { n: TK('p_' + key) })); }; } }
+  else if (kind === 'petgo') { if (S.pets[key]) { cost = 0; fn = () => { S.pet = S.pet === key ? '' : key; }; } }
+  else if (kind === 'feeder') { if (petOpen() && !S.feeder) { cost = FEEDER; fn = () => { S.feeder = 1; }; } }
   else if (kind === 'brand') { if (S.hq) { cost = brandCost(); fn = () => { S.brand++; toast(TK('brandUp', { n: S.brand, p: S.brand * 4 })); }; } }
-  if (cost == null || S.money < cost) return false;
+  if (cost == null || (cost > 0 && S.money < cost)) return false;
   addMoney(-cost); fn(); sfx('buy'); syncWorld(false); checkMs(); save(); hudDirty = true; return true;
 }
 const ACH = [   // 成就：[编号, 图标, 当前数值, 各档目标]，每完成一档得一个奖杯和一笔奖金
@@ -1562,6 +1682,10 @@ const ACH = [   // 成就：[编号, 图标, 当前数值, 各档目标]，每�
   ['events', '🚨', () => S.stat.events, [10, 150, 1500]],
   ['promos', '📣', () => S.stat.promos, [3, 50, 500]],
   ['brand', '🏅', () => S.brand, [1, 5, 10, 20]],
+  ['comfort', '🛋️', () => comfort(), [10, 40, 80, 120]],
+  ['rests', '😴', () => S.stat.rests, [3, 30, 150]],
+  ['pets', '🐾', () => PETS.reduce((a, q) => a + petLv(q[0]), 0), [1, 5, 10, 15]],
+  ['insp', '🚓', () => S.stat.inspOk, [3, 30, 150]],
 ];
 const ACHN = ACH.reduce((a, x) => a + x[3].length, 0);
 const trophies = () => { let n = 0; for (const x of ACH) n += Math.min(x[3].length, S.ach[x[0]] || 0); return n; };
@@ -1577,6 +1701,9 @@ function checkAch() {   // 达成后自动发奖；一次补发很多个时（�
 }
 function checkMs() {   // 满级里程碑提示
   const m = S.ms || (S.ms = {});
+  if (!m.home && homeOpen()) { const all = petOpen(); m.home = 1; if (all) m.pet = 1; toast(TK(all ? 'lifeNew' : 'homeNew')); }   // 老存档一进来就全开放了：只说一句
+  if (!m.pet && petOpen()) { m.pet = 1; toast(TK('petNew')); }
+  if (!m.insp && inspOpen()) { m.insp = 1; S.lic = Math.max(S.lic, S.day + 6); S.insp.next = 240; if (S.level <= 6) toast(TK('inspNew')); }   // 开张时自带一张执照
   if (!m.rest && restDone()) { m.rest = 1; toast(TK('restDoneT')); sfx('level'); }
   for (const b of BIZ) if (!m[b.k] && vDone(b)) { m[b.k] = 1; toast(TK('vDoneT', { n: TK(b.k) })); sfx('level'); }
 }
@@ -1644,7 +1771,8 @@ function updCustomer(c, dt) {
           c.state = 'wait'; c.patMax = c.pat = patience() * ({ vip: 0.75, hurry: 0.5, rider: 0.8 }[c.kind] || 1); c.dir = c.seat.side < 0 ? 1.57 : -1.57;
           c.order = { item: c.item, st: ST[ITEMS.indexOf(c.item)], seat: c.seat, cust: c, state: 'queue', slot: -1, claimed: null };
           orders.push(c.order);
-        } else { c.dead = true; rm(c.mesh); }
+        } else if (seen(c) && (c.ext = (c.ext || 0) + 1) < 5) { c.path.push([c.x + Math.sin(c.dir) * 12, c.y + Math.cos(c.dir) * 12]); c.moving = true; }   // 还在某位玩家的视野里：再往前走一段
+        else { c.dead = true; rm(c.mesh); }
       } else c.moving = true;
     }
   } else if (c.state === 'wait') {
@@ -1746,7 +1874,10 @@ function clearSeat(s, w) { rm(s.plate); s.plate = null; s.state = 'free'; s.clai
 // ---- 玩家 ----
 const keys = {}, joy = { on: false, sx: 0, sy: 0, dx: 0, dy: 0, moved: false, t0: 0 };
 function updPlayer(dt) { movePlayer(player, dt); interact(player, dt); }
-function movePlayer(p, dt) {   // 移动 + 碰撞（联机时各自在本机算自己的移动）
+function movePlayer(p, dt) {   // 一小步不超过 0.3 格：帧率低的时候也不会一步跨过一堵墙
+  const n = Math.max(1, Math.ceil(playerSpeed() * (buff.skate > 0 ? 1.5 : 1) * dt / 0.3)); for (let i = 0; i < n; i++) moveStep(p, dt / n);
+}
+function moveStep(p, dt) {   // 移动 + 碰撞（联机时各自在本机算自己的移动）
   const sp = playerSpeed() * (buff.skate > 0 ? 1.5 : 1);
   let sx = joy.on && joy.moved ? joy.dx : 0, sy = joy.on && joy.moved ? joy.dy : 0;
   if (keys.a || keys.arrowleft) sx -= 1; if (keys.d || keys.arrowright) sx += 1;
@@ -1759,10 +1890,8 @@ function movePlayer(p, dt) {   // 移动 + 碰撞（联机时各自在本机算�
   } else if (p.target) { if (go(p, p.target.x, p.target.y, sp, dt)) p.target = (p.path && p.path.shift()) || null; }
   else p.moving = false;
   // 碰撞
-  const vb = venueAt(p.x, p.y);
-  if (vb) { p.x = Math.max(vb.ox + 0.35, Math.min(vb.ox + VW - 0.35, p.x)); p.y = Math.max(vb.oz + 1.55, Math.min(vb.oz + VH - 0.35, p.y)); }
-  else { p.x = Math.max(-36.5, Math.min(42.5, p.x)); p.y = Math.max(1.5, Math.min(17.4, p.y)); }
-  for (const t of vb ? vb.obs : OBS) {
+  p.x = Math.max(-73.5, Math.min(90.5, p.x)); p.y = Math.max(-2.2, Math.min(17.4, p.y));
+  for (const t of OBS) {
     const dx = p.x - t.x, dy = p.y - t.y, hx = t.hx, hy = t.hy;
     if (Math.abs(dx) < hx && Math.abs(dy) < hy) {
       const tg = p.target, slide = tg ? sp * dt * 0.9 : 0;   // 点地移动时沿边绕到最近的角
@@ -1781,6 +1910,7 @@ function movePlayer(p, dt) {   // 移动 + 碰撞（联机时各自在本机算�
 function interact(p, dt) {   // 靠近就自动交互（由房主一侧统一结算）
   const n0 = p.stack.length; p.stack = p.stack.filter(it => !(it.o && it.o.dead));
   if (p.stack.length !== n0) { p.stackDirty = true; floatText(p.x, p.y, 2, TK('gone'), '#ff8a80'); }
+  if (homeOpen() && atHome(p.x, p.y)) homeAct(p, dt); else p.restT = 0;
   for (const t of tables) if (t.cash > 0 && Math.abs(p.x - t.x) < 1.75 && Math.abs(p.y - t.y) < 1.1) collect(t);
   if (STAND.cash > 0 && Math.abs(p.x - STAND.x) < 1.3 && Math.abs(p.y - STAND.y) < 1.3) collect(STAND);
   { const vb = venueAt(p.x, p.y);   // 产业店内：仓库取货 → 上架（带出店门的货会原价退掉）
@@ -1816,7 +1946,7 @@ function interact(p, dt) {   // 靠近就自动交互（由房主一侧统一结
     if (Math.abs(p.x - tx) < 1.2 && Math.abs(p.y - ty) < 0.6 && S.money >= tableCost()) { p.padT = (p.padT || 0) + dt; if (p.padT > 0.8) { p.padT = 0; buyTable(); p.target = null; hideHint(); } } else p.padT = 0;
   } else p.padT = 0;
   // 进货：站在冰箱前的地垫上
-  { const shopX = BIZ[0].px + 2.8, cp = cratePrice();   // 到超市门口买食材，一箱一箱搬回冰箱
+  { const shopX = SHOP.x, cp = cratePrice();   // 到超市门口买食材，一箱一箱搬回冰箱
     if (Math.hypot(p.x - shopX, p.y - 12.5) < 0.9 && p.stack.length < capacity()) {
       p.shopT = (p.shopT || 0) + dt;
       if (p.shopT > 0.5) { p.shopT = 0;
@@ -1870,7 +2000,11 @@ const regPos = (b, r) => [b.ox + 6 + r * 5, b.oz + 12.2];
 const SVC = ['🍽️', '🧴', '🧺'];   // 客房服务送的东西：餐点、洗漱用品、毛巾
 const spotOf = b => b.k === 'hotel' ? [b.ox + 20.6, b.oz + 7.4] : [b.ox + 20.3, b.oz + 12.2];   // 酒店的服务车；奶茶店骑手取餐处 / 游乐场家长等孩子的地方
 const promoPos = b => [b.ox + 20.2, b.oz + 9.6];
-const venueAt = (x, y) => y > 30 ? BIZ[Math.max(0, Math.min(BIZ.length - 1, Math.round((y - 44 - VH / 2) / 26)))] : null;
+function venueAt(x, y) {   // (x, y) 落在哪家店的范围里（店都建在同一条街上，按位置就能分辨）
+  if (y > BY + 0.1 || y < BY - VH - 0.3) return null;
+  for (const b of BIZ) if (x > b.ox - 0.3 && x < b.ox + VW + 0.3) return b;
+  return null;
+}
 function stationModel(b, i, g) {   // 每种产业的"货架"长得不一样
   const c = b.items[i][2], tiers = [];
   if (b.k === 'market') {
@@ -1975,9 +2109,9 @@ function buildVenue(b) {
     mk(rb(0.3, 0.5, VH + 0.32, 0.03), shade(th[1], -0.14), ox - 0.11, 0.25, oz + VH / 2 - 0.15, g); mk(rb(VW + 0.07, 0.5, 0.3, 0.03), shade(th[2], -0.14), ox + VW / 2, 0.25, oz - 0.11, g);
     mk(rb(0.34, 0.12, VH + 0.36, 0.03), '#fbf3e1', ox - 0.11, 2.92, oz + VH / 2 - 0.15, g); mk(rb(VW + 0.1, 0.12, 0.34, 0.03), '#fbf3e1', ox + VW / 2, 2.92, oz - 0.11, g);
   }
-  hedge(ox + VW / 2, oz + VH + 0.14, VW + 0.5, 0.28, g); hedge(ox + VW + 0.14, oz + 6.2, 0.28, 12.6, g);
-  flat(1.3, 1.7, '#c8553d', ox + VW - 0.7, 0.012, oz + 13.6, g);
-  mk(cyl(0.55, 0.55, 0.03, 24), '#fff3b0', ox + VW - 1.0, 0.016, oz + 14.45, g, { emissive: '#ffd60a', emissiveIntensity: 0.6 }).castShadow = false;
+  hedge(ox + 0.4, oz + VH + 0.14, 1.0, 0.28, g); hedge(ox + 11.3, oz + VH + 0.14, 17.2, 0.28, g); hedge(ox + 21.98, oz + VH + 0.14, 0.56, 0.28, g); hedge(ox + VW + 0.14, oz + VH / 2 - 0.1, 0.28, VH - 0.2, g);   // 南边、东边是矮花坛；南边的东南角和西南角各留一道门，直接通人行道
+  for (const dx of [20.8, 1.8]) { flat(1.7, 1.5, '#c8553d', ox + dx, 0.012, oz + 14.5, g);
+    for (const a of [-0.98, 0.98]) { mk(cyl(0.05, 0.06, 1.3, 8), '#3b4a5a', ox + dx + a, 0.65, oz + VH + 0.14, g); mk(sph(0.11), '#fff3b0', ox + dx + a, 1.38, oz + VH + 0.14, g, { emissive: '#ffd60a', emissiveIntensity: 0.9 }); } }   // 门口的地毯和门灯
   const big = emojiSprite(b.e, 1.7, true); big.position.set(ox + VW / 2, 3.9, oz + 0.3); g.add(big);
   b.regG = [0, 1, 2].map(r => { const q = new THREE.Group(), [rx, ry] = regPos(b, r); q.position.set(rx, 0, ry); g.add(q);
     mk(rb(1.5, 0.82, 0.7, 0.05), '#457b9d', 0, 0.41, 0, q); mk(rb(1.58, 0.06, 0.78, 0.02), '#f1faee', 0, 0.85, 0, q); mk(rb(0.9, 0.03, 0.4, 0.01), '#22333b', -0.25, 0.89, 0, q);
@@ -1987,13 +2121,297 @@ function buildVenue(b) {
     const sp = emojiSprite(it[1], 0.5, true); sp.position.set(0, 1.25, 0.1); q.add(sp); return q; });
   b.stG = b.items.map((it, i) => { const q = new THREE.Group(), [sx, sy] = stPos(b, i); q.position.set(sx, 0, sy); g.add(q); q.userData.tiers = stationModel(b, i, q); return q; });
   b.lockG = b.items.map((it, i) => { const [sx, sy] = stPos(b, i), m = mk(rb(2.7, 0.03, 1.0, 0.012), '#8d99a6', sx, 0.02, sy, g, { transparent: true, opacity: 0.35 }); m.castShadow = false; return m; });
-  b.stack.children.forEach((m, k) => { if (k) m.visible = false; });
   venueDecor(b, g);
   b.regG.forEach(q => { q.userData.dyn = true; bake(q); }); b.palG.forEach(q => { q.userData.dyn = true; bake(q); });
   b.stG.forEach(q => { q.userData.dyn = true; q.userData.tiers.forEach(tg => { tg.userData.dyn = true; bake(tg); }); bake(q); });
   bake(g);
 }
 BIZ.forEach(buildVenue);
+// ---- 家：就建在街边（餐厅东边、小路对面）。地板、墙面和 12 件家具各有四档，按存档来建 ----
+const HPAL = [null, ['#d9b98a', '#9fb3c8', '#8ecae6', '#adb5bd'], ['#b9814f', '#48acb5', '#ffd166', '#ced4da'], ['#7a4e2d', '#b56576', '#e9c46a', '#dfe7ec'], ['#3b2a1a', '#6d597a', '#e9c46a', '#e9c46a']];   // 四档家具的配色：[木头, 布艺, 点缀, 金属]
+const HFLOOR = new Map(), GOLD = { metalness: 0.6, roughness: 0.3 };
+function homeFloorMat(t) {   // 地板：毛坯水泥 → 浅色木地板 → 橡木 → 胡桃木 → 大理石
+  let m = HFLOOR.get(t); if (m) return m;
+  const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d'); let sd = 3 + t; const rnd = () => (sd = sd * 16807 % 2147483647) / 2147483647;
+  if (!t) { x.fillStyle = '#bdb8ad'; x.fillRect(0, 0, 128, 128); for (let i = 0; i < 70; i++) { x.fillStyle = rnd() < 0.5 ? 'rgba(150,146,138,.45)' : 'rgba(212,208,198,.5)'; x.fillRect(rnd() * 128, rnd() * 128, 2 + rnd() * 6, 2 + rnd() * 3); } }
+  else if (t === 4) { x.fillStyle = '#f6f1e8'; x.fillRect(0, 0, 128, 128); x.fillStyle = '#e9e2d5'; x.fillRect(0, 0, 64, 64); x.fillRect(64, 64, 64, 64);
+    x.strokeStyle = 'rgba(150,140,125,.4)'; x.lineWidth = 1.2; for (let i = 0; i < 8; i++) { x.beginPath(); x.moveTo(rnd() * 128, rnd() * 128); x.bezierCurveTo(rnd() * 128, rnd() * 128, rnd() * 128, rnd() * 128, rnd() * 128, rnd() * 128); x.stroke(); }
+    x.strokeStyle = '#d9b45a'; x.lineWidth = 3; x.strokeRect(0, 0, 64, 64); x.strokeRect(64, 64, 64, 64); }
+  else { const b = [0, [228, 200, 156], [198, 150, 100], [140, 94, 60]][t], rows = t === 1 ? 4 : 8, rh = 128 / rows;
+    for (let r = 0; r < rows; r++) { let px = -rnd() * 50; while (px < 128) { const w = 40 + rnd() * 50, k = (rnd() - 0.5) * 22; x.fillStyle = 'rgb(' + Math.round(b[0] + k) + ',' + Math.round(b[1] + k) + ',' + Math.round(b[2] + k) + ')'; x.fillRect(px, r * rh, w + 1, rh); x.fillStyle = 'rgba(60,35,15,.3)'; x.fillRect(px, r * rh, 1.5, rh); px += w; } x.fillStyle = 'rgba(60,35,15,.3)'; x.fillRect(0, r * rh, 128, 1.5); } }
+  const tex = new THREE.CanvasTexture(c); tex.wrapS = tex.wrapT = THREE.RepeatWrapping; tex.repeat.set(HOME.w / 2, HOME.h / 2); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
+  m = new THREE.MeshStandardMaterial({ map: tex, roughness: t === 4 ? 0.35 : 0.8 }); HFLOOR.set(t, m); return m;
+}
+function homeBuild() {   // 屋里的全部陈设（坐标以屋子西北角为原点）。买了新的就整个重建一次
+  const g = new THREE.Group(), hw = HOME.w, hh = HOME.h, L = k => S.home[k] || 0, P = k => HPAL[L(k)], obs = HOME.obs = [];
+  const ob = (x0, x1, z0, z1) => obs.push({ x: HOME.ox + (x0 + x1) / 2, y: HOME.oz + (z0 + z1) / 2, hx: (x1 - x0) / 2 + 0.3, hy: (z1 - z0) / 2 + 0.3 });
+  const wt = L('wall'), wc = ['#cdc8bc', '#f7ecd9', '#dbe8d4', '#f1d9c9', '#2f5d62'][wt], tr = ['#b5b0a4', '#e8d9bd', '#ffffff', '#8a5a35', '#e9c46a'][wt], top = wt ? '#fbf3e1' : '#b5b0a4';
+  mk(rb(hw + 0.4, 0.3, hh + 0.4, 0.04), '#b9b3a5', hw / 2 - 0.1, -0.15, hh / 2 - 0.1, g).castShadow = false;
+  { const fl = new THREE.Mesh(G('homeFloor', () => new THREE.PlaneGeometry(hw, hh)), homeFloorMat(L('floor'))); fl.rotation.x = -Math.PI / 2; fl.position.set(hw / 2, 0.006, hh / 2); fl.receiveShadow = true; g.add(fl); }
+  mk(rb(0.25, 2.9, hh + 0.3, 0.03), wc, -0.125, 1.45, hh / 2 - 0.15, g); mk(rb(hw + 0.05, 2.9, 0.25, 0.03), wc, hw / 2, 1.45, -0.125, g);   // 西墙、北墙
+  mk(rb(0.3, 0.16, hh + 0.32, 0.03), tr, -0.11, 0.08, hh / 2 - 0.15, g); mk(rb(hw + 0.07, 0.16, 0.3, 0.03), tr, hw / 2, 0.08, -0.11, g);   // 踢脚线
+  mk(rb(0.34, 0.12, hh + 0.36, 0.03), top, -0.11, 2.92, hh / 2 - 0.15, g); mk(rb(hw + 0.1, 0.12, 0.34, 0.03), top, hw / 2, 2.92, -0.11, g);
+  if (wt >= 2) { const pc = wt === 2 ? '#ffffff' : wt === 3 ? '#a86f42' : '#f4ead8';   // 墙裙
+    mk(rb(0.28, 0.9, hh + 0.3, 0.02), pc, -0.118, 0.6, hh / 2 - 0.15, g); mk(rb(hw + 0.05, 0.9, 0.28, 0.02), pc, hw / 2, 0.6, -0.118, g);
+    mk(rb(0.31, 0.06, hh + 0.3, 0.02), tr, -0.11, 1.07, hh / 2 - 0.15, g); mk(rb(hw + 0.05, 0.06, 0.31, 0.02), tr, hw / 2, 1.07, -0.11, g); }
+  if (wt >= 3) { const sc = wt === 3 ? '#e8c7b4' : '#3f7479';   // 竖条纹墙纸
+    for (let x = 0.5; x < hw; x += 1.0) mk(box(0.34, 1.72, 0.02), sc, x, 1.98, 0.004, g).castShadow = false; for (let z = 0.5; z < hh; z += 1.0) mk(box(0.02, 1.72, 0.34), sc, 0.004, 1.98, z, g).castShadow = false; }
+  const win = (x, z, w, rot) => { const q = new THREE.Group(); q.position.set(x, 2.08, z); q.rotation.y = rot; g.add(q);   // 窗：墙面升到第二档起有窗帘
+    mk(box(w + 0.16, 1.11, 0.06), '#ffffff', 0, 0, 0.02, q).castShadow = false; mk(box(w, 0.95, 0.02), '#bfe9f5', 0, 0, 0.05, q, { emissive: '#7fc8dd', emissiveIntensity: 0.45, roughness: 0.1 }).castShadow = false;
+    mk(box(0.05, 0.95, 0.03), '#ffffff', 0, 0, 0.065, q).castShadow = false; mk(box(w, 0.05, 0.03), '#ffffff', 0, 0, 0.065, q).castShadow = false; mk(box(w + 0.3, 0.06, 0.16), '#ffffff', 0, -0.58, 0.08, q);
+    if (wt >= 2) { const cc = ['', '', '#ffd6a5', '#b56576', '#e9c46a'][wt]; for (const a of [-1, 1]) mk(rb(0.3, 1.45, 0.1, 0.04), cc, a * (w / 2 + 0.2), -0.05, 0.1, q); mk(cyl(0.025, 0.025, w + 0.9, 6), '#8a5a35', 0, 0.7, 0.1, q).rotation.z = Math.PI / 2; } };
+  win(3.3, 0, 1.5, 0); win(0, 5.6, 1.3, Math.PI / 2);
+  // 朝南、朝东是"剖开"的矮墙；门在南墙的西头，出门就是人行道
+  mk(rb(0.2, 0.45, hh + 0.3, 0.03), wc, hw + 0.1, 0.225, hh / 2 + 0.05, g); mk(rb(0.8, 0.45, 0.2, 0.03), wc, 0.3, 0.225, hh + 0.1, g); mk(rb(hw - 2.1, 0.45, 0.2, 0.03), wc, hw / 2 + 1.25, 0.225, hh + 0.1, g);
+  for (const x of [0.72, 2.28]) mk(rb(0.16, 2.1, 0.16, 0.03), '#8a5a35', x, 1.05, hh + 0.1, g); mk(rb(1.72, 0.14, 0.2, 0.03), '#8a5a35', 1.5, 2.17, hh + 0.1, g);   // 门框
+  { const d = mk(rb(1.3, 1.95, 0.08, 0.02), '#a86f42', 2.55, 0.98, hh - 0.5, g); d.rotation.y = 1.15; mk(sph(0.05), '#e9c46a', 2.72, 1.0, hh - 1.0, g, GOLD); ob(2.4, 2.8, hh - 1.0, hh - 0.1); }   // 朝里敞开的门
+  mk(rb(1.1, 0.03, 0.7, 0.01), '#c8553d', 1.5, 0.02, hh - 0.55, g).castShadow = false;   // 门垫
+  const pot = (x, z, k, c) => { mk(cyl(0.24 * k, 0.19 * k, 0.4 * k, 12), c, x, 0.2 * k, z, g); mk(sph(0.3), '#52b788', x, 0.7 * k, z, g).scale.setScalar(k); mk(sph(0.2), '#40916c', x + 0.15 * k, 0.93 * k, z - 0.05, g).scale.setScalar(k); ob(x - 0.15, x + 0.15, z - 0.15, z + 0.15); };
+  if (L('bed')) { const t = L('bed'), [wd, fb, ac, mt] = P('bed'), dbl = t >= 3, bw = dbl ? 1.8 : 1.2, cz = 5.6;   // 床（床头靠西墙）
+    mk(rb(2.4, 0.3, bw, 0.05), wd, 1.5, 0.2, cz, g); mk(rb(2.3, 0.2, bw - 0.1, 0.08), '#fffaf0', 1.52, 0.44, cz, g); mk(rb(1.45, 0.1, bw - 0.06, 0.05), fb, 1.95, 0.56, cz, g);
+    for (const dz of dbl ? [-0.42, 0.42] : [0]) mk(rb(0.42, 0.14, 0.6, 0.06), '#ffffff', 0.72, 0.6, cz + dz, g);
+    if (t >= 2) mk(rb(0.14, t >= 4 ? 1.5 : 1.05, bw + 0.1, 0.05), t >= 4 ? fb : wd, 0.3, t >= 4 ? 0.75 : 0.52, cz, g);   // 床头板
+    if (t >= 3) { const nz = cz + bw / 2 + 0.45; mk(rb(0.5, 0.5, 0.5, 0.04), wd, 0.55, 0.25, nz, g); mk(cyl(0.04, 0.06, 0.3, 8), mt, 0.55, 0.65, nz, g); mk(cyl(0.12, 0.18, 0.22, 12), '#fff3d6', 0.55, 0.88, nz, g, { emissive: '#ffd166', emissiveIntensity: 0.7 }); ob(0.3, 0.8, nz - 0.25, nz + 0.25); }   // 床头柜和台灯
+    if (t >= 4) { for (const dx of [0.42, 2.62]) for (const dz of [-bw / 2 + 0.06, bw / 2 - 0.06]) mk(cyl(0.04, 0.04, 2.0, 8), mt, dx, 1.0, cz + dz, g, GOLD); mk(rb(2.36, 0.06, bw, 0.02), ac, 1.52, 2.02, cz, g, GOLD); mk(rb(1.0, 0.05, bw - 0.2, 0.02), ac, 1.95, 0.625, cz, g); }   // 四柱床架
+    ob(0.3, 2.7, cz - bw / 2, cz + bw / 2);
+    mk(cyl(0.5, 0.5, 0.03, 24), '#cdb4db', HOME.rest[0] - HOME.ox, 0.05, HOME.rest[1] - HOME.oz, g, { emissive: '#7b5ea7', emissiveIntensity: 0.5 }).castShadow = false;   // 床边：站在这里休息
+  }
+  if (L('sofa')) { const t = L('sofa'), [wd, fb, ac, mt] = P('sofa'), w = t >= 3 ? 2.6 : t === 2 ? 2.2 : 1.6, cx = 3.3, cz = 0.72, dk = shade(fb, -0.12);   // 沙发（靠北墙，朝南）
+    mk(rb(w, 0.36, 0.86, 0.1), fb, cx, 0.3, cz, g); mk(rb(w, 0.8, 0.24, 0.1), dk, cx, 0.52, cz - 0.34, g);
+    for (const a of [-1, 1]) mk(rb(0.22, 0.6, 0.86, 0.08), dk, cx + a * (w / 2 - 0.05), 0.4, cz, g);
+    if (t >= 2) { for (const a of [-1, 1]) mk(rb(0.4, 0.34, 0.14, 0.06), ac, cx + a * (w / 2 - 0.5), 0.64, cz - 0.14, g).rotation.x = -0.25;   // 抱枕、茶几
+      mk(rb(1.0, 0.07, 0.56, 0.03), wd, cx, 0.38, 2.1, g); for (const a of [-0.42, 0.42]) for (const d of [-0.2, 0.2]) mk(cyl(0.03, 0.03, 0.36, 6), t >= 4 ? mt : wd, cx + a, 0.18, 2.1 + d, g); mk(cyl(0.06, 0.05, 0.1, 8), '#fffaf0', cx - 0.2, 0.47, 2.1, g); ob(cx - 0.5, cx + 0.5, 1.82, 2.38); }
+    if (t >= 3) { const lx = cx + w / 2 + 0.3; mk(cyl(0.14, 0.16, 0.04, 12), mt, lx, 0.02, 0.45, g); mk(cyl(0.025, 0.025, 1.5, 6), mt, lx, 0.77, 0.45, g); mk(cyl(0.14, 0.22, 0.3, 12), '#fff3d6', lx, 1.62, 0.45, g, { emissive: '#ffd166', emissiveIntensity: 0.7 }); }   // 落地灯
+    if (t >= 4) for (const a of [-1, 1]) mk(sph(0.07), mt, cx + a * (w / 2 - 0.05), 0.74, cz + 0.36, g, GOLD);
+    ob(cx - w / 2, cx + w / 2, 0.25, 1.15);
+  }
+  if (L('tv')) { const t = L('tv'), [wd, fb, ac, mt] = P('tv'), sz = [0, 0.8, 1.2, 1.6, 2.1][t], cl = Math.max(1.2, sz + 0.3), cz = 1.6, hung = t >= 3, ty = hung ? 1.45 : 0.47 + sz * 0.3, tx = hung ? 0.05 : 0.42;   // 电视（靠西墙，朝东）
+    mk(rb(0.5, 0.45, cl, 0.04), wd, 0.42, 0.225, cz, g);
+    mk(rb(0.08, sz * 0.58, sz, 0.02), '#22272b', tx, ty, cz, g); mk(box(0.02, sz * 0.5, sz - 0.1), '#3a86ff', tx + 0.045, ty, cz, g, { emissive: '#4cc9f0', emissiveIntensity: 0.55 }).castShadow = false;
+    if (!hung) mk(box(0.16, 0.05, 0.3), '#22272b', 0.42, 0.475, cz, g);
+    if (t === 2 || t === 3) for (const a of [-1, 1]) mk(rb(0.2, 0.5, 0.2, 0.03), '#22272b', 0.42, 0.7, cz + a * (cl / 2 - 0.12), g);   // 音箱
+    if (t >= 4) { mk(rb(0.16, 0.12, 1.5, 0.04), '#22272b', 0.42, 0.51, cz, g); mk(rb(0.3, 0.1, 0.4, 0.03), mt, 0.42, 0.5, cz + 0.98, g, GOLD); }   // 条形音箱、游戏机
+    ob(0.1, 0.72, cz - cl / 2, cz + cl / 2);
+  }
+  if (L('table')) { const t = L('table'), [wd, fb, ac, mt] = P('table'), cx = 9.6, cz = 3.4, tw = t >= 3 ? 2.0 : 1.5, n = t >= 2 ? 4 : 2, lux = t >= 4;   // 餐桌
+    mk(rb(tw, 0.08, 1.0, 0.03), lux ? '#f4efe6' : wd, cx, 0.72, cz, g, lux ? { roughness: 0.3 } : undefined);
+    for (const a of [-1, 1]) for (const d of [-1, 1]) mk(cyl(0.04, 0.035, 0.7, 8), lux ? mt : wd, cx + a * (tw / 2 - 0.12), 0.35, cz + d * 0.38, g, lux ? GOLD : undefined);
+    const chair = (x, z, sg) => { mk(rb(0.42, 0.08, 0.42, 0.03), fb, x, 0.44, z, g); mk(rb(0.42, 0.5, 0.08, 0.03), wd, x, 0.72, z + sg * 0.19, g); for (const a of [-0.16, 0.16]) for (const d of [-0.16, 0.16]) mk(cyl(0.025, 0.025, 0.42, 6), wd, x + a, 0.21, z + d, g); };
+    for (let i = 0; i < n / 2; i++) { const x = cx + (n === 2 ? 0 : (i - 0.5) * (tw - 0.8)); chair(x, cz - 0.78, -1); chair(x, cz + 0.78, 1); }
+    if (t >= 2) { mk(cyl(0.07, 0.05, 0.16, 10), ac, cx, 0.84, cz, g); mk(sph(0.1), '#ff8fab', cx, 1.0, cz, g); }
+    if (t >= 3) mk(rb(tw - 0.3, 0.012, 0.36, 0.005), ac, cx, 0.765, cz, g);
+    ob(cx - tw / 2, cx + tw / 2, cz - 0.6, cz + 0.6);
+  }
+  if (L('kitchen')) { const t = L('kitchen'), [wd, fb, ac, mt] = P('kitchen'), len = [0, 2.0, 2.8, 3.4, 4.0][t], x0 = 11.7 - len, cx = x0 + len / 2, cc = t >= 4 ? '#2b3a55' : wd;   // 厨房（靠北墙东头）
+    mk(rb(len, 0.82, 0.66, 0.03), cc, cx, 0.41, 0.45, g); mk(rb(len + 0.04, 0.06, 0.7, 0.02), t >= 3 ? '#f4efe6' : '#e8dcc4', cx, 0.85, 0.45, g, { roughness: 0.3 });
+    mk(rb(0.6, 0.03, 0.44, 0.01), '#22272b', x0 + 0.5, 0.89, 0.45, g); for (const a of [-0.14, 0.14]) mk(cyl(0.09, 0.09, 0.02, 12), '#3b4a5a', x0 + 0.5 + a, 0.91, 0.45, g);   // 灶台和锅
+    mk(cyl(0.13, 0.11, 0.12, 12), mt, x0 + 0.36, 0.98, 0.45, g, GOLD);
+    if (t >= 2) { mk(rb(0.5, 0.04, 0.4, 0.015), '#adb5bd', x0 + 1.5, 0.885, 0.45, g, GOLD); mk(cyl(0.02, 0.02, 0.24, 6), '#adb5bd', x0 + 1.5, 1.0, 0.24, g, GOLD); mk(rb(len, 0.6, 0.36, 0.03), cc, cx, 2.05, 0.2, g); }   // 水槽、吊柜
+    if (t >= 3) { mk(rb(0.74, 1.9, 0.66, 0.05), t >= 4 ? '#dfe7ec' : '#f1faee', x0 - 0.45, 0.95, 0.45, g, t >= 4 ? GOLD : { roughness: 0.3 }); mk(box(0.03, 0.5, 0.03), '#8d99ae', x0 - 0.2, 1.2, 0.8, g); }   // 冰箱
+    if (t >= 4) { mk(rb(0.5, 0.32, 0.4, 0.04), '#22272b', x0 + 2.6, 1.05, 0.4, g); mk(rb(0.9, 0.3, 0.5, 0.04), mt, x0 + 0.5, 1.6, 0.3, g, GOLD); }   // 烤箱、抽油烟机
+    ob(x0 - (t >= 3 ? 0.85 : 0), 11.7, 0.1, 0.8);
+  }
+  if (L('shelf')) { const t = L('shelf'), [wd, fb, ac, mt] = P('shelf'), cx = 5.9, w = t >= 3 ? 1.6 : 1.1, hgt = [0, 1.0, 1.5, 2.0, 2.3][t], rows = Math.round(hgt / 0.5), rh = (hgt - 0.1) / rows;   // 书架（靠北墙）
+    mk(rb(w, hgt, 0.4, 0.03), wd, cx, hgt / 2, 0.3, g);
+    const BK = ['#e63946', '#ffd166', '#52b788', '#3a86ff', '#b07cd8', '#f4a261', '#f1faee'];
+    for (let r = 0; r < rows; r++) { const y = 0.08 + r * rh; mk(box(w - 0.12, rh - 0.08, 0.02), shade(wd, -0.18), cx, y + (rh - 0.08) / 2, 0.505, g).castShadow = false;
+      for (let k = 0, x = cx - w / 2 + 0.1; x < cx + w / 2 - 0.16; k++) { const bw = 0.07 + ((r * 7 + k * 3) % 4) * 0.02, bh = Math.min(rh - 0.12, 0.26 + ((r + k * 5) % 3) * 0.05); if ((r * 3 + k) % 7 !== 6) mk(box(bw, bh, 0.05), BK[(r * 2 + k) % 7], x + bw / 2, y + bh / 2, 0.53, g).castShadow = false; x += bw + 0.012; } }
+    if (t >= 4) { mk(rb(w + 0.1, 0.06, 0.46, 0.02), mt, cx, hgt + 0.03, 0.3, g, GOLD); mk(sph(0.12), mt, cx, hgt + 0.2, 0.3, g, GOLD); }
+    ob(cx - w / 2, cx + w / 2, 0.05, 0.6);
+  }
+  if (L('plant')) { const t = L('plant'), pc = t >= 4 ? '#e9c46a' : t >= 3 ? '#f1faee' : '#e07a5f';   // 绿植：每升一档多一盆
+    pot(11.3, 8.3, 0.8 + t * 0.12, pc); if (t >= 2) pot(11.3, 5.2, 0.9, pc); if (t >= 3) pot(1.25, 0.55, 1.0, pc); if (t >= 4) pot(9.2, 8.35, 1.1, pc); }
+  if (L('rug')) { const t = L('rug'), [wd, fb, ac] = P('rug'), w = 2.4 + t * 0.3, d = 1.5 + t * 0.15;   // 地毯（沙发前；第三档起床边也有）
+    mk(rb(w, 0.03, d, 0.012), fb, 3.3, 0.02, 2.2, g).castShadow = false; mk(rb(w - 0.3, 0.032, d - 0.3, 0.012), shade(fb, 0.1), 3.3, 0.021, 2.2, g).castShadow = false;
+    if (t >= 2) mk(rb(w - 0.9, 0.034, d - 0.8, 0.012), ac, 3.3, 0.022, 2.2, g).castShadow = false;
+    if (t >= 3) { mk(rb(1.3, 0.03, 2.0, 0.012), fb, 3.6, 0.02, 5.6, g).castShadow = false; mk(rb(1.0, 0.032, 1.7, 0.012), shade(fb, 0.1), 3.6, 0.021, 5.6, g).castShadow = false; } }
+  if (L('art')) { const t = L('art'), [wd, fb, ac, mt] = P('art'), fr = t >= 4 ? '#e9c46a' : wd, cz = 3.75;   // 挂画和摆件（西墙中段）
+    const pic = (z, y, w, h, c1, c2) => { mk(box(0.05, h + 0.12, w + 0.12), fr, 0.03, y, z, g).castShadow = false; mk(box(0.02, h, w), c1, 0.062, y, z, g).castShadow = false; mk(box(0.02, h * 0.42, w), c2, 0.066, y - h * 0.29, z, g).castShadow = false; mk(box(0.02, 0.1, 0.1), '#ffd166', 0.07, y + h * 0.22, z + w * 0.22, g).castShadow = false; };
+    pic(cz, 1.95, t >= 3 ? 1.1 : 0.7, t >= 3 ? 0.75 : 0.5, '#8ecae6', '#52b788');
+    if (t >= 2) { mk(rb(0.4, 0.7, 0.9, 0.03), wd, 0.36, 0.35, cz, g); mk(cyl(0.08, 0.06, 0.26, 10), ac, 0.36, 0.83, cz - 0.2, g); mk(sph(0.1), '#ff8fab', 0.36, 1.03, cz - 0.2, g); ob(0.16, 0.56, cz - 0.45, cz + 0.45); }   // 边柜和花瓶
+    if (t >= 3) { pic(cz - 0.82, 2.05, 0.4, 0.5, '#ffd6a5', '#e85d75'); pic(cz + 0.82, 2.05, 0.4, 0.5, '#cdb4db', '#3a86ff'); mk(cyl(0.05, 0.07, 0.3, 8), mt, 0.36, 0.85, cz + 0.22, g, GOLD); }
+    if (t >= 4) { mk(cyl(0.2, 0.24, 0.8, 14), '#f4efe6', 11.3, 0.4, 2.4, g, { roughness: 0.3 }); mk(sph(0.2), mt, 11.3, 1.02, 2.4, g, GOLD); mk(cyl(0.05, 0.1, 0.5, 8), mt, 11.3, 1.4, 2.4, g, GOLD); mk(sph(0.12), mt, 11.3, 1.72, 2.4, g, GOLD); ob(11.1, 11.5, 2.2, 2.6); }   // 雕像
+  }
+  if (L('lux')) { const t = L('lux'), [wd, fb, ac, mt] = P('lux'), cx = 6.6, cz = 3.0, len = t >= 2 ? 1.6 : 1.0;   // 鱼缸；第三档起加钢琴
+    mk(rb(0.56, 0.7, len + 0.1, 0.03), wd, cx, 0.35, cz, g); mk(box(0.44, 0.06, len - 0.04), '#e9d8a6', cx, 0.74, cz, g).castShadow = false;
+    mk(box(0.46, 0.6, len), '#8ecae6', cx, 1.02, cz, g, { transparent: true, opacity: 0.42, roughness: 0.1 }).castShadow = false; mk(box(0.5, 0.05, len + 0.04), '#22272b', cx, 1.345, cz, g);
+    for (let i = 0; i < (t >= 2 ? 5 : 3); i++) { const f = mk(sph(0.06), ['#ff9f1c', '#e63946', '#ffd166', '#f1faee', '#3a86ff'][i], cx + 0.07 * ((i % 3) - 1), 0.9 + (i % 3) * 0.14, cz + (i - 2) * len * 0.18, g); f.scale.set(0.5, 0.8, 1.5); f.castShadow = false; }
+    for (let i = 0; i < 3; i++) mk(cone(0.05, 0.3), '#52b788', cx, 0.92, cz - len * 0.4 + i * 0.12, g).castShadow = false;
+    ob(cx - 0.28, cx + 0.28, cz - len / 2 - 0.05, cz + len / 2 + 0.05);
+    if (t >= 3) { const px = 7.6, grand = t >= 4, bk = '#1b1b1f', gl = { roughness: 0.25 };
+      if (!grand) { mk(rb(1.5, 1.2, 0.5, 0.04), bk, px, 0.6, 6.5, g, gl); mk(rb(1.4, 0.08, 0.3, 0.02), bk, px, 0.72, 6.88, g, gl); mk(box(1.3, 0.02, 0.2), '#ffffff', px, 0.77, 6.9, g).castShadow = false;
+        for (let i = 0; i < 9; i++) mk(box(0.05, 0.02, 0.12), '#111111', px - 0.56 + i * 0.14, 0.785, 6.86, g).castShadow = false; ob(6.85, 8.35, 6.25, 7.63); }
+      else { mk(rb(1.5, 0.3, 1.9, 0.25), bk, px, 0.85, 6.0, g, gl); for (const [a, d] of [[-0.6, 0.75], [0.6, 0.75], [0, -0.75]]) mk(cyl(0.05, 0.04, 0.7, 8), bk, px + a, 0.35, 6.0 + d, g, gl);
+        const lid = mk(rb(1.4, 0.04, 1.6, 0.2), bk, px - 0.25, 1.3, 5.9, g, gl); lid.rotation.z = 0.5; mk(cyl(0.015, 0.015, 0.6, 6), mt, px + 0.3, 1.15, 5.6, g, GOLD);
+        mk(rb(1.4, 0.08, 0.3, 0.02), bk, px, 0.78, 7.05, g, gl); mk(box(1.3, 0.02, 0.2), '#ffffff', px, 0.83, 7.07, g).castShadow = false; for (let i = 0; i < 9; i++) mk(box(0.05, 0.02, 0.12), '#111111', px - 0.56 + i * 0.14, 0.845, 7.03, g).castShadow = false;
+        for (const a of [-0.1, 0.1]) mk(box(0.05, 0.03, 0.12), mt, px + a, 0.03, 6.95, g, GOLD); ob(6.85, 8.35, 5.05, 7.75); }
+      const bz = grand ? 7.6 : 7.45; mk(rb(0.8, 0.1, 0.36, 0.04), grand ? fb : '#3b2a1a', px, 0.45, bz, g); for (const a of [-0.32, 0.32]) for (const d of [-0.12, 0.12]) mk(cyl(0.025, 0.025, 0.42, 6), bk, px + a, 0.21, bz + d, g); }
+  }
+  if (Object.keys(S.pets).length) { const bx = HOME.bowl[0] - HOME.ox, bz = 8.0;   // 宠物角：食盆、水盆、窝、鹦鹉站架、自动喂食器
+    mk(cyl(0.16, 0.2, 0.09, 14), '#e63946', bx, 0.045, bz, g); mk(cyl(0.13, 0.13, 0.02, 12), '#8a5a35', bx, 0.09, bz, g);
+    mk(cyl(0.16, 0.2, 0.09, 14), '#3a86ff', bx + 0.45, 0.045, bz, g); mk(cyl(0.13, 0.13, 0.02, 12), '#8ecae6', bx + 0.45, 0.09, bz, g, { roughness: 0.2 });
+    if (S.pets.cat || S.pets.dog) { mk(cyl(0.5, 0.55, 0.14, 18), '#b56576', bx - 0.95, 0.07, bz - 0.05, g); mk(cyl(0.4, 0.4, 0.06, 18), '#ffd6de', bx - 0.95, 0.14, bz - 0.05, g); }
+    if (S.pets.parrot) { mk(cyl(0.2, 0.24, 0.05, 12), '#8a5a35', bx - 1.9, 0.025, bz, g); mk(cyl(0.03, 0.04, 1.3, 8), '#8a5a35', bx - 1.9, 0.65, bz, g); mk(cyl(0.02, 0.02, 0.6, 6), '#8a5a35', bx - 1.9, 1.28, bz, g).rotation.z = Math.PI / 2; }
+    if (S.feeder) { mk(rb(0.34, 0.5, 0.3, 0.05), '#f1faee', bx + 0.95, 0.25, bz, g); mk(rb(0.26, 0.2, 0.24, 0.04), '#8ecae6', bx + 0.95, 0.6, bz, g, { transparent: true, opacity: 0.6 }); mk(box(0.2, 0.03, 0.16), '#adb5bd', bx + 0.95, 0.04, bz + 0.22, g); }
+  }
+  { const nodes = []; for (const x of [1.5, 3.4, 5.3, 7.5, 9.5, 11.2]) for (const z of [1.7, 2.9, 4.3, 5.6, 7.0, 8.3]) nodes.push([HOME.ox + x, HOME.oz + z]);   // 点地走路用的路线图
+    HOME.nav = mkNav(nodes, obs.map(t => [t.x - t.hx, t.x + t.hx, t.y - t.hy, t.y + t.hy])); }
+  return bake(g);
+}
+HOME.g = new THREE.Group(); HOME.g.position.set(HOME.ox, 0, HOME.oz); HOME.sg = null; HOME.sig = null; HOME.nav = null;
+function homeSync() {   // 屋里的样子和存档对不上了（买了家具、领了宠物）：重建
+  const sig = JSON.stringify(S.home) + '|' + Object.keys(S.pets).sort().join() + '|' + S.feeder; if (sig === HOME.sig) return; HOME.sig = sig;
+  if (HOME.sg) { HOME.g.remove(HOME.sg); HOME.sg.traverse(o => { if (o.isMesh && (o.material === VM.d || o.material === VM.g || o.material === VM.m)) o.geometry.dispose(); }); }
+  HOME.sg = homeBuild(); HOME.g.add(HOME.sg);
+}
+function homeAct(p, dt) {   // 在家里：站到床边休息（每天一次，吃掉 1 份家里的食材）；站到食盆前照顾宠物
+  const [rx, ry] = HOME.rest, d = Math.hypot(p.x - rx, p.y - ry);
+  if (S.home.bed > 0 && S.rest !== S.day && d < 0.8) {
+    if (S.inv.groc > 0) { p.restT = (p.restT || 0) + dt;
+      if (p.restT >= 2) { p.restT = 0; S.inv.groc--; S.rest = S.day; S.stat.rests++; toast(TK('rested', { p: +((restMul() - 1) * 100).toFixed(1) })); sfx('level'); floatText(rx, ry, 1.7, '😴 💤', '#e5d4ff'); hudDirty = true; save(); } }
+    else { p.restT = 0; if (!p.grocWarn) { p.grocWarn = 1; toast(TK('needGroc')); } }
+  } else { p.restT = 0; if (d > 1.6) p.grocWarn = 0; }
+  petCare(p, dt);
+}
+// ---- 摊主：站在超市门口的摊位后面，卖生活用品 ----
+let vendor = null, stallT = 0, stallOn = false;
+function syncLife() {
+  if (!vendor || !vendor.mesh.parent) { vendor = { x: STALL.x, y: 11.2, dir: 0, face: 0, stack: [], moving: false, look: Object.assign(seedLook(777), { kid: 0, size: 1, outfit: 'tee', apron: true, apronC: '#ffd166', shirt: '#2a9d8f', pants: '#3b4a5a', bottom: 'pants', sleeve: 'short', hat: 'cap', hatC: '#2a9d8f', acc: '' }) }; vendor.mesh = makePerson(vendor.look); dyn.add(vendor.mesh); }
+  homeSync(); petSync();
+}
+// ---- 宠物：养在家里，可以带一只在身边。吃饱了才帮忙；喂它、摸它、陪它玩会更亲 ----
+const PETG = new THREE.Group(); scene.add(PETG);
+let petRt = [];
+const petHome = k => k === 'parrot' ? [HOME.ox + 3.7, HOME.oz + 8.0] : [HOME.ox + (k === 'dog' ? 5.05 : 4.5), HOME.oz + (k === 'dog' ? 7.55 : 7.95)];   // 不出门时待的地方：猫在窝里，狗在窝边，鹦鹉在站架上
+function petModel(k) {
+  const m = part('pet|' + k, t => {
+    if (k === 'cat') { const c = '#f4a261', w = '#fff3e0';
+      mk(cap(0.12, 0.24), c, 0, 0.2, 0, t).rotation.x = Math.PI / 2; mk(sph(0.13), c, 0, 0.33, 0.24, t); mk(sph(0.07), w, 0, 0.2, 0.17, t); mk(sph(0.02), '#ff8fab', 0, 0.31, 0.37, t);
+      for (const s of [-1, 1]) { mk(cone(0.05, 0.1), c, s * 0.07, 0.46, 0.24, t); mk(sph(0.02), '#22272b', s * 0.05, 0.35, 0.355, t); for (const z of [-0.12, 0.14]) mk(cyl(0.032, 0.028, 0.14, 6), w, s * 0.07, 0.07, z, t); }
+      mk(cap(0.028, 0.26), c, 0, 0.36, -0.3, t).rotation.x = -0.5; for (const z of [-0.1, 0, 0.1]) mk(box(0.2, 0.012, 0.03), '#d9802f', 0, 0.322, z, t);
+    } else if (k === 'dog') { const c = '#c68642', w = '#fff3e0';
+      mk(cap(0.15, 0.3), c, 0, 0.28, 0, t).rotation.x = Math.PI / 2; mk(sph(0.16), c, 0, 0.45, 0.3, t); mk(rb(0.14, 0.11, 0.16, 0.04), w, 0, 0.4, 0.44, t); mk(sph(0.03), '#22272b', 0, 0.44, 0.52, t); mk(sph(0.09), w, 0, 0.24, 0.2, t);
+      for (const s of [-1, 1]) { mk(sph(0.07), '#8a5a35', s * 0.14, 0.5, 0.26, t).scale.set(0.6, 1.3, 0.9); mk(sph(0.022), '#22272b', s * 0.06, 0.5, 0.44, t); for (const z of [-0.16, 0.16]) mk(cyl(0.042, 0.036, 0.2, 6), c, s * 0.09, 0.1, z, t); }
+      mk(cyl(0.125, 0.125, 0.035, 12), '#e63946', 0, 0.37, 0.2, t).rotation.x = 0.9; mk(sph(0.03), '#ffd166', 0, 0.3, 0.3, t); mk(cap(0.035, 0.16), c, 0, 0.46, -0.32, t).rotation.x = -0.9;
+    } else { const c = '#52b788';
+      mk(sph(0.1), c, 0, 0.12, 0, t).scale.set(1, 1.35, 1); mk(sph(0.08), '#e63946', 0, 0.3, 0.03, t); mk(cone(0.035, 0.08), '#ffd166', 0, 0.28, 0.12, t).rotation.x = Math.PI / 2 + 0.5; mk(sph(0.05), '#fffaf0', 0, 0.3, 0.085, t).scale.set(1.3, 0.8, 0.6);
+      for (const s of [-1, 1]) { mk(sph(0.075), '#3a86ff', s * 0.09, 0.14, -0.02, t).scale.set(0.45, 1.2, 0.9); mk(sph(0.016), '#22272b', s * 0.045, 0.32, 0.09, t); }
+      mk(box(0.07, 0.02, 0.2), '#e63946', 0, 0.02, -0.13, t).rotation.x = 0.5;
+    } });
+  m.scale.setScalar(1.2); return m;
+}
+function petSync() {   // 按存档补齐 / 清掉宠物的模型
+  petRt = petRt.filter(r => S.pets[r.k] || (rm(r.g), false));
+  for (const q of PETS) if (S.pets[q[0]] && !petRt.some(r => r.k === q[0])) { const g = new THREE.Group(), [hx, hy] = petHome(q[0]); g.add(petModel(q[0])); PETG.add(g); petRt.push({ k: q[0], g, x: hx, y: hy, dir: 0, face: 0, moving: false, wait: 1, tx: hx, ty: hy, trail: [], ph: Math.random() * 6 }); }
+}
+function petAnim(dt) {   // 宠物的走动只是画面上的事，各人在自己的设备上各算各的
+  const near = [player, mate].some(q => (q === player || mateOn()) && Math.hypot(q.x - HOME.bowl[0], q.y - HOME.bowl[1]) < 1.3);
+  for (const r of petRt) { const fol = S.pet === r.k, fly = r.k === 'parrot', [hx, hy] = petHome(r.k);
+    if (fol) {   // 带在身边：沿着你走过的路跟（不会穿墙），落远了跑快点，太远就直接跟上来
+      const p = player, d = Math.hypot(p.x - r.x, p.y - r.y), tr = r.trail, last = tr[tr.length - 1];
+      if (d > 14) { r.x = p.x - Math.sin(p.dir) * 0.8; r.y = p.y - Math.cos(p.dir) * 0.8; tr.length = 0; }
+      if (!last || Math.hypot(p.x - last[0], p.y - last[1]) > 0.3) tr.push([p.x, p.y]); if (tr.length > 40) tr.shift();
+      if (fly) { const tx = p.x - 0.4, ty = p.y - 0.25, k = Math.min(1, dt * 5); r.moving = Math.hypot(tx - r.x, ty - r.y) > 0.15; r.dir = r.moving ? Math.atan2(tx - r.x, ty - r.y) : p.dir; r.x += (tx - r.x) * k; r.y += (ty - r.y) * k; tr.length = 0; }
+      else if (d > 1.15 && tr.length) { if (go(r, tr[0][0], tr[0][1], Math.max(2.2, playerSpeed() * (buff.skate > 0 ? 1.5 : 1) * (d > 3 ? 1.5 : 1.02)), dt)) tr.shift(); }
+      else { r.moving = false; if (d < 0.8 && tr.length > 2) tr.splice(0, tr.length - 2); }
+    } else {   // 留在家：猫狗在屋里溜达（有人站到食盆前就凑过来），鹦鹉待在站架上
+      if (!atHome(r.x, r.y)) { r.x = hx; r.y = hy; r.wait = 1; r.tx = hx; r.ty = hy; r.trail.length = 0; }
+      if (fly) { r.x = hx; r.y = hy; r.moving = false; r.dir = 0.6; }
+      else if (near) { const tx = HOME.bowl[0] + (r.k === 'dog' ? 0.55 : -0.5), ty = HOME.bowl[1] + 0.25; if (go(r, tx, ty, 2.2, dt)) r.dir = Math.PI; r.wait = 1.5; r.tx = tx; r.ty = ty; }
+      else if (r.wait > 0) { r.wait -= dt; r.moving = false; if (r.wait <= 0) { if (Math.random() < 0.3) { r.tx = hx; r.ty = hy; } else { r.tx = HOME.ox + 3.3 + Math.random() * 2.8; r.ty = HOME.oz + 4.0 + Math.random() * 3.2; } } }
+      else if (go(r, r.tx, r.ty, r.k === 'dog' ? 1.7 : 1.2, dt)) r.wait = 2 + Math.random() * 5;
+    }
+    let dd = r.dir - r.face; dd = Math.atan2(Math.sin(dd), Math.cos(dd)); r.face += dd * Math.min(1, dt * 10); r.ph += dt * (r.moving ? 14 : 3);
+    const y = fly ? (fol ? 1.42 + Math.sin(time * 5) * 0.06 : 1.3) : r.moving ? Math.abs(Math.sin(r.ph)) * 0.07 : 0;
+    r.g.position.set(r.x, y, r.y); r.g.rotation.y = r.face; r.g.rotation.z = fly || !r.moving ? 0 : Math.sin(r.ph) * 0.06;
+  }
+}
+function petLove(k, n) { const o = S.pets[k], l0 = petLv(k); o.love += n; const l1 = petLv(k); if (l1 > l0) { toast(TK('petLvUp', { n: TK('p_' + k), l: l1 })); sfx('level'); hudDirty = true; } }
+function updPets(dt) {   // 饿得慢：两天掉光。有自动喂食器就从存粮里自己吃；带在身边的那只慢慢更亲
+  for (const q of PETS) { const k = q[0], o = S.pets[k]; if (!o) continue; const h0 = o.h;
+    o.h = Math.max(0, o.h - dt * 100 / (2 * DAYLEN));
+    if (S.feeder && o.h < 30 && S.inv.food > 0) { S.inv.food--; o.h = 100; petLove(k, 2); hudDirty = true; }
+    if (h0 > 0 && o.h <= 0) { toast(TK('petHungryT', { n: TK('p_' + k) })); hudDirty = true; }
+    if (S.pet === k && o.h > 0) petLove(k, dt / 60); }
+}
+function petCare(p, dt) {   // 在家站到食盆前：先喂饿了的，再陪它玩（用掉 1 个玩具，每只每天一次），再摸一摸（每只每天一次）
+  p.petCd = (p.petCd || 0) - dt; if (p.petCd > 0 || Math.hypot(p.x - HOME.bowl[0], p.y - HOME.bowl[1]) > 0.9) return;
+  const [bx, by] = HOME.bowl, did = (k, txt, n, snd) => { petLove(k, n); floatText(bx, by + 0.3, 1.1, txt, '#ff8fab'); sfx(snd); p.petCd = 0.7; hudDirty = true; };
+  for (const q of PETS) { const o = S.pets[q[0]]; if (o && o.h < 70 && S.inv.food > 0) { S.inv.food--; o.h = 100; return did(q[0], q[1] + ' 🍖', 5, 'pop'); } }
+  for (const q of PETS) { const o = S.pets[q[0]]; if (o && o.td !== S.day && S.inv.toy > 0) { S.inv.toy--; o.td = S.day; return did(q[0], q[1] + ' 🧸 ❤️', 15, 'serve'); } }
+  for (const q of PETS) { const o = S.pets[q[0]]; if (o && o.pd !== S.day) { o.pd = S.day; return did(q[0], q[1] + ' ❤️', 3, 'pop'); } }
+}
+function drawPets() {   // 饿了的宠物头上有提示；在家时食盆上提示"现在可以照顾它"
+  for (const r of petRt) { const o = S.pets[r.k]; if (o && o.h <= 0) at(r.x, r.y, r.k === 'parrot' ? 1.8 : 0.8, () => bubble('🍖', { bg: '#ffe3e3' })); }
+  if (!petRt.length) return;
+  const can = PETS.some(q => { const o = S.pets[q[0]]; return o && ((o.h < 70 && S.inv.food > 0) || (S.inv.toy > 0 && o.td !== S.day) || o.pd !== S.day); });
+  if (can) at(HOME.bowl[0], HOME.bowl[1], 0.75 + Math.sin(time * 4) * 0.04, () => bubble('❤️', { bg: '#ffe3ef' }));
+}
+function panelPets(sec, row) {
+  sec('🐾 ' + T('petTitle') + (petOpen() ? '' : '  ·  🔒 ' + T('petLock', { l: 5 })));
+  for (const q of PETS) { const k = q[0], o = S.pets[k], lv = petLv(k);
+    if (!o) row(q[1], T('p_' + k), '', T('p_' + k + 'D'), petOpen() ? '💰' + fmt(q[2]) : '🔒', petOpen() ? q[2] : null, ['pet', k]);
+    else row(q[1], T('p_' + k), 'Lv.' + lv + ' · ' + (o.h <= 0 ? T('petHungry') : '🍖' + Math.ceil(o.h / 10) * 10 + '%'), T('p_' + k + 'D') + ' · ❤️' + Math.floor(o.love) + (lv < 5 ? '/' + [30, 90, 200, 400][lv - 1] : ''), S.pet === k ? T('petStay') : T('petGo'), 0, ['petgo', k]); }
+  if (petOpen()) row('🍽️', T('feeder'), S.feeder ? '✓' : '', T('feederD'), S.feeder ? T('max') : '💰' + fmt(FEEDER), S.feeder ? null : FEEDER, ['feeder']);
+}
+// ---- 上门检查：检查员从派出所走到餐厅，逐项看四样，合格有奖、太差罚款。平时把店管好、把该备的东西备好就不怕 ----
+let insp = null, copT = 0;   // insp：正在进行的检查 { k 类型, st 0 在路上 / 1 检查中 / 2 回去, i 第几项, t 计时, res 各项结果, npc 检查员 }
+const dirtyN = () => { let n = 0; for (const t of tables) for (const s of t.seats) if (s.state === 'dirty') n++; return n; };
+const ICHK = {   // 检查项目：[图标, 检查员站在哪儿看, 合不合格]
+  tidy: ['🧽', [13.31, 7.95], () => dirtyN() <= Math.max(2, Math.round(tables.length * 0.24))], mouse: ['🐭', [6.73, 5.25], () => !mouse], clean: ['🧹', [10, 2.4], () => S.inv.clean > 0], stock: ['🥬', [2.2, 10.8], () => S.stock >= 10],
+  ext: ['🧯', [10, 2.4], () => S.inv.ext > 0], door: ['🚪', [18.6, 5.25], () => customers.filter(c => c.state === 'q').length < QMAX], pass: ['🍳', [5, 2.4], () => { let n = 0; for (const st of ST) for (const o of st.slots) if (o) n++; return n <= ST.length; }], floor: ['🧽', [13.31, 7.95], () => dirtyN() <= Math.max(3, Math.round(tables.length * 0.34))],
+  lic: ['📄', [13.31, 10.8], () => S.lic >= S.day], debt: ['💰', [10, 2.4], () => S.money >= 0], star: ['⭐', [6.73, 5.25], () => S.rating >= 3.5], cash: ['💵', [13.31, 7.95], () => tables.filter(t => t.cash > 0).length <= Math.max(2, tables.length / 3)] };
+const inspLook = (k, n) => Object.assign(seedLook(4242 + n), { kid: 0, size: 1.02, outfit: 'suit', shirt: k === 'health' ? '#f1faee' : k === 'fire' ? '#c1121f' : '#1d3557', pants: '#1d3557', bottom: 'pants', sleeve: 'long', hat: 'cap', hatC: k === 'fire' ? '#c1121f' : '#1d3557', shoe: '#2b2b2b', acc: k === 'health' ? 'glasses' : '', vip: false });
+function inspStart() {
+  const n = S.insp.n = (S.insp.n || 0) + 1, k = IKS[n % 3], c = { x: COP.px, y: BY + 0.6, dir: 0, face: 0, stack: [], moving: false, look: inspLook(k, n) };
+  c.mesh = makePerson(c.look); dyn.add(c.mesh); insp = { k, n, st: 0, i: 0, t: 0, w: 20, leg: 0, res: [], npc: c }; S.insp.next = 40;   // 万一中途关了游戏，下次进来过一会儿重新来
+  toast(TK('inspSoon', { n: TK('i_' + k) })); sfx('alert'); placeSig = '';
+}
+function inspEnd() {
+  const e = insp, c = e.npc, ok = e.res.filter(Boolean).length, ref = refDay(); let r = 0;
+  if (ok === 4) r = Math.max(50, Math.round(ref * 0.05 / 10) * 10); else if (ok === 3) r = Math.max(20, Math.round(ref * 0.015 / 10) * 10); else if (ok <= 1) r = -Math.max(30, Math.round(ref * 0.05 / 10) * 10);   // 四项全过：约一天收入的 5%；过三项：1.5%；只过一项或全不过：罚 5%
+  if (r > 0) { payout(c.x, c.y, 1.9, r); S.d.ev = (S.d.ev || 0) + r; addXp(3); } else if (r < 0) { S.money += r; S.d.cost -= r; rate(-0.05); sfx('angry'); }
+  if (ok >= 3) S.stat.inspOk++; else if (ok <= 1) S.stat.inspBad++;
+  S.insp.last = { k: e.k, res: e.res.map(v => v ? 1 : 0), r, d: S.day };
+  toast(TK('inspRes' + Math.max(1, ok < 2 ? 1 : ok), { n: TK('i_' + e.k), a: ok, r: fmt(Math.abs(r)) })); e.st = 2; e.leg = 0; hudDirty = true; placeSig = ''; save();
+}
+function updInsp(dt) {
+  const e = insp; if (!e) { if (inspOpen()) { S.insp.next -= dt; if (S.insp.next <= 0) inspStart(); } return; }
+  const c = e.npc;
+  if (e.st === 0) { if (e.w > 0) { e.w -= dt; return; } const w = [[COP.px, 12.6], [13.3, 12.7], [13.3, 11.4]][e.leg]; if (go(c, w[0], w[1], 3.6, dt) && ++e.leg > 2) { e.st = 1; e.t = 0; } }
+  else if (e.st === 1) { const key = IPLAN[e.k][e.i], ck = ICHK[key];
+    if (e.t <= 0) { if (goNav(c, RNAV, ck[1][0], ck[1][1], 2.6, dt)) e.t = 2.5; }   // 走到要看的地方，看一会儿
+    else { c.moving = false; e.t -= dt;
+      if (e.t <= 0) { const ok = !!ck[2](); e.res.push(ok); e.t = 0; if (ok && (key === 'clean' || key === 'ext')) S.inv[key]--;
+        floatText(c.x, c.y, 2.3, (ok ? '✅ ' : '❌ ') + TK('c_' + key), ok ? '#b9f6ca' : '#ff8a80'); sfx(ok ? 'pop' : 'angry'); if (++e.i >= 4) inspEnd(); } } }
+  else { const w = [[13.3, 11.4], [13.3, 12.7], [COP.px, 12.6]][e.leg];
+    if ((e.leg ? go(c, w[0], w[1], 3.6, dt) : goNav(c, RNAV, w[0], w[1], 2.6, dt)) && ++e.leg > 2) { rm(c.mesh); insp = null; S.insp.next = 480 + Math.random() * 300; placeSig = ''; } }
+}
+function updCop(dt) {   // 派出所门口：执照快到期了（剩 3 天以内）站一会儿就续办
+  const fee = licFee();
+  if (inspOpen() && S.lic - S.day <= 3 && S.money >= fee && plist().some(q => Math.hypot(q.x - COP.px, q.y - PADY) < 1.1)) { copT += dt;
+    if (copT >= 1.5) { copT = 0; S.money -= fee; S.d.cost += fee; S.lic = Math.max(S.lic, S.day - 1) + 10; toast(TK('licDone', { n: S.lic })); sfx('buy'); hudDirty = true; placeSig = ''; save(); } } else copT = 0;
+}
+function drawCop(ringAt) {
+  if (!inspOpen()) { at(COP.px, BY - 0.4, 4.0, () => label('🚓 ' + T('cop'), 0, 14, '#fff')); return; }
+  const left = S.lic - S.day, fee = licFee();
+  at(COP.px, PADY, 1.1, () => { label('🚓 ' + T('cop'), -18, 13, '#fff');
+    if (left > 3) label('📄 ' + T('licOk', { n: left + 1 }), 0, 13, '#b9f6ca'); else { label('📄 ' + T('licRenew', { n: fmt(fee) }), 0, 14, S.money >= fee ? '#ffe066' : '#ffb4a8'); if (copT > 0) ringAt(-44, copT / 1.5); } });
+}
+function drawInsp() {
+  const e = insp; if (!e) return; const c = e.npc, ic = { health: '🧼', fire: '🧯', police: '🚓' }[e.k];
+  at(c.x, c.y, 1.95, () => { if (e.st === 1 && e.t > 0) bubble(ICHK[IPLAN[e.k][e.i]][0], { bg: '#fff3b0', prog: 1 - e.t / 2.5, col: '#ff7a00' }); else bubble(ic, { bg: '#e0f4ff' }); });
+  if (e.st < 2) edgeBubble(c.x, c.y, ic, { bg: '#e0f4ff' });
+}
+function panelInsp(sec, row, list) {
+  if (!inspOpen()) return;
+  const left = S.lic - S.day, fee = licFee(), note = t => { const d = document.createElement('div'); d.className = 'note2'; d.textContent = t; list.appendChild(d); };
+  sec('🚓 ' + T('secInsp') + '  ·  ' + T('inspRec', { a: S.stat.inspOk, b: S.stat.inspBad }));
+  if (left > 3) row('📄', T('licRow'), T('licOk', { n: left + 1 }), T('licD'), '✓', null, []);
+  else row('📄', T('licRow'), left >= 0 ? T('licOk', { n: left + 1 }) : T('licBad'), T('licD'), '🚶 ' + T('goBuy') + ' 💰' + fmt(fee), 0, () => { warp(COP.px, PADY); $('panel').classList.remove('open'); });
+  if (insp) note('📢 ' + T('inspNow', { n: T('i_' + insp.k) }));
+  const L = S.insp.last; if (L) note(T('inspLast', { n: T('i_' + L.k) }) + '  ' + IPLAN[L.k].map((key, i) => (L.res[i] ? '✅' : '❌') + T('c_' + key)).join('  ') + (L.r ? '  ' + (L.r > 0 ? '+' : '-') + '💰' + fmt(Math.abs(L.r)) : ''));
+}
 const VSTAFF = {   // 每家店两类员工的制服：[补货的, 结账的]
   market:  [{ outfit: 'vest', shirt: '#f4f1de', shirt2: '#2a9d8f', hat: 'cap', hatC: '#2a9d8f' }, { apron: true, apronC: '#e63946', shirt: '#ffffff' }],
   teashop: [{ apron: true, apronC: '#b56576', shirt: '#fff1e6', visor: true }, { apron: true, apronC: '#7b5ea7', shirt: '#fff1e6', visor: true }],
@@ -2025,12 +2443,12 @@ function evEnd(b, ok) {
 function evStart(b, open) {
   const r = b.rt, k = EVK[b.k], X = b.ox, Z = b.oz, avail = open.filter(i => r.st[i].stock > 0); let e = null;
   if (k === 'thief') { if (!avail.length) return false;
-    const c = vNpc(b, 1, X + VW + 3.5, Z + 13.4, 'in'); c.tgt = pick(avail); c.moving = true; e = { k, t: 45, T: 45, st: 0, id: c.id, npc: c };
+    const c = vNpc(b, 1, X + 20.8, Z + VH + 0.9, 'in'); c.tgt = pick(avail); c.moving = true; e = { k, t: 45, T: 45, st: 0, id: c.id, npc: c };
   } else if (k === 'bulk') { if (!avail.length) return false;
     const need = [], pool = avail.slice(); let tot = 0;
     while (pool.length && need.length < 3 && tot < 5) { const i = pool.splice(Math.floor(Math.random() * pool.length), 1)[0], n = Math.min(5 - tot, 1 + (Math.random() < 0.5 ? 1 : 0)); need.push([i, n]); tot += n; if (need.length >= 2 && Math.random() < 0.5) break; }
     need.sort((a, c) => a[0] - c[0]);
-    const c = vNpc(b, 2, X + VW + 3.5, Z + 13.4, 'in'); c.moving = true; e = { k, t: 80, T: 80, st: 0, id: c.id, npc: c, need, got: need.map(() => 0) };
+    const c = vNpc(b, 2, X + 20.8, Z + VH + 0.9, 'in'); c.moving = true; e = { k, t: 80, T: 80, st: 0, id: c.id, npc: c, need, got: need.map(() => 0) };
   } else if (k === 'bell') { if (!open.length) return false;
     e = { k, t: 45, T: 45, st: 0, room: pick(open), it: Math.floor(Math.random() * 3) };
   } else {
@@ -2040,6 +2458,7 @@ function evStart(b, open) {
   r.ev = e; if (k !== 'thief') evAlert(b, e);
   return true;
 }
+const VCAP = [17, 28];   // 一家店同时最多有多少位顾客（平时 / 促销时）。顾客现在要从街上走进来，路上的也算在内，所以比以前的 16 / 26 略多（实测 17 时四家店的收入和以前持平）
 const evLive = e => !!e && (e.k !== 'thief' || e.st === 1);   // 这件事现在需要人管吗（小偷要等他动手）
 function evAlert(b, e) {   // 人在店里才响；头三次遇到时说明怎么玩
   if (e.al || !plist().some(q => venueAt(q.x, q.y) === b)) return;
@@ -2057,17 +2476,16 @@ function evTimeout(b, ps) {   // 没人管：相关的人自己离开，不扣�
 function vRole(b, c, dt, ps) {   // 小偷、骑手、走丢的孩子和家长
   const r = b.rt, e = r.ev, X = b.ox, Z = b.oz;
   if (c.state !== 'out' && !(e && (e.npc === c || e.npc2 === c))) { c.state = 'out'; c.o1 = false; c.np = null; if (c.role === 1) { c.stack = []; c.stackDirty = true; } }   // 事情已经结束：往外走
-  if (c.state === 'out') { if (!c.o1) { if (goNav(c, b.nav, X + VW - 1.2, Z + 13.9, 2.6, dt)) c.o1 = true; } else if (go(c, X + VW + 3.5, Z + 13.9, 2.6, dt)) { c.dead = true; rm(c.mesh); } return; }
+  if (c.state === 'out') { if (!c.o1) { if (goNav(c, b.nav, X + VW - 1.2, Z + 13.9, 2.6, dt)) c.o1 = true; } else vAway(b, c, c.role === 1 ? 2.7 : 2.6, dt); return; }
   if (c.role === 1) {
     const sp = c.state === 'run' ? 2.7 : 2.4;
     if (c.state === 'in') { if (go(c, X + VW - 1.6, Z + 13.4, sp, dt)) c.state = 'go'; }
     else if (c.state === 'go') { const [sx, sy] = stPos(b, c.tgt); if (goNav(c, b.nav, sx + 1.0, sy + 0.95, sp, dt)) { c.dir = Math.PI; c.state = 'grab'; c.t = 3; e.st = 1; evAlert(b, e); } }   // 动手了：报警
     else if (c.state === 'grab') { c.moving = false; c.t -= dt; if (c.t <= 0) { c.state = 'run'; c.stack = [{ m: 'basket' }]; c.stackDirty = true; } }
     else if (!c.o1) { if (goNav(c, b.nav, X + VW - 1.2, Z + 13.9, sp, dt)) c.o1 = true; }
-    else if (go(c, X + VW + 3.5, Z + 13.9, sp, dt)) {   // 跑掉了
-      c.dead = true; rm(c.mesh);
+    else if (go(c, X + 20.8, Z + VH + 0.9, sp, dt)) {   // 跑出了店门：追不上了，他沿街跑远
       if (ps.some(q => venueAt(q.x, q.y) === b)) { floatText(X + VW - 1.4, Z + 13.6, 2, TK('thiefBad'), '#ff8a80'); sfx('angry'); }
-      evEnd(b, false); return; }
+      evEnd(b, false); c.state = 'out'; c.o1 = c.o2 = true; c.far = X + 20.8 + (Math.random() < 0.5 ? -14 : 14); return; }
     if (e.st === 1) for (const q of ps) if (venueAt(q.x, q.y) === b && Math.hypot(q.x - c.x, q.y - c.y) < 0.95) {   // 被追上了
       floatText(c.x, c.y, 2.3, TK('thiefOk'), '#b9f6ca'); sfx('serve'); evPay(b, c.x, c.y, 15 * avgP(b)); evEnd(b, true); return; }
   } else if (c.role === 2) {
@@ -2099,6 +2517,12 @@ function vSync(b) {   // 按存档刷新店内：已解锁的货架、收银台�
   else if (b.k === 'teashop') o.push({ x: b.ox + 21.3, y: b.oz + 12.2, hx: 0.25 + R, hy: 0.5 + R });   // 外卖取餐台
   b.obs = o; b.nav = venueNav(b); b.pnav = venueNav(b, o);
 }
+const seen = c => plist().some(q => Math.abs((c.x - q.x) - (c.y - q.y)) < 27 && Math.abs((c.x - q.x) + (c.y - q.y)) < 44);   // 大致在某位玩家的屏幕范围里
+function vAway(b, c, sp, dt) {   // 出了店门：沿人行道走远。有人看得见就多走一段，没人看着就消失
+  const dx = b.ox + 20.8, sy = b.oz + VH + 0.9;
+  if (!c.o2) { if (go(c, dx, sy, sp, dt)) { c.o2 = true; c.far = dx + (Math.random() < 0.5 ? -1 : 1) * (9 + Math.random() * 6); } }
+  else if (go(c, c.far, sy + (c.id % 3) * 0.2, sp, dt)) { if (seen(c) && Math.abs(c.far - dx) < 50) c.far += Math.sign(c.far - dx) * 12; else { c.dead = true; rm(c.mesh); } }
+}
 function vQueue(b, c, nReg) { const r = b.rt; let best = 0; for (let k = 1; k < nReg; k++) if (r.reg[k].q.length < r.reg[best].q.length) best = k; c.reg = best; r.reg[best].q.push(c); c.state = 'q'; c.qt = 0; }
 function vNext(b, c, nReg) {   // 顾客的下一步：去下一个货架/设施，或去结账，或离开
   const r = b.rt;
@@ -2109,7 +2533,8 @@ function vNext(b, c, nReg) {   // 顾客的下一步：去下一个货架/设施
 function vCust(b, c, dt, nReg, ps) {
   if (c.role) return vRole(b, c, dt, ps);
   const r = b.rt, sp = 2.5;
-  if (c.state === 'in') { if (go(c, b.ox + VW - 1.6, b.oz + 13.4, sp, dt)) { if (b.payFirst) vQueue(b, c, nReg); else vNext(b, c, nReg); } }   // 奶茶店/酒店/游乐场：先到前台付款
+  if (c.state === 'come') { if (go(c, b.ox + 20.8, b.oz + VH + 0.8, sp, dt)) c.state = 'in'; }   // 沿人行道走到店门口
+  else if (c.state === 'in') { if (go(c, b.ox + VW - 1.6, b.oz + 13.4, sp, dt)) { if (b.payFirst) vQueue(b, c, nReg); else vNext(b, c, nReg); } }   // 奶茶店/酒店/游乐场：先到前台付款
   else if (c.state === 'toSt') { const [sx, sy] = stPos(b, c.plan[c.pi]); if (goNav(c, b.nav, sx + (c.spot - (b.users - 1) / 2) * 0.75, sy + 0.95, sp, dt)) { c.dir = Math.PI; c.state = 'atSt'; c.t = 9; c.u = 0; } }
   else if (c.state === 'atSt') {
     const i = c.plan[c.pi], st = r.st[i]; let done = false;
@@ -2127,7 +2552,7 @@ function vCust(b, c, dt, nReg, ps) {
     if (arrived) c.dir = 1.57; c.ready = arrived && k === 0;
     if (!g.busy) { c.qt += dt; if (c.qt > 28) { g.q.splice(k, 1); c.state = 'out'; c.ready = false; c.sad = true; if (r.open) { rate(-0.03); floatText(c.x, c.y, 2, TK('qLeave'), '#ffcc80'); } } }   // 店没人看着时只是走掉，不扣口碑
   } else if (c.state === 'out') {
-    if (!c.o1) { if (goNav(c, b.nav, b.ox + VW - 1.2, b.oz + 13.9, sp, dt)) c.o1 = true; } else if (go(c, b.ox + VW + 3.5, b.oz + 13.9, sp, dt)) { c.dead = true; rm(c.mesh); }
+    if (!c.o1) { if (goNav(c, b.nav, b.ox + VW - 1.2, b.oz + 13.9, sp, dt)) c.o1 = true; } else vAway(b, c, sp, dt);
   }
 }
 function vStocker(b, w, dt, spd) {   // 理货员：找最缺货的货架 → 去仓库取货 → 上架
@@ -2168,10 +2593,10 @@ function updVenue(b, dt) {
   if (r.spawnT <= 0) {
     r.spawnT = Math.max(0.9, 3.6 - 0.4 * s.ad) * (0.7 + Math.random() * 0.6) * (1.45 - S.rating * 0.13) / (0.55 + 0.15 * open.length) * (pm ? 0.45 : 1);
     const avail = open.filter(i => r.st[i].stock > 0);   // 顾客只来买有货的东西：缺货损失的是生意，不是口碑
-    let nc = 0; for (const c of r.cust) if (!c.role) nc++;   // 小偷、骑手这些人不占顾客名额
-    if (r.open && avail.length && nc < (pm ? 26 : 16) && r.reg.reduce((a, g) => a + g.q.length, 0) < (pm ? 12 : 8) * nReg) {
+    let nc = 0; for (const c of r.cust) if (!c.role && !c.o2) nc++;   // 小偷、骑手这些人不占顾客名额；已经出了门的也不算
+    if (r.open && avail.length && nc < (pm ? VCAP[1] : VCAP[0]) && r.reg.reduce((a, g) => a + g.q.length, 0) < (pm ? 12 : 8) * nReg) {
       const n = 1 + Math.floor(Math.random() * Math.min(3, avail.length)), plan = []; while (plan.length < n) { const i = pick(avail); if (plan.indexOf(i) < 0) plan.push(i); } plan.sort((a, c) => a - c);
-      const c = { id: nextId, look: seedLook(nextId++), x: b.ox + VW + 3.5, y: b.oz + 13.4, dir: -1.57, face: -1.57, stack: [], moving: true, plan, pi: 0, state: 'in', n: 0, sum: 0, t: 0, u: 0, qt: 0 };
+      const c = { id: nextId, look: seedLook(nextId++), x: b.ox + 20.8 + (Math.random() < 0.5 ? -1 : 1) * (8 + Math.random() * 5), y: b.oz + VH + 0.7 + Math.random() * 0.5, dir: 0, face: 0, stack: [], moving: true, plan, pi: 0, state: 'come', n: 0, sum: 0, t: 0, u: 0, qt: 0 };
       c.mesh = makePerson(c.look); b.dg.add(c.mesh); r.cust.push(c);
     }
   }
@@ -2192,13 +2617,12 @@ function updVenue(b, dt) {
   r.csh.forEach((w, k) => { w.order = r.reg[k].busy ? w : null; w.t = 1; });
 }
 // 本机玩家：走进店门 / 走出店门，以及快捷传送
-let tvT = 0, tvCd = 0;
-function warp(x, y) { const p = player; p.x = x; p.y = y; p.target = null; p.path = null; tvT = 0; tvCd = 1.2; CT.set(x, 0.4, y); placeCam(); sfx('pop'); placeSig = ''; }
-function travel(dt) {
-  const p = player, vb = venueAt(p.x, p.y); tvCd -= dt; let to = null;
-  if (vb) { if (Math.hypot(p.x - (vb.ox + VW - 1.0), p.y - (vb.oz + 14.45)) < 0.75) to = [vb.px, PADY + 1.3]; }
-  else for (const b of BIZ) if (vOwned(b) && Math.hypot(p.x - b.px, p.y - PADY) < 0.9) to = [b.ox + VW - 2.4, b.oz + 13.2];
-  if (to && tvCd <= 0) { tvT += dt; if (tvT >= 0.6) warp(to[0], to[1]); } else tvT = 0;
+let camFast = 0;
+function warp(x, y) { const p = player; p.x = x; p.y = y; p.target = null; p.path = null; camFast = 0.7; sfx('pop'); placeSig = ''; }   // 人直接到，镜头沿着街快速滑过去：始终是同一张地图，不"切场景"
+function travel(dt) {   // 走到生活用品摊前站一下：自动打开购物页（离开后再来才会再开）
+  const sd = Math.hypot(player.x - STALL.x, player.y - STALL.y);
+  if (sd > 0.9 || !homeOpen()) { stallT = 0; if (sd > 1.9) stallOn = false; }
+  else if (!stallOn && !player.moving) { stallT += dt; if (stallT > 0.35) { stallOn = true; openPanel('life'); } }
 }
 function updHQ(dt) {   // 每天可以来公司签一份合同
   if (S.hq && S.contract !== S.day && plist().some(q => Math.hypot(q.x - HQ.px, q.y - PADY) < 1.1)) { hqT += dt; if (hqT >= 2) { hqT = 0; S.contract = S.day; S.stat.contracts++; toast(TK('contract')); sfx('level'); hudDirty = true; } } else hqT = 0;
@@ -2231,21 +2655,21 @@ function updExtras(dt) {
     if (go(m, m.tx, m.ty, 2.9, dt)) { m.tx = 0.6 + Math.random() * (W - 1.2); m.ty = 1.8 + Math.random() * (H - 2.4); }
     let end = false;
     if (plist().some(q => Math.hypot(q.x - m.x, q.y - m.y) < 0.85)) { const n = 10 + 12 * S.level; addMoney(n); rate(0.1); S.stat.mouse++; floatText(m.x, m.y, 1, TK('mouseOk') + ' +' + fmt(n), '#b9f6ca'); sfx('serve'); end = true; }
+    else if (petOk('cat') && m.t <= 18 - Math.max(3, 11 - 2 * petOk('cat'))) { const n = 10 + 12 * S.level; addMoney(n); rate(0.05); S.stat.mouse++; floatText(m.x, m.y, 1, '🐱 ' + TK('mouseOk') + ' +' + fmt(n), '#b9f6ca'); sfx('serve'); end = true; }   // 家里的猫出手了
     else if (m.t <= 0) { rate(-0.2); toast(TK('mouseBad')); sfx('angry'); end = true; }
     if (end) { rm(m.g); mouse = null; mouseT = 70 + Math.random() * 50; }
   }
   for (const b of BIZ) updVenue(b, dt);
-  updHQ(dt);
+  updHQ(dt); updPets(dt); updInsp(dt); updCop(dt);
   updPeds(dt);
 }
-const XWALK = [-18.7, -6.5, 6.75, 13.3, 26.7, 37];   // 斑马线的位置
 function updPeds(dt) {
   for (const p of peds) {
     if (p.wait > 0) { p.wait -= dt; p.moving = false; continue; }
     if (!p.way || !p.way.length) {   // 选下一个去处：逛到某家店门口，或沿街走走
       const own = BIZ.filter(b => S.biz[b.k].lv > 0); let tx, ty;
       if (own.length && Math.random() < 0.45) { const b = pick(own); tx = b.px + (Math.random() - 0.5) * 2; ty = 12.5; p.after = 1 + Math.random() * 2; }
-      else { tx = -26 + Math.random() * 68; ty = pick([12.5, 16.9, 17.3]); p.after = Math.random() < 0.3 ? 1 : 0; }
+      else { tx = Math.max(-71, Math.min(88, p.x + (Math.random() - 0.5) * 70)); ty = pick([12.5, 16.9, 17.3]); p.after = Math.random() < 0.3 ? 1 : 0; }
       p.way = [];
       if ((p.y < 14.6) !== (ty < 14.6)) {   // 目的地在马路对面：绕到最近的斑马线过去
         let cx = XWALK[0]; for (const x of XWALK) if (Math.abs(x - p.x) + Math.abs(x - tx) < Math.abs(cx - p.x) + Math.abs(cx - tx)) cx = x;
@@ -2269,11 +2693,11 @@ function update(dt) {
   { const ck = clockStr(); if (ck !== lastClock) { lastClock = ck; hudDirty = true; } }
   if (rushT > 0) { rushT -= dt; if (rushT <= 0) { document.getElementById('rush').style.display = 'none'; nextRush = 70 + Math.random() * 40; } }
   else if (S.level >= 2) { nextRush -= dt; if (nextRush <= 0) { rushT = 22; document.getElementById('rush').style.display = 'block'; } }
-  achT -= dt; if (achT <= 0) { achT = 1; checkAch(); }
+  achT -= dt; if (achT <= 0) { achT = 1; checkAch(); checkMs(); }   // 顺带看看有没有新开放的内容要提示
   { const m = S.mission; if (m && m.left != null) { const s0 = Math.ceil(m.left); m.left -= dt; if (m.left <= 0) { S.missionN++; newMission(); } else if (Math.ceil(m.left) !== s0) hudDirty = true; } }
   spawnT -= dt;
   if (spawnT <= 0) {
-    const gap = Math.max(1.0, 4.8 - 0.55 * S.up.ad) * (1.45 - S.rating * 0.13) * (rushT > 0 ? 0.4 : 1) * (0.7 + Math.random() * 0.6) / Math.pow(tables.length / 2, 0.6);
+    const gap = Math.max(1.0, 4.8 - 0.55 * S.up.ad) * (1.45 - S.rating * 0.13) * (rushT > 0 ? 0.4 : 1) * (0.7 + Math.random() * 0.6) / Math.pow(tables.length / 2, 0.6) / (1 + 0.02 * petOk('parrot'));   // 鹦鹉在门口招呼：来得快一点
     spawnT = spawnCustomer() ? gap : 0.5;
   }
   seatQueue();
@@ -2313,16 +2737,18 @@ function syncPerson(p, dt, sit) {
 let steamT = 0;
 function sync3D(dt) {
   const ev = Math.max(0, Math.min(1, (S.dayT / DAYLEN - 0.72) / 0.28)); sun.intensity = 2.3 - 1.2 * ev; sun.color.setRGB(1, 0.945 - 0.3 * ev, 0.84 - 0.5 * ev); hemi.intensity = 1.7 - 0.6 * ev;
-  const k = Math.min(1, dt * 6); CT.x += (player.x - CT.x) * k; CT.z += (player.y - CT.z) * k; placeCam();
-  const hv = venueAt(player.x, player.y);   // 你在哪，就只画哪里的人
-  if (!hv) updCars(dt);
-  if (hv) syncPerson(player, dt);
-  else { ST.forEach(st => syncPerson(st.chef, dt)); workers.forEach(w => syncPerson(w, dt)); bussers.forEach(w => syncPerson(w, dt)); peds.forEach(p => syncPerson(p, dt));
-    customers.forEach(c => syncPerson(c, dt, c.kind !== 'rider' && (c.state === 'wait' || c.state === 'eat'))); }
+  const k = Math.min(1, dt * (camFast > 0 ? 13 : 6)); camFast -= dt; CT.x += (player.x - CT.x) * k; CT.z += (player.y - CT.z) * k; placeCam();
+  updCars(dt);
+  const SP = (q, sit) => { const dx = q.x - CT.x, dz = q.y - CT.z; if (Math.abs(dx - dz) < 28 && Math.abs(dx + dz) < 46) syncPerson(q, dt, sit); else q.mesh.position.set(q.x, 0, q.y); };   // 镜头附近的人才做动作，远处的只挪位置
+  ST.forEach(st => SP(st.chef)); workers.forEach(w => SP(w)); bussers.forEach(w => SP(w)); peds.forEach(q => SP(q));
+  customers.forEach(c => SP(c, c.kind !== 'rider' && (c.state === 'wait' || c.state === 'eat')));
+  if (vendor) SP(vendor); if (insp) SP(insp.npc);
+  { const ho = homeOpen(); if (ho !== !!HOME.g.parent) { if (ho) scene.add(HOME.g); else scene.remove(HOME.g); } }   // 入住以后，家一直在街边
+  petAnim(dt);
   if (mateOn()) syncPerson(mate, dt);
-  for (const b of BIZ) { const on = hv === b;
+  for (const b of BIZ) { const on = vOwned(b);   // 买下的店一直在街上（看不到的部分显卡自己会跳过）
     if (on !== !!b.vg.parent) { if (on) scene.add(b.vg, b.dg); else scene.remove(b.vg, b.dg); }
-    if (on && b.rt) { const r = b.rt; r.cust.forEach(v => syncPerson(v, dt)); r.stk.forEach(v => syncPerson(v, dt)); r.csh.forEach(v => syncPerson(v, dt));
+    if (on && b.rt) { const r = b.rt; r.cust.forEach(v => SP(v)); r.stk.forEach(v => SP(v)); r.csh.forEach(v => SP(v));
       b.stG.forEach((q, i) => { if (q.visible) { const f = r.st[i].stock / stCap(b, i); q.userData.tiers.forEach((tg, t) => tg.visible = f > t * 0.33 + 0.01); } }); } }
   for (const st of ST) for (const o of st.slots) if (o && o.mesh) o.mesh.position.y = 0.81 + (o.claimed ? 0 : Math.abs(Math.sin(time * 5 + o.slot + st.i)) * 0.1);
   for (const t of tables) {
@@ -2333,7 +2759,6 @@ function sync3D(dt) {
   tpad.visible = S.tables < SPOTS.length;
   if (tpad.visible) { const [tx, ty] = SPOTS[S.tables], ok = S.tables < tableMax() && S.money >= tableCost(); tpad.position.set(tx, 0.02, ty); tpad.material.color.set(ok ? '#3fb950' : '#8d99a6'); tpad.material.opacity = ok ? 0.4 + Math.sin(time * 5) * 0.12 : 0.28; }
   crates.forEach((c, i) => c.visible = S.stock > [0, 0.3, 0.65][i] * stockCap());
-  for (const b of BIZ) b.stack.visible = vOwned(b);
   for (const f of anim) f(time);
   for (const u of pups) { u.sp.position.y = 0.62 + Math.sin(time * 4 + u.x) * 0.08; u.g.scale.setScalar(Math.max(0.01, u.a)); u.g.visible = u.t > 3.5 || Math.sin(time * 16) > -0.2; }
   if (mouse) { mouse.g.position.set(mouse.x, Math.abs(Math.sin(time * 18)) * 0.04, mouse.y); mouse.g.rotation.y = mouse.dir; }
@@ -2436,7 +2861,7 @@ function drawOverlay(dt) {
       if (player.padT > 0) { octx.strokeStyle = '#fff'; octx.lineWidth = 5; octx.beginPath(); octx.arc(0, -40, 13, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * player.padT / 0.8); octx.stroke(); } });
   }
   // 冰箱 & 超市采购点
-  const cap = stockCap(), low = S.stock < 8, shopX = BIZ[0].px + 2.8, cp = cratePrice(), nCr = player.stack.filter(it => it.m === 'crate').length;
+  const cap = stockCap(), low = S.stock < 8, shopX = SHOP.x, cp = cratePrice(), nCr = player.stack.filter(it => it.m === 'crate').length;
   at(FRIDGE.x, FRIDGE.y, 1.5, () => { label('🥬 ' + T('fridge', { n: S.stock, c: cap }), -9, 13, low ? '#ffb4a8' : '#fff'); if (nCr) label(T('putIn'), 9, 12, '#b9f6ca'); else if (low) label(T('goShop'), 9, 12, '#ffd6a5'); });
   at(shopX, 12.5, 0.9 + Math.sin(time * 4) * 0.04, () => { bubble('🥬', { bg: low ? '#ffe3e3' : '#eaffea', prog: player.shopT > 0 ? player.shopT / 0.5 : null }); label(T('shopBuy', { n: fmt(cp) }), 12, 12, S.money >= cp ? '#fff' : '#ffb4a8'); });
   if (low && !nCr) edgeBubble(shopX, 12.5, '🥬', { bg: '#ffe3e3', prog: Math.max(0.001, S.stock / cap), col: '#e5383b' });
@@ -2445,12 +2870,11 @@ function drawOverlay(dt) {
   const hereV = venueAt(player.x, player.y), ringAt = (y, f) => { octx.strokeStyle = '#fff'; octx.lineWidth = 5; octx.beginPath(); octx.arc(0, y, 12, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.min(1, f)); octx.stroke(); };
   BIZ.forEach((b, i) => {
     const s = S.biz[b.k];
-    if (!hereV) {
-      if (s.lv > 0) at(b.px, PADY, 1.1, () => { label('🚪 ' + T('vEnter', { n: T(b.k) }), -4, 14, '#fff'); if (tvT > 0) ringAt(-40, tvT / 0.6); });
-      else at(b.px, b.k === 'market' ? PADY : BY - 1.2, b.k === 'market' ? 1.2 : 2.9, () => { label(T(b.k), -9, 15, '#fff'); label(vReady(i) ? T('forSale') + ' 💰' + fmt(b.cost) : '🔒 ' + T('vNeed', { n: T(i ? BIZ[i - 1].k : 'restN') }), 10, 12, vReady(i) ? '#b9f6ca' : '#ffd6a5'); });
+    if (!(s.lv > 0)) {
+      at(b.ox + VW / 2, b.k === 'market' ? BY + 0.3 : BY - 1.2, b.k === 'market' ? 2.3 : 2.9, () => { label(T(b.k), -9, 15, '#fff'); label(vReady(i) ? T('forSale') + ' 💰' + fmt(b.cost) : '🔒 ' + T('vNeed', { n: T(i ? BIZ[i - 1].k : 'restN') }), 10, 12, vReady(i) ? '#b9f6ca' : '#ffd6a5'); });
       return;
     }
-    if (hereV !== b || !b.rt) return;
+    if (!b.rt || Math.abs(b.ox + VW / 2 - CT.x) + Math.abs(b.oz + VH / 2 - CT.z) > 64) return;   // 离镜头太远的店不用画
     const r = b.rt, nReg = Math.max(1, s.ck), ev = r.ev;
     const need = ev && ev.k === 'bulk' && ev.st === 1 ? ev.need.filter((q, j) => ev.got[j] + carried(b, q[0]) < q[1]).map(q => q[0]) : [];   // 大单还差哪几种没取
     s.st.forEach((l, k) => { const [sx, sy] = stPos(b, k);
@@ -2461,16 +2885,21 @@ function drawOverlay(dt) {
     b.items.forEach((it, k) => { if (s.st[k] > 0) { const [px, py] = palPos(b, k); if (Math.abs(player.x - px) < 1.3 && player.y - b.oz < 3.2) at(px, py, 1.95, () => { label('📦 💰' + fmt(boxCost(b, k)), 0, 12, S.money >= boxCost(b, k) ? '#fff' : '#ffb4a8'); if (player.vT > 0) ringAt(-22, player.vT / 0.3); }); } });
     for (let k = 0; k < nReg; k++) { const g = r.reg[k], [rx, ry] = regPos(b, k);
       if (g.busy) at(rx, ry, 1.7, () => bubble('🧾', { prog: Math.max(0.001, g.p) })); else if (g.q.length && k >= s.ck) at(rx, ry + 0.85, 0.6 + Math.sin(time * 5) * 0.05, () => bubble('🧾', { bg: '#ffe3e3' })); }
-    at(b.ox + VW - 1.0, b.oz + 14.45, 0.9, () => { label('🚪 ' + T('vExit'), 0, 13, '#fff'); if (tvT > 0) ringAt(-26, tvT / 0.6); });
     { const [px, py] = promoPos(b);   // 促销活动台
       at(px, py, 0.9, () => { if (r.promo > 0) label('🎉 ' + T('promoRun', { n: Math.ceil(r.promo) }), 0, 13, '#ffe066'); else if (r.promoCd > 0) label('⏳ ' + T('promoWait', { n: Math.ceil(r.promoCd) }), 0, 12, '#dddddd'); else { label('📣 ' + T('promoGo'), 0, 13, '#fff'); if (r.padT > 0) ringAt(-26, r.padT); } }); }
     if (evLive(ev)) drawEv(b, ev);
   });
-  if (!hereV) {
+  {
     const hok = vDone(BIZ[BIZ.length - 1]);
     if (S.hq) at(HQ.px, PADY, 1.1, () => { const ok = S.contract === S.day; label(T('hq'), -18, 13, '#fff'); label(ok ? T('signed') : '💼 ' + T('sign'), 0, 14, ok ? '#b9f6ca' : '#ffe066'); if (hqT > 0) ringAt(-44, hqT / 2); });
     else at(HQ.px, BY - 1.2, 2.9, () => { label(T('hq'), -9, 15, '#fff'); label(hok ? T('forSale') + ' 💰' + fmt(HQ.cost) : '🔒 ' + T('vNeed', { n: T('park') }), 10, 12, hok ? '#b9f6ca' : '#ffd6a5'); });
   }
+  if (homeOpen()) {   // 自己的家：床边休息、舒适度；超市门口的摊位
+    at(HOME.rest[0], HOME.rest[1], 0.9, () => { if (!S.home.bed) label('🛏️ ' + T('needBed'), 0, 13, '#ffd6a5'); else if (S.rest === S.day) label('✓ ' + T('rested2'), 0, 13, '#b9f6ca'); else if (!(S.inv.groc > 0)) label('🍱 ' + T('needGroc2'), 0, 13, '#ffb4a8'); else { label('😴 ' + T('restGo'), 0, 13, '#fff'); if (player.restT > 0) ringAt(-26, player.restT / 2); } });
+    at(HOME.ox + 7.2, HOME.oz + 0.1, 3.35, () => label('🏠 ' + T('comfort', { n: comfort(), m: COMFMAX }), 0, 14, '#fff'));
+    at(STALL.x, 11.85, 3.05, () => label(T('stall'), 0, 13, '#fff'));   // 写在摊子上方，不压住旁边"买食材"的价钱
+  } else at(HOME.ox + HOME.w / 2, BY - 1.2, 2.9, () => { label('🏠 ' + T('home'), -9, 15, '#fff'); label('🔒 ' + T('homeLock', { l: 2 }), 10, 12, '#ffd6a5'); });
+  drawCop(ringAt); drawPets(); drawInsp();
   if (mateOn()) at(mate.x, mate.y, 2.05, () => label('👥', 0, 13, '#fff'));
   if (player.stack.length) at(player.x, player.y, 2.05, () => label(player.stack.length + '/' + capacity(), 0, 12, player.stack.length >= capacity() ? '#ffb4a8' : '#fff'));
   for (const f of floats) at(f.x, f.y, f.z + f.t * 0.7, () => { octx.globalAlpha = Math.max(0, 1 - f.t / 1.3); label(loc(f.text), 0, 16, f.color); });
@@ -2507,30 +2936,41 @@ function routeIn(ax, ay, bx, by) {   // 餐厅内的路线：能直走就直走�
   if (c0 !== c1) { const X = cxs.reduce((a, c) => Math.abs(ax - c) + Math.abs(bx - c) < Math.abs(ax - a) + Math.abs(bx - a) ? c : a); out.push({ x: X, y: c0 }, { x: X, y: c1 }); }
   out.push({ x: bx, y: c1 }, { x: bx, y: by }); return out;
 }
+// 整条街是一张地图。餐厅、买下的各家店、自己的家各是一块"屋内"，各有门；从一处到另一处 = 屋内走到门口 → 出门沿街走 → 进门 → 屋内走到目的地
+const AREST = {}, P2 = q => ({ x: q[0], y: q[1] });
+function areaAt(x, y) {
+  if (x > 0 && x < W && y < H + 0.1 && y > -1) return AREST;
+  const b = venueAt(x, y); if (b) return vOwned(b) ? b : null;
+  return atHome(x, y) && homeOpen() ? HOME : null;
+}
+const aDoors = A => A === AREST ? [[6.75, 11.4, 6.75, 12.8], [13.3, 11.4, 13.3, 12.8], [19.3, DOOR.y, 20.9, DOOR.y]] : A === HOME ? [[HOME.ox + 1.5, HOME.oz + 8.3, HOME.ox + 1.5, HOME.oz + 10.0]]
+  : [[A.ox + 20.8, A.oz + 14.3, A.ox + 20.8, A.oz + 16.0], [A.ox + 1.8, A.oz + 14.3, A.ox + 1.8, A.oz + 16.0]];   // 每道门：[门内 x, y, 门外 x, y]
+function aRoute(A, ax, ay, bx, by) {   // 同一块屋内的路线：餐厅走桌子之间的过道，店里和家里按各自的路线图绕开货架、家具
+  if (A === AREST) return routeIn(ax, ay, bx, by);
+  const nav = A === HOME ? HOME.nav : A.pnav; return nav ? navPath(nav, ax, ay, bx, by).map(P2) : [{ x: bx, y: by }];
+}
 function setTarget(x, y) {   // 目标点若落在障碍内，挪到最近的边
-  const vb0 = venueAt(player.x, player.y);
-  if (vb0) { x = Math.max(vb0.ox + 0.4, Math.min(vb0.ox + VW - 0.4, x)); y = Math.max(vb0.oz + 1.6, Math.min(vb0.oz + VH - 0.4, y)); }
-  for (const t of vb0 ? vb0.obs : OBS) {
+  const p = player; x = Math.max(-73.4, Math.min(90.4, x)); y = Math.max(-2.1, Math.min(17.3, y));
+  for (let k = 0; k < 2; k++) for (const t of OBS) {
     const dx = x - t.x, dy = y - t.y;
     if (Math.abs(dx) < t.hx + 0.04 && Math.abs(dy) < t.hy + 0.04) { if (t.hx - Math.abs(dx) < t.hy - Math.abs(dy)) x = t.x + Math.sign(dx || 1) * (t.hx + 0.06); else y = t.y + Math.sign(dy || 1) * (t.hy + 0.06); }
   }
-  if (vb0) {   // 店内：沿路线图绕开货架和收银台，走最短的路
-    const pth = (vb0.pnav ? navPath(vb0.pnav, player.x, player.y, x, y) : [[x, y]]).map(q => ({ x: q[0], y: q[1] }));
-    player.target = pth.shift(); player.path = pth; return;
-  }
-  // 餐厅内外之间自动经过最近的出口；餐厅里直线被桌子挡住时沿过道绕行
-  const inside = (ax, ay) => ax > 0 && ax < W && ay < H + 0.1, p = player, path = [], pin = inside(p.x, p.y), tin = inside(x, y);
-  if (pin !== tin) {
+  const A = areaAt(p.x, p.y), B = areaAt(x, y), path = [];
+  if (A === B) { if (!A && Math.abs(x - p.x) > 1.5) { if (p.y < 11.2) path.push({ x: p.x, y: 12.7 }); if (y < 11.2) path.push({ x, y: 12.7 }); }   // 同在街上，但有一头在人行道以北
+    path.push(...(A ? aRoute(A, p.x, p.y, x, y) : [{ x, y }])); }
+  else {
     let best = null, bd = 1e9;
-    for (const [a, b] of [[[6.75, 11.4], [6.75, 12.8]], [[13.3, 11.4], [13.3, 12.8]], [[19.3, DOOR.y], [20.9, DOOR.y]]]) {
-      const d = Math.hypot(p.x - a[0], p.y - a[1]) + Math.hypot(x - b[0], y - b[1]) + Math.hypot(p.x - b[0], p.y - b[1]) + Math.hypot(x - a[0], y - a[1]);
+    for (const a of A ? aDoors(A) : [null]) for (const b of B ? aDoors(B) : [null]) {   // 挑总路程最短的那一对门
+      const sx = a ? a[2] : p.x, sy = a ? a[3] : p.y, ex = b ? b[2] : x, ey = b ? b[3] : y;
+      const d = (a ? Math.hypot(p.x - a[0], p.y - a[1]) + 1.5 : 0) + Math.abs(sx - ex) + Math.abs(sy - ey) + (b ? Math.hypot(x - b[0], y - b[1]) + 1.5 : 0);
       if (d < bd) { bd = d; best = [a, b]; }
     }
-    const [a, b] = best;   // a 在店内，b 在店外
-    if (pin) path.push(...routeIn(p.x, p.y, a[0], a[1]), { x: b[0], y: b[1] }, { x, y });
-    else path.push({ x: b[0], y: b[1] }, { x: a[0], y: a[1] }, ...routeIn(a[0], a[1], x, y));
-  } else if (pin) path.push(...routeIn(p.x, p.y, x, y));
-  else path.push({ x, y });
+    const [a, b] = best; let cx = p.x, cy = p.y;
+    if (a) { path.push(...aRoute(A, p.x, p.y, a[0], a[1]), { x: a[2], y: a[3] }); cx = a[2]; cy = a[3]; }
+    const ex = b ? b[2] : x, ey = b ? b[3] : y;   // 街上这一段：人行道以北只有小路和各家之间的空隙能走，都是南北向的，所以先直着走到人行道，沿街走，再直着拐进去
+    if (Math.abs(ex - cx) > 1.5) { if (cy < 11.2) path.push({ x: cx, y: 12.7 }); if (ey < 11.2) path.push({ x: ex, y: 12.7 }); }
+    if (b) path.push({ x: b[2], y: b[3] }, { x: b[0], y: b[1] }, ...aRoute(B, b[0], b[1], x, y)); else path.push({ x, y });
+  }
   p.target = path.shift(); p.path = path;
 }
 function floorAt(px, py) {
@@ -2561,20 +3001,25 @@ function toast(msg) { tq.push(msg); if (!tBusy) nextToast(); if (net.role === 'h
 function hideHint() { if (!hintHidden) { hintHidden = true; setTimeout(() => $('hint').style.opacity = 0, 8000); } }
 let plT = 0, placeSig = '';
 function placeList() {   // 地点快捷栏：点一下直接过去
-  const a = [{ id: 'rest', e: '🍜', x: 9, y: 6.2 }, { id: 'shop', e: '🥬', x: BIZ[0].px + 2.8, y: 13.4 }];
+  const a = [{ id: 'rest', e: '🍜', x: 9, y: 6.2 }, { id: 'shop', e: '🥬', x: SHOP.x, y: 13.4 }];
   for (const b of BIZ) if (vOwned(b)) a.push({ id: b.k, e: b.e, x: b.ox + VW - 2.4, y: b.oz + 13.2 });
-  if (S.hq) a.push({ id: 'hq', e: '🏢', x: HQ.px, y: PADY + 1.3 }); return a;
+  if (S.hq) a.push({ id: 'hq', e: '🏢', x: HQ.px, y: PADY + 1.3 });
+  if (homeOpen()) a.push({ id: 'home', e: '🏠', x: HOME.in[0], y: HOME.in[1] }, { id: 'stall', e: '🧺', x: STALL.x, y: STALL.y });
+  if (inspOpen()) a.push({ id: 'cop', e: '🚓', x: COP.px, y: PADY + 1.3 });
+  return a;
 }
+function openPanel(tab) { if (lookOpen) openLook(false); panelTab = tab; $('panel').classList.add('open'); renderPanel(); }
 function buildPlaces() {
   const el = $('places'); el.innerHTML = '';
-  for (const pl of placeList()) { const btn = document.createElement('button'); btn.className = 'pl'; btn.id = 'pl_' + pl.id; btn.innerHTML = pl.e + '<span class="dot"></span>'; btn.onclick = () => warp(pl.x, pl.y); el.appendChild(btn); }
+  for (const pl of placeList()) { const btn = document.createElement('button'); btn.className = 'pl'; btn.id = 'pl_' + pl.id; btn.innerHTML = pl.e + '<span class="dot"></span>'; btn.onclick = () => { warp(pl.x, pl.y); if (pl.id === 'stall') { stallOn = true; openPanel('life'); } }; el.appendChild(btn); }
   placeSig = '';
 }
 function updPlaces() {   // 哪里需要你：缺货、排长队、食材不足
-  const hv = venueAt(player.x, player.y), cl = {}, evs = {};
-  const a = { shop: S.stock < 8, hq: !!S.hq && S.contract !== S.day, rest: tables.some(t => t.cash > 200) || !!mouse };
+  const hv = venueAt(player.x, player.y), hm = atHome(player.x, player.y) && homeOpen(), cl = {}, evs = {};
+  const a = { shop: S.stock < 8, hq: !!S.hq && S.contract !== S.day, rest: tables.some(t => t.cash > 200) || !!mouse || (!!insp && insp.st < 2),
+    home: (S.home.bed > 0 && S.rest !== S.day && S.inv.groc > 0) || petHungry(), cop: inspOpen() && S.lic - S.day <= 1 };
   for (const b of BIZ) if (vOwned(b) && b.rt) { const s = S.biz[b.k]; cl[b.k] = !s.ck && hv !== b; evs[b.k] = evLive(b.rt.ev) && hv !== b; a[b.k] = !cl[b.k] && (b.rt.st.some((x, i) => s.st[i] > 0 && x.stock <= 0) || b.rt.reg.some((g, k) => k < Math.max(1, s.ck) && g.q.length >= 3 && !g.busy)); }
-  const cur = hv ? hv.k : 'rest', sig = JSON.stringify(a) + JSON.stringify(cl) + JSON.stringify(evs) + cur; if (sig === placeSig) return; placeSig = sig;
+  const cur = hv ? hv.k : hm ? 'home' : 'rest', sig = JSON.stringify(a) + JSON.stringify(cl) + JSON.stringify(evs) + cur; if (sig === placeSig) return; placeSig = sig;
   for (const el of $('places').children) { const id = el.id.slice(3); el.classList.toggle('al', !!a[id]); el.classList.toggle('on', id === cur); el.classList.toggle('cl', !!cl[id]); el.classList.toggle('ev', !!evs[id]); }
 }
 function canBuyAny() {
@@ -2619,18 +3064,19 @@ for (const ev of ['pointerup', 'pointercancel']) addEventListener(ev, () => { if
 $('list').addEventListener('scroll', () => { panelHold = Math.max(panelHold, performance.now() + 300); }, { passive: true });
 function renderPanel() {
   const box = $('list'), list = document.createElement('div'); panelAt = performance.now(); panelDue = false;
-  const hv = venueAt(player.x, player.y); if (!panelTab) panelTab = hv && vOwned(hv) ? hv.k : 'rest';
+  const hv = venueAt(player.x, player.y); if (!panelTab) panelTab = hv && vOwned(hv) ? hv.k : atHome(player.x, player.y) && homeOpen() ? 'home' : 'rest';
+  if ((panelTab === 'home' || panelTab === 'life') && !homeOpen()) panelTab = 'rest';
   const sec = t => { const d = document.createElement('div'); d.className = 'sec'; d.textContent = t; list.appendChild(d); };
   const row = (ic, nm, lv, ds, btn, cost, act) => {
     const r = document.createElement('div'); r.className = 'row';
     r.innerHTML = '<div class="ic">' + ic + '</div><div class="tx"><div class="nm">' + nm + ' <span style="color:#c08a3e;font-size:12px">' + lv + '</span></div><div class="ds">' + ds + '</div></div>';
     const b = document.createElement('button'); b.textContent = btn; b.disabled = cost == null || S.money < cost;
-    b.onclick = () => { if (b.disabled) return; if (net.role === 'guest') { netAct(['buy', ...act]); b.disabled = true; } else { doBuy(act); hudDirty = true; renderPanel(); } };   // 买完马上重画，让等级和价格立刻变
+    b.onclick = () => { if (b.disabled) return; if (typeof act === 'function') { act(); hudDirty = true; renderPanel(); } else if (net.role === 'guest') { netAct(['buy', ...act]); b.disabled = true; } else { doBuy(act); hudDirty = true; renderPanel(); } };   // 买完马上重画，让等级和价格立刻变
     r.appendChild(b); list.appendChild(r);
   };
   const tabs = document.createElement('div'); tabs.className = 'tabs'; list.appendChild(tabs);
   const tab = (id, e) => { const t = document.createElement('button'); t.className = 'tab' + (panelTab === id ? ' on' : ''); t.textContent = e; t.onclick = () => { panelTab = id; renderPanel(); box.scrollTop = 0; }; tabs.appendChild(t); };
-  tab('rest', '🍜'); let nextShown = false; BIZ.forEach(b => { if (vOwned(b)) tab(b.k, b.e); else if (!nextShown) { nextShown = true; tab(b.k, '🔒' + b.e); } }); tab('ach', '🏆');
+  tab('rest', '🍜'); let nextShown = false; BIZ.forEach(b => { if (vOwned(b)) tab(b.k, b.e); else if (!nextShown) { nextShown = true; tab(b.k, '🔒' + b.e); } }); if (homeOpen()) { tab('home', '🏠'); tab('life', '🧺'); } tab('ach', '🏆');
   if (panelTab === 'ach') {
     sec('🏆 ' + T('achTitle') + '  ' + trophies() + '/' + ACHN + ' · ' + T('achRew', { n: fmt(achReward()) }));
     if (S.hq) row('🏅', T('brand'), 'Lv.' + S.brand, T('brandD', { p: S.brand * 4 }), '💰' + fmt(brandCost()), brandCost(), ['brand']);
@@ -2641,8 +3087,23 @@ function renderPanel() {
       list.appendChild(r); }
     sec(T('statTitle'));
     { const st = document.createElement('div'); st.className = 'stats';
-      st.innerHTML = [['s_days', S.day], ['s_served', S.stat.served], ['s_earned', '💰' + fmt(S.stat.earned)], ['s_happy', S.stat.happy], ['s_washed', S.stat.washed], ['s_vip', S.stat.vip], ['s_mouse', S.stat.mouse], ['s_combo', S.stat.combo], ['s_events', S.stat.events], ['s_off', '💰' + fmt(S.stat.offline)]].map(([k, v]) => '<div><span>' + T(k) + '</span><b>' + (typeof v === 'number' ? fmt(v) : v) + '</b></div>').join('');
+      st.innerHTML = [['s_days', S.day], ['s_served', S.stat.served], ['s_earned', '💰' + fmt(S.stat.earned)], ['s_happy', S.stat.happy], ['s_washed', S.stat.washed], ['s_vip', S.stat.vip], ['s_mouse', S.stat.mouse], ['s_combo', S.stat.combo], ['s_events', S.stat.events], ['s_rests', S.stat.rests], ['s_insp', S.stat.inspOk], ['s_off', '💰' + fmt(S.stat.offline)]].map(([k, v]) => '<div><span>' + T(k) + '</span><b>' + (typeof v === 'number' ? fmt(v) : v) + '</b></div>').join('');
       list.appendChild(st); }
+  } else if (panelTab === 'home') {
+    const cf = comfort(), note = t => { const d = document.createElement('div'); d.className = 'note2'; d.textContent = t; list.appendChild(d); };
+    sec('🏠 ' + T('home') + '  ·  ' + T('comfort', { n: cf, m: COMFMAX }));
+    note(T('restD', { p: +(3 + cf * 0.1).toFixed(1), o: +(offRate() * 100).toFixed(1) }));
+    note(!S.home.bed ? '🛏️ ' + T('needBed') : S.rest === S.day ? '✓ ' + T('rested2') : S.inv.groc > 0 ? '😴 ' + T('restGo') + '  ·  🍱 ×' + S.inv.groc : '🍱 ' + T('needGroc2'));
+    sec(T('secHome'));
+    for (const f of FURN) { const l = S.home[f[0]], full = l >= 4, c = full ? null : furnCost(f[0]);
+      row(f[1], T('f_' + f[0]), l ? T('tier' + l) : T('furnNone'), full ? T('furnMax') : T('furnD', { n: T('tier' + (l + 1)), p: FPTS[l + 1] - FPTS[l] }), full ? T('max') : '💰' + fmt(c), c, ['furn', f[0]]); }
+  } else if (panelTab === 'life') {
+    const near = Math.hypot(player.x - STALL.x, player.y - STALL.y) < 1.9;
+    sec('🧺 ' + T('stall') + (near ? '' : '  ·  ' + T('stallFar')));
+    for (const q of GOODS) { const n = S.inv[q[0]], full = n >= q[4], c = goodPrice(q[0]);
+      if (near || full) row(q[1], T('g_' + q[0]), '×' + n + '/' + q[4], T('g_' + q[0] + 'D', { n: q[3] }), full ? T('max') : '💰' + fmt(c), full ? null : c, ['inv', q[0]]);
+      else row(q[1], T('g_' + q[0]), '×' + n + '/' + q[4], T('g_' + q[0] + 'D', { n: q[3] }), '🚶 ' + T('goBuy'), 0, () => { warp(STALL.x, STALL.y); stallOn = true; }); }
+    panelPets(sec, row); panelInsp(sec, row, list);
   } else if (panelTab === 'rest') {
     sec('🍜 ' + T('restN') + '  ' + (S.tables + unlocked()) + '/' + (SPOTS.length + ITEMS.length) + ' · ' + T('todayRev', { n: fmt(Math.max(0, S.d.rev - BIZ.reduce((a, b) => a + (b.rt ? b.rt.rev || 0 : 0), 0))) }));
     sec(T('secChef'));
@@ -2845,7 +3306,7 @@ let offTimer = 0;
 function offlineGain(sec) {
   if (!(sec >= OFF.min)) return 0;
   const day = S.avgP != null ? S.avgP : S.dayT > 60 ? (S.d.rev - (S.d.ev || 0) - S.d.cost) * DAYLEN / S.dayT - wages() - rent() : 0;   // 一个游戏日的净利润
-  return Math.max(0, Math.floor(day / DAYLEN * Math.min(sec, OFF.cap) * OFF.rate));
+  return Math.max(0, Math.floor(day / DAYLEN * Math.min(sec, OFF.cap) * offRate()));
 }
 function grantOffline(sec) {
   if (net.role === 'guest') return 0;
@@ -2853,7 +3314,7 @@ function grantOffline(sec) {
   S.money += n; S.stat.offline += n; hudDirty = true; save();
   const m = Math.floor(Math.min(sec, 1e8) / 60), dur = m >= 60 ? T('durH', { h: Math.floor(m / 60), m: m % 60 }) : T('durM', { m });
   $('offTitle').textContent = T('offTitle');
-  $('offRows').innerHTML = '<div><span>' + T('offAway') + '</span><span>' + dur + '</span></div><div><span>' + T('offRate') + (sec > OFF.cap ? ' (' + T('offCap') + ')' : '') + '</span><span></span></div><div class="net"><span>' + T('offGain') + '</span><span class="pos">+💰' + fmt(n) + '</span></div>';
+  $('offRows').innerHTML = '<div><span>' + T('offAway') + '</span><span>' + dur + '</span></div><div><span>' + T('offRate', { p: +(offRate() * 100).toFixed(1) }) + (sec > OFF.cap ? ' (' + T('offCap') + ')' : '') + '</span><span></span></div><div class="net"><span>' + T('offGain') + '</span><span class="pos">+💰' + fmt(n) + '</span></div>';
   $('offBox').classList.add('open'); sfx('level');
   let left = 12; clearInterval(offTimer);
   const upd = () => { $('offBtn').textContent = T('offOk') + ' (' + left + ')'; }; upd();
@@ -2867,7 +3328,7 @@ document.addEventListener('visibilitychange', () => {
 });
 $('dayBtn').onclick = () => { if (net.role === 'guest') { netAct(['next']); return; } clearInterval(dayTimer); $('dayBox').classList.remove('open'); paused = false; };
 // ================= 双人联机（房主运算，经公共中转服务同步）=================
-const NETV = 2;   // 联机数据的版本：两边不一致时提示刷新
+const NETV = 3;   // 联机数据的版本：两边不一致时提示刷新
 const NETURLS = ['wss://broker.emqx.io:8084/mqtt', 'wss://broker.hivemq.com:8884/mqtt', 'wss://test.mosquitto.org:8081/mqtt'];
 const KINDS = ['normal', 'vip', 'critic', 'hurry', 'rider'], CST = ['q', 'in', 'wait', 'eat', 'out'], OST = ['queue', 'cook', 'ready', 'carry'], SEATST = ['free', 'taken', 'dirty'], PUPK = ['skate', 'cash', 'clock', 'fire'];
 function q2(v) { return Math.round(v * 100) / 100; }
@@ -2927,23 +3388,24 @@ function netLeave() { if (net.role === 'guest') { location.reload(); return; } i
 function netAct(a) { if (net.acts.length < 30) net.acts.push(a); }
 const stackCode = q => q.stack.map(it => it.o ? ITEMS.indexOf(it.o.item) : it.m === 'crate' ? 21 : it.m === 'basket' ? 22 : it.m === 'box' ? 100 + it.b * 10 + it.it : it.m === 'cup' ? 200 + it.b * 10 + it.it : it.m === 'svc' ? 300 + it.b * 10 + it.k : 20);
 const stackItem = c => c < 20 ? { o: { item: ITEMS[c] }, m: ITEMS[c].m } : c >= 300 ? { m: 'svc', b: Math.floor((c - 300) / 10), k: (c - 300) % 10 } : c >= 100 ? { m: c >= 200 ? 'cup' : 'box', b: Math.floor(c % 100 / 10), it: c % 10, c: BIZ[Math.floor(c % 100 / 10)].items[c % 10][2] } : { m: c === 21 ? 'crate' : c === 22 ? 'basket' : 'dirty' };
-const worldSig = () => [S.level, S.tables, S.up.waiter, S.up.busser, S.up.takeout, S.hq, JSON.stringify(S.biz)].join('|');
+const worldSig = () => [S.level, S.tables, S.up.waiter, S.up.busser, S.up.takeout, S.hq, JSON.stringify(S.biz), JSON.stringify(S.home), Object.keys(S.pets).join(), S.pet, S.feeder].join('|');
 function netSnap() {   // 房主：把店里当前的样子打包
   const pe = q => [q2(q.x), q2(q.y), q2(q.dir), q.moving ? 1 : 0, stackCode(q)];
   const seatIdx = t => t.takeout ? -1 : tables.indexOf(t.table) * 2 + t.table.seats.indexOf(t);
   const sn = { v: NETV, n: ++net.seq,
-    m: [rushT > 0 ? 1 : 0, combo, Math.ceil(Math.max(0, buff.skate)), Math.ceil(Math.max(0, buff.clock)), Math.ceil(Math.max(0, buff.fire)), paused ? 1 : 0, STAND.cash, q2(hqT), Math.floor(S.money), S.stock, q2(S.dayT)],
-    p: [pe(player), [stackCode(mate), q2(mate.padT || 0), q2(mate.shopT || 0), mate.stack.filter(it => it.o && it.o.cust).map(it => it.o.cust.id)]],
+    m: [rushT > 0 ? 1 : 0, combo, Math.ceil(Math.max(0, buff.skate)), Math.ceil(Math.max(0, buff.clock)), Math.ceil(Math.max(0, buff.fire)), paused ? 1 : 0, STAND.cash, q2(hqT), Math.floor(S.money), S.stock, q2(S.dayT), q2(copT)],
+    p: [pe(player), [stackCode(mate), q2(mate.padT || 0), q2(mate.shopT || 0), mate.stack.filter(it => it.o && it.o.cust).map(it => it.o.cust.id), q2(mate.restT || 0)]],
     w: workers.filter(w => !w.isPlayer).map(pe), bs: bussers.map(pe),
     c: customers.map(c => [c.id, q2(c.x), q2(c.y), q2(c.dir), CST.indexOf(c.state) + (c.moving ? 8 : 0), KINDS.indexOf(c.kind), ITEMS.indexOf(c.item), c.state === 'wait' ? Math.round(100 * c.pat / c.patMax) : 0, c.order && c.state === 'wait' ? OST.indexOf(c.order.state) : 0, c.seat ? seatIdx(c.seat) : -2]),
     tb: tables.map(t => [t.cash, ...t.seats.map(x => SEATST.indexOf(x.state) + (x.claimed ? 4 : 0))]),
     st: ST.map(st => [st.cur && st.t > 0 ? Math.round(99 * (1 - st.t / st.total)) : -1, st.starved ? 1 : 0, ...st.slots.map(o => o ? (o.claimed ? 2 : 1) : 0)]),
     pu: pups.map(u => [u.id, PUPK.indexOf(u.kind), q2(u.x), q2(u.y), q2(u.t)]),
     mo: mouse ? [q2(mouse.x), q2(mouse.y), q2(mouse.t), q2(mouse.dir)] : 0,
-    vn: BIZ.map(b => { const r = b.rt; if (!r || !vOwned(b)) return 0; const near = venueAt(mate.x, mate.y) === b;   // 只发伙伴所在那家店的顾客
+    vn: BIZ.map(b => { const r = b.rt; if (!r || !vOwned(b)) return 0; const near = Math.max(b.ox - mate.x, mate.x - b.ox - VW) < 24;   // 只发伙伴附近那几家店的顾客
       const e = r.ev;
       return [r.st.map(x => x.stock), r.reg.map(g => Math.round(g.p * 9) + (g.busy ? 10 : 0) + g.q.length * 100), r.stk.map(pe), near ? r.cust.map(c => [c.id, q2(c.x), q2(c.y), q2(c.dir), (c.moving ? 1 : 0) + (c.stack.length ? 2 : 0) + (c.hid ? 4 : 0) + (c.role || 0) * 8]) : 0, Math.round(r.rev),
         e ? [EVKS.indexOf(e.k), q2(e.t), e.T, e.id || 0, e.id2 || 0, e.st || 0, e.need || 0, e.got || 0, e.room == null ? -1 : e.room, e.it || 0] : 0, [Math.ceil(Math.max(0, r.promo)), Math.ceil(Math.max(0, r.promoCd)), q2(r.padT || 0)]]; }),
+    ins: insp ? [IKS.indexOf(insp.k), insp.st, insp.i, q2(insp.t), q2(insp.npc.x), q2(insp.npc.y), q2(insp.npc.dir), insp.npc.moving ? 1 : 0, insp.n] : 0,
     ev: net.ev.splice(0) };
   const sig = worldSig(); if (sig !== net.sig || net.seq % 4 === 1) { sn.S = S; sn.L = lookCode(LOOK); net.sig = sig; }
   return sn;
@@ -2965,8 +3427,8 @@ function netApply(sn) {   // 伙伴一侧：按房主发来的数据重建画面
   if (combo !== m[1]) { combo = m[1]; hudDirty = true; }
   buff.skate = m[2]; buff.clock = m[3]; buff.fire = m[4];
   if (!m[5] && paused) { paused = false; $('dayBox').classList.remove('open'); }
-  STAND.cash = m[6]; hqT = m[7]; if (S.money !== m[8] || S.stock !== m[9]) { S.money = m[8]; S.stock = m[9]; hudDirty = true; } S.dayT = m[10];
-  netEnt(mate, sn.p[0]); netEnt(player, [player.x, player.y, player.dir, player.moving, sn.p[1][0]]); player.tx = null; player.padT = sn.p[1][1]; player.shopT = sn.p[1][2]; player.tgt = sn.p[1][3] || [];
+  STAND.cash = m[6]; hqT = m[7]; copT = m[11] || 0; if (S.money !== m[8] || S.stock !== m[9]) { S.money = m[8]; S.stock = m[9]; hudDirty = true; } S.dayT = m[10];
+  netEnt(mate, sn.p[0]); netEnt(player, [player.x, player.y, player.dir, player.moving, sn.p[1][0]]); player.tx = null; player.padT = sn.p[1][1]; player.shopT = sn.p[1][2]; player.tgt = sn.p[1][3] || []; player.restT = sn.p[1][4] || 0;
   sn.w.forEach((a, i) => { const w = workers[i + 1]; if (w) { if (w.tx == null) { w.x = a[0]; w.y = a[1]; } netEnt(w, a); } });
   (sn.bs || []).forEach((a, i) => { const w = bussers[i]; if (w) { if (w.tx == null) { w.x = a[0]; w.y = a[1]; } netEnt(w, a); } });
   // 客人
@@ -3007,6 +3469,10 @@ function netApply(sn) {   // 伙伴一侧：按房主发来的数据重建画面
     for (const x of list) { let c = r.cust.find(c => c.id === x[0]); if (!c) { const role = x[4] >> 3; c = { id: x[0], x: x[1], y: x[2], face: x[3], stack: [], look: role ? roleLook(role, x[0]) : seedLook(x[0]) }; c.mesh = makePerson(c.look); b.dg.add(c.mesh); r.cust.push(c); }
       c.tx = x[1]; c.ty = x[2]; c.dir = x[3]; c.moving = !!(x[4] & 1); const hb = !!(x[4] & 2); if (hb !== !!c.hb) { c.hb = hb; c.stack = hb ? [{ m: b.k === 'teashop' ? 'tea' : 'basket' }] : []; c.stackDirty = true; } c.mesh.visible = !(x[4] & 4); }
     r.cust = r.cust.filter(c => ids.has(c.id) || (rm(c.mesh), false)); });
+  { const a = sn.ins;   // 上门检查的检查员
+    if (!a) { if (insp) { rm(insp.npc.mesh); insp = null; } }
+    else { if (!insp || insp.n !== a[8]) { if (insp) rm(insp.npc.mesh); const c = { x: a[4], y: a[5], dir: a[6], face: a[6], stack: [], look: inspLook(IKS[a[0]], a[8]) }; c.mesh = makePerson(c.look); dyn.add(c.mesh); insp = { k: IKS[a[0]], n: a[8], npc: c }; }
+      insp.st = a[1]; insp.i = a[2]; insp.t = a[3]; const c = insp.npc; c.tx = a[4]; c.ty = a[5]; c.dir = a[6]; c.moving = !!a[7]; } }
   // 事件：提示、飘字、音效、金币、日结
   for (const e of sn.ev || []) {
     if (e[0] === 't') toast(e[1]); else if (e[0] === 'f') floats.push({ x: e[1], y: e[2], z: e[3], text: e[4], color: e[5], t: 0 }); else if (e[0] === 's') sfx(e[1]);
@@ -3042,7 +3508,7 @@ function netTick(dt) {   // 每帧调用：定时发送
 function guestTick(dt) {   // 伙伴一侧不运算店铺，只移动自己并平滑显示其他人
   time += dt; movePlayer(player, dt); travel(dt);
   const k = Math.min(1, dt * 10), L = e => { if (e.tx != null) { e.x += (e.tx - e.x) * k; e.y += (e.ty - e.y) * k; } };
-  L(mate); workers.forEach(w => { if (!w.isPlayer) L(w); }); bussers.forEach(L); customers.forEach(L); for (const b of BIZ) if (b.rt) { b.rt.cust.forEach(L); b.rt.stk.forEach(L); }
+  L(mate); if (insp) L(insp.npc); workers.forEach(w => { if (!w.isPlayer) L(w); }); bussers.forEach(L); customers.forEach(L); for (const b of BIZ) if (b.rt) { b.rt.cust.forEach(L); b.rt.stk.forEach(L); }
   floats.forEach(f => f.t += dt); floats = floats.filter(f => f.t < 1.3);
   updPeds(dt); updBuffHud();
   if (!paused) S.dayT = Math.min(DAYLEN, S.dayT + dt);
@@ -3088,7 +3554,7 @@ function frame(now) {
 requestAnimationFrame(frame);
 setInterval(save, 5000); addEventListener('pagehide', save);
 window.__game = { get S() { return S; }, player, get tables() { return tables; }, get customers() { return customers; }, get ST() { return ST; }, get workers() { return workers; }, get bussers() { return bussers; },
-  SINKS, nearSink, STAND, FRIDGE, BIZ, HQ, PADY, cratePrice, venueAt, stPos, palPos, regPos, stCap, vReady, warp, wages, rent, endDay, buff, get pups() { return pups; }, get mouse() { return mouse; }, get combo() { return combo; }, step: update, setTarget, addXp, net, mate, netHost, netJoin, netLeave, buyTable, tableMax, tableCost, unitCost, stockCap,
+  SINKS, nearSink, STAND, FRIDGE, BIZ, HQ, PADY, SHOP, HOME, COP, STALL, XWALK, VCAP, areaAt, atHome, get OBS() { return OBS; }, FURN, PETS, GOODS, comfort, furnCost, goodPrice, petLv, petOk, offRate, licFee, homeSync, get insp() { return insp; }, get petRt() { return petRt; }, inspStart, ICHK, IPLAN, openPanel, checkMs, cratePrice, venueAt, stPos, palPos, regPos, stCap, vReady, warp, wages, rent, endDay, buff, get pups() { return pups; }, get mouse() { return mouse; }, get combo() { return combo; }, step: update, setTarget, addXp, net, mate, netHost, netJoin, netLeave, buyTable, tableMax, tableCost, unitCost, stockCap,
   tick(dt) { if (net.role === 'guest') guestTick(dt); else if (!paused) update(dt); netTick(dt); if (hudDirty) { hudDirty = false; renderHud(); } if (panelDue && panelIdle()) panelSoon(); },   // 测试用：页面不在前台、没有画面刷新时手动推进一帧（不含画面绘制）
   doBuy, restDone, vDone, vOwned, unlocked, skillCost, TXT, AU, saveCode, readCode, importSave, adopt, evStart, evEnd, spotOf, promoPos, avgP, EVK, grantOffline, offlineGain, newMission, updCars, cars, get peds() { return peds; }, openLook, applyLook, setMateLook, lookCode, get LOOK() { return LOOK; }, ACH, checkAch, trophies, achReward, brandCost, navPath, pathLen, get RNAV() { return RNAV; }, stCost, vupCost, itPrice, UP, ITEMS, VUP, ECO, mainGoal, setQuality, perfTick, WK, keepAwake, scene, cam, renderer, dyn, get quality() { return quality; },
   prof(n = 20) { const t0 = performance.now(); for (let i = 0; i < n; i++) sync3D(0.016); const t1 = performance.now(); for (let i = 0; i < n; i++) { renderer.shadowMap.needsUpdate = quality > 0; renderer.render(scene, cam); } renderer.getContext().finish(); const t2 = performance.now(); return { syncMs: +((t1 - t0) / n).toFixed(2), renderMs: +((t2 - t1) / n).toFixed(2), calls: renderer.info.render.calls, tris: renderer.info.render.triangles }; } };
